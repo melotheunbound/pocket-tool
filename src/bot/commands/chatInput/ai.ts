@@ -11,6 +11,7 @@ import env from '../../../utils/env.js';
 import { emoji, truncate } from '../../../utils/markdown.js';
 import { msToApproxTime } from '../../../utils/utils.js';
 import OpenAI from 'openai';
+import proxyFetch from '../../../utils/proxyFetch.js';
 import createApplicationCommand from '../../../helpers/command.js';
 
 createApplicationCommand({
@@ -56,18 +57,34 @@ createApplicationCommand({
 
     const start = performance.now();
 
-    const openai = new OpenAI({ apiKey: nvidiaApiKey, baseURL: 'https://integrate.api.nvidia.com/v1' });
+    const openai = new OpenAI({ apiKey: nvidiaApiKey, baseURL: 'https://integrate.api.nvidia.com/v1', fetch: proxyFetch as any });
+
+    let messageContext = '';
+    if (interaction.channel_id) {
+      try {
+        const messages = (await api.channels.getMessages(interaction.channel_id, { limit: 5 })).reverse();
+        for (const msg of messages) {
+          const displayName = msg.author.global_name || msg.author.username;
+          const content = msg.content && msg.content.length > 512 ? msg.content.substring(0, 512) + '...' : msg.content || '';
+          messageContext += `Name: ${displayName}\n${content}\n\n`;
+        }
+      } catch (e) {
+      }
+    }
+
+    const interactionUser = interaction.member?.user || interaction.user;
+    const interactionDisplayName = interactionUser?.global_name || interactionUser?.username || 'User';
 
     const completion = await openai.chat.completions.create({
       model: 'meta/llama-3.3-70b-instruct',
       messages: [
         {
           role: 'system',
-          content: `You are a friendly Discord chat bot, called Pocket Tool, designed to help people.\n- Today\'s date is ${new Date().toLocaleDateString('en-us', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}\n- You should always use gender neutral pronouns when possible.\n- When answering a question, be concise and to the point.\n- Try to answer with short responses. This does not apply to subjects that require more exhaustive or in-depth explanation.\n- Respond in a natural way, using Discord's supported markdown formatting.`,
+          content: `You are a friendly Discord chat bot, called Pocket Tool, designed to help people.\n- Today\'s date is ${new Date().toLocaleDateString('en-us', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}\n- You should always use gender neutral pronouns when possible.\n- When answering a question, be concise and to the point.\n- Try to answer with short responses. This does not apply to subjects that require more exhaustive or in-depth explanation.\n- Respond in a natural way, using Discord's supported markdown formatting.\n- Name of the User that asked the Question: ${interactionDisplayName}\n- If other messages in the chat context are irrelevant to the user's question, just ignore them and do not mention them.`,
         },
         {
           role: 'user',
-          content: prompt,
+          content: messageContext ? `Recent chat context:\n${messageContext}Question:\n${prompt}` : prompt,
         },
       ],
       max_completion_tokens: 2000,
