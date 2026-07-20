@@ -3,6 +3,7 @@ import { RateLimitType } from '../../../types/types.js';
 import env from '../../../utils/env.js';
 import { msToApproxTime } from '../../../utils/utils.js';
 import OpenAI from 'openai';
+import proxyFetch from '../../../utils/proxyFetch.js';
 import { emoji, truncate } from '../../../utils/markdown.js';
 import createApplicationCommand from '../../../helpers/command.js';
 import type { APIAttachment } from '@discordjs/core';
@@ -87,7 +88,31 @@ createApplicationCommand({
 
     const start = performance.now();
 
-    const openai = new OpenAI({ apiKey: nvidiaApiKey, baseURL: 'https://integrate.api.nvidia.com/v1' });
+    const openai = new OpenAI({ apiKey: nvidiaApiKey, baseURL: 'https://integrate.api.nvidia.com/v1', fetch: proxyFetch as any });
+
+    let systemContext = '';
+    let messageContext = '';
+
+    const interactionUser = interaction.member?.user || interaction.user;
+    const interactionDisplayName = interactionUser?.global_name || interactionUser?.username || 'User';
+    systemContext = `\n- User which asked the question: ${interactionDisplayName}\n- If other messages in the chat context are irrelevant to the user's question, just ignore them and do not mention them.`;
+
+    if (interaction.channel_id) {
+      try {
+        const messages = await api.channels.getMessages(interaction.channel_id, { limit: 5 });
+        const recentMessages = messages.reverse();
+        
+        for (const msg of recentMessages) {
+          const displayName = msg.author.global_name || msg.author.username;
+          let content = msg.content || '';
+          if (content.length > 512) {
+            content = content.substring(0, 512) + '...';
+          }
+          messageContext += `Name: ${displayName}\n${content}\n\n`;
+        }
+      } catch (e) {
+      }
+    }
 
     const model = attachment ? 'meta/llama-3.2-90b-vision-instruct' : 'meta/llama-3.3-70b-instruct';
 
@@ -96,16 +121,17 @@ createApplicationCommand({
       messages: [
         {
           role: 'system',
-          content: `You are a friendly Discord chat bot, called Pocket Tool, designed to help people.\n- Today\'s date is ${new Date().toLocaleDateString('en-us', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}\n- You should always use gender neutral pronouns when possible.\n- When answering a question, be concise and to the point.\n- Try to answer with short responses. This does not apply to subjects that require more exhaustive or in-depth explanation.\n- Respond in a natural way, using Discord's supported markdown formatting.\n- If images are attached, analyze all relevant visual details carefully before answering.\n- If no text content is available, rely on the visual details of the image(s) to provide a meaningful response.\n- If a referenced message is available, use it to provide context for your response.`,
+          content: `You are a friendly Discord chat bot, called Pocket Tool, designed to help people.\n- Today\'s date is ${new Date().toLocaleDateString('en-us', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}\n- You should always use gender neutral pronouns when possible.\n- When answering a question, be concise and to the point.\n- Try to answer with short responses. This does not apply to subjects that require more exhaustive or in-depth explanation.\n- Respond in a natural way, using Discord's supported markdown formatting.\n- If images are attached, analyze all relevant visual details carefully before answering.\n- If no text content is available, rely on the visual details of the image(s) to provide a meaningful response.\n- If a referenced message is available, use it to provide context for your response.${systemContext}`,
         },
         {
           role: 'user',
           content: [
+            ...(messageContext ? [{ type: 'text', text: `Recent chat context:\n${messageContext}Question:\n` } as ChatCompletionContentPart] : []),
             ...(prompt ? ([{ type: 'text', text: prompt }] satisfies ChatCompletionContentPart[]) : []),
             ...(attachment && model === 'meta/llama-3.2-90b-vision-instruct'
               ? ([{ type: 'image_url', image_url: { url: attachment.url } }] satisfies ChatCompletionContentPart[])
               : []),
-          ],
+          ] as ChatCompletionContentPart[],
         },
       ],
       max_completion_tokens: 2000,
