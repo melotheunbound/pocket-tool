@@ -49,7 +49,7 @@ createApplicationCommand({
       )
       .join('\n\n');
 
-    const originalReply = await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+    const response = await client.api.interactions.editReply(interaction.application_id, interaction.token, {
       components: [
         {
           type: ComponentType.Container,
@@ -112,9 +112,9 @@ createApplicationCommand({
     const collector = client.api.interactions.createCollector<
       APIMessageComponentButtonInteraction | APIModalSubmitInteraction
     >({
-      key: 'commands',
+      key: 'command-browser',
       filter: (i) =>
-        i.message?.id === originalReply.id &&
+        i.message?.id === response.id &&
         (i.user?.id ?? i.member?.user.id) === (interaction.user?.id ?? interaction.member?.user.id),
       duration: 5 * 60 * 1000,
     });
@@ -133,7 +133,7 @@ createApplicationCommand({
             )
             .join('\n\n');
 
-          await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+          await client.api.interactions.editReply(i.application_id, i.token, {
             components: [
               {
                 type: ComponentType.Container,
@@ -219,7 +219,7 @@ createApplicationCommand({
             )
             .join('\n\n');
 
-          await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+          await client.api.interactions.editReply(i.application_id, i.token, {
             components: [
               {
                 type: ComponentType.Container,
@@ -334,7 +334,7 @@ createApplicationCommand({
           );
 
           if (!results.length) {
-            await client.api.interactions.followUp(interaction.application_id, interaction.token, {
+            await client.api.interactions.followUp(i.application_id, i.token, {
               components: [
                 {
                   type: ComponentType.Container,
@@ -368,7 +368,7 @@ createApplicationCommand({
             )
             .join('\n\n');
 
-          await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+          await client.api.interactions.editReply(i.application_id, i.token, {
             components: [
               {
                 type: ComponentType.Container,
@@ -448,7 +448,7 @@ createApplicationCommand({
             )
             .join('\n\n');
 
-          await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+          await client.api.interactions.editReply(i.application_id, i.token, {
             components: [
               {
                 type: ComponentType.Container,

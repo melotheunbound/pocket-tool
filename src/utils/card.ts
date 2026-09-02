@@ -638,13 +638,15 @@ async function drawQuote(
 
   let contentY = startY;
 
-  if (stickerImages.length) {
-    drawStickerRow(ctx, stickerImages, drawX, contentY, area.align, stickerSize);
-    contentY += stickerSize + stickerGap;
-  }
-
   for (const [index, line] of lines.entries()) {
     await drawRichLine(ctx, line, drawX, contentY + index * lineHeight, area.align, finalFontSize, emojiImages);
+  }
+
+  contentY += lines.length * lineHeight;
+
+  if (stickerImages.length) {
+    contentY += stickerGap;
+    drawStickerRow(ctx, stickerImages, drawX, contentY, area.align, stickerSize);
   }
 
   const creditY = contentY + lines.length * lineHeight + 14;

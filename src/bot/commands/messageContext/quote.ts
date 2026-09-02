@@ -1637,7 +1637,7 @@ createApplicationCommand({
       }
     });
 
-    collector.on('end', async () => {
+    collector.once('end', async () => {
       sessions.delete(interaction.token);
 
       await client.api.interactions
