@@ -2,7 +2,10 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ApplicationIntegrationType,
+  ComponentType,
   InteractionContextType,
+  MessageFlags,
+  type APIInteractionDataResolvedGuildMember,
 } from '@discordjs/core';
 import createApplicationCommand from '../../../builders/command';
 import {
@@ -16,7 +19,7 @@ import {
 } from '../../../utils/image';
 import { makeRequest } from '../../../utils/request';
 import { RequestMethod, ResponseType } from '../../../types/types';
-import { cdn } from '../../../utils/markdown';
+import { cdn, emoji } from '../../../utils/markdown';
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -118,7 +121,23 @@ createApplicationCommand({
           type: ApplicationCommandOptionType.User,
           name: 'user',
           description: 'The  user whose avatar to add a petpet effect to',
-          required: true,
+          required: false,
+        },
+        {
+          type: ApplicationCommandOptionType.String,
+          name: 'scope',
+          description: 'the scope of the avatar to petpet',
+          choices: [
+            {
+              name: 'Global',
+              value: 'global',
+            },
+            {
+              name: 'Server',
+              value: 'server',
+            },
+          ],
+          required: false,
         },
       ],
     },
@@ -250,7 +269,7 @@ createApplicationCommand({
     } else if (speechBubble) {
       const { image } = speechBubble;
 
-      const buffer = await makeRequest(speechBubble.image.url, {
+      const buffer = await makeRequest(image.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
       });
@@ -272,19 +291,32 @@ createApplicationCommand({
         ],
       });
     } else if (petpet) {
-      let { user: target } = petpet;
+      let { user: target, scope } = petpet;
 
       if (!target) {
         target = {
           user: (interaction.user ?? interaction.member?.user)!,
+          member: interaction.member as APIInteractionDataResolvedGuildMember,
         };
       }
 
-      const { user } = target;
+      scope ??= 'global';
 
-      const avatar = user.avatar
-        ? cdn(`/avatars/${user.id}/${user.avatar}`, 4096, 'webp', true)
-        : cdn(`/embed/avatars/${Number(BigInt(user.id) >> 22n) % 6}`, 4096, 'png');
+      const { user, member } = target;
+
+      let avatar;
+
+      if (scope === 'server' && member) {
+        avatar = member.avatar
+          ? cdn(`guilds/${interaction.guild_id}/users/${user.id}/avatars/${member.avatar}`, 4096, 'webp', true)
+          : user.avatar
+            ? cdn(`/avatars/${user.id}/${user.avatar}`, 4096, 'webp', true)
+            : cdn(`/embed/avatars/${Number(BigInt(user.id) >> 22n) % 6}`, 4096, 'png');
+      } else {
+        avatar = user.avatar
+          ? cdn(`/avatars/${user.id}/${user.avatar}`, 4096, 'webp', true)
+          : cdn(`/embed/avatars/${Number(BigInt(user.id) >> 22n) % 6}`, 4096, 'png');
+      }
 
       const buffer = await makeRequest(avatar, {
         method: RequestMethod.GET,

@@ -58,20 +58,6 @@ createApplicationCommand({
 
     const { user, member } = target;
 
-    if (!user) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.TextDisplay,
-            content: `${emoji('Exclamation')} Please provide a valid user to view information for.`,
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      });
-
-      return;
-    }
-
     if (scope === 'server' && member) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [

@@ -58,25 +58,6 @@ createApplicationCommand({
 
     const { user, member } = target;
 
-    if (!user) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.Container,
-            components: [
-              {
-                type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please provide a valid user to view their avatar.`,
-              },
-            ],
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      });
-
-      return;
-    }
-
     if (scope === 'server' && member) {
       if (!member.avatar) {
         await client.api.interactions.editReply(interaction.application_id, interaction.token, {
