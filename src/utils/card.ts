@@ -647,9 +647,10 @@ async function drawQuote(
   if (stickerImages.length) {
     contentY += stickerGap;
     drawStickerRow(ctx, stickerImages, drawX, contentY, area.align, stickerSize);
+    contentY += stickerSize;
   }
 
-  const creditY = contentY + lines.length * lineHeight + 14;
+  const creditY = contentY + 14;
 
   ctx.globalAlpha = 0.9;
   ctx.font = `400 ${creditSize}px "Exo 2", sans-serif`;
