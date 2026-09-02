@@ -9,6 +9,8 @@ import {
   ApplicationCommandType,
   InteractionType,
   type APIApplicationCommandInteractionDataOption,
+  type APIApplicationCommandInteractionDataSubcommandGroupOption,
+  type APIApplicationCommandInteractionDataSubcommandOption,
   type APIChatInputApplicationCommandInteraction,
   type APIMessageComponentEmoji,
   type LocalizationMap,
@@ -441,4 +443,23 @@ function levenshteinDistance(a: string, b: string): number {
   }
 
   return matrix[a.length]![b.length]!;
+}
+
+export function getCommandPath(options: APIApplicationCommandInteractionDataOption[] | undefined): string {
+  if (!options?.length) return '';
+
+  const option = options[0];
+
+  if (!option) return '';
+
+  if (
+    option.type === ApplicationCommandOptionType.Subcommand ||
+    option.type === ApplicationCommandOptionType.SubcommandGroup
+  ) {
+    const nestedPath = getCommandPath(option.options);
+
+    return nestedPath ? `${option.name} ${nestedPath}` : option.name;
+  }
+
+  return '';
 }

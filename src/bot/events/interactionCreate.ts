@@ -23,7 +23,7 @@ import {
   type UserContextMenuCommand,
 } from '../../types/types';
 import env from '../../utils/env';
-import { getChatInputOption, parseCommandOptions } from '../../utils/utils';
+import { getChatInputOption, getCommandPath, parseCommandOptions } from '../../utils/utils';
 import { emoji, hyperlink, timestamp } from '../../utils/markdown';
 import { MESSAGE_BLOCK_REASONS, SUPPORT } from '../constants';
 import { redis } from '../../utils/redis';
@@ -447,13 +447,13 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
 
   const secondsUntilReset = Math.ceil((nextReset.epochMilliseconds - now.epochMilliseconds) / 1000);
 
-  const keys = [
+  const globalKeys = [
     `analytics:commands:day:${day}`,
     `analytics:commands:hour:${day}:${hour}`,
     `analytics:commands:minute:${day}:${hour}:${minute}`,
   ];
 
-  for (const key of keys) {
+  for (const key of globalKeys) {
     const exists = await redis.exists(key);
 
     await redis.incr(key);
@@ -463,13 +463,23 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
     }
   }
 
+  const commandPath = [
+    interaction.data.name,
+    'options' in interaction.data ? getCommandPath(interaction.data.options) : undefined,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   const commandKey = `analytics:commands:usage:${interaction.data.id}:day:${day}`;
 
-  if (!(await redis.exists(commandKey))) {
+  const exists = await redis.exists(commandKey);
+
+  if (!exists) {
     await redis.hSet(commandKey, {
       id: interaction.data.id,
       name: interaction.data.name,
-      uses: 0,
+      path: commandPath,
+      uses: '0',
     });
 
     await redis.expire(commandKey, secondsUntilReset);

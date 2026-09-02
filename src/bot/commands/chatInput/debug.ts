@@ -41,10 +41,16 @@ createApplicationCommand({
     const minute = String(now.minute).padStart(2, '0');
 
     const today = (await redis.get(`analytics:commands:day:${day}`)) ?? '0';
+
     const lastHour = (await redis.get(`analytics:commands:hour:${day}:${hour}`)) ?? '0';
+
     const lastMinute = (await redis.get(`analytics:commands:minute:${day}:${hour}:${minute}`)) ?? '0';
 
-    const commandsUsage = [];
+    const commandsUsage: {
+      id: string;
+      path: string;
+      uses: string;
+    }[] = [];
 
     for await (const keys of redis.scanIterator({
       MATCH: `analytics:commands:usage:*:day:${day}`,
@@ -53,16 +59,20 @@ createApplicationCommand({
       for (const key of keys) {
         const data = await redis.hGetAll(key);
 
-        if (data.id) {
-          commandsUsage.push(data);
-        }
+        if (!data.id || !data.path || !data.uses) continue;
+
+        commandsUsage.push({
+          id: data.id,
+          path: data.path,
+          uses: data.uses,
+        });
       }
     }
 
     const topCommands = commandsUsage
       .sort((a, b) => Number(b.uses) - Number(a.uses))
       .slice(0, 5)
-      .map((command) => `> </${command.name}:${command.id}>: **${Number(command.uses).toLocaleString('en-US')} uses**`)
+      .map((command) => `> </${command.path}:${command.id}>: **${Number(command.uses).toLocaleString('en-US')} uses**`)
       .join('\n');
 
     const response = await client.api.interactions.editReply(interaction.application_id, interaction.token, {
