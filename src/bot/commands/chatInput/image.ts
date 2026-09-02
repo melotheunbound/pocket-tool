@@ -142,6 +142,7 @@ createApplicationCommand({
       ],
     },
   ],
+  cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
     const { caption, grayscale, blur, flip, flop, 'speech-bubble': speechBubble, petpet } = options;
