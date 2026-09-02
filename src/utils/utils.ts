@@ -48,17 +48,25 @@ const TIME_UNITS = {
 export function msToApproxTime(ms: number): string {
   if (ms < 1000) {
     return `${Math.round(ms)}ms`;
-  } else if (ms < TIME_UNITS.m) {
-    return `~${(ms / 1000).toFixed(1)}s`;
-  } else if (ms < TIME_UNITS.h) {
-    return `~${Math.round(ms / TIME_UNITS.m)}m`;
-  } else if (ms < TIME_UNITS.d) {
-    return `~${(ms / TIME_UNITS.h).toFixed(1)}h`;
-  } else if (ms < TIME_UNITS.y) {
-    return `~${(ms / TIME_UNITS.d).toFixed(1)}d`;
-  } else {
-    return `~${(ms / TIME_UNITS.y).toFixed(1)}y`;
   }
+
+  if (ms < TIME_UNITS.m) {
+    return `~${(ms / 1000).toFixed(1)}s`;
+  }
+
+  if (ms < TIME_UNITS.h) {
+    return `~${Math.round(ms / TIME_UNITS.m)}m`;
+  }
+
+  if (ms < TIME_UNITS.d) {
+    return `~${(ms / TIME_UNITS.h).toFixed(1)}h`;
+  }
+
+  if (ms < TIME_UNITS.y) {
+    return `~${(ms / TIME_UNITS.d).toFixed(1)}d`;
+  }
+
+  return `~${(ms / TIME_UNITS.y).toFixed(1)}y`;
 }
 
 export function msToReadableTime(ms: number): string {
@@ -381,7 +389,7 @@ export function getShardIdForGuildId(guildId: string, totalShards: number): numb
 }
 
 export function findClosestMatch(input: string, strings: string[]): string | null {
-  if (strings.length === 0) {
+  if (!strings.length) {
     return null;
   }
 

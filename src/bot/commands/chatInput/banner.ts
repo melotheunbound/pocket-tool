@@ -7,7 +7,6 @@ import {
   InteractionContextType,
   MessageFlags,
   type APIComponentInMessageActionRow,
-  type APIInteractionDataResolvedGuildMember,
 } from '@discordjs/core';
 import createApplicationCommand from '../../../builders/command';
 import { cdn, emoji } from '../../../utils/markdown';
@@ -34,7 +33,6 @@ createApplicationCommand({
     if (!target) {
       target = {
         user: (interaction.user ?? interaction.member?.user)!,
-        member: interaction.member as APIInteractionDataResolvedGuildMember,
       };
     }
 

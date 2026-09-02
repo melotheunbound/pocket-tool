@@ -1712,6 +1712,7 @@ createApplicationCommand({
                             label: `Custom Text Size: ${session.fontSize}px`,
                             description: 'Currently selected custom size',
                             value: String(session.fontSize),
+                            default: true,
                           },
                         ]
                       : []),
@@ -1748,6 +1749,7 @@ createApplicationCommand({
                             label: `Custom Text Color: ${session.color}`,
                             description: 'Currently selected custom color',
                             value: session.color,
+                            default: true,
                           },
                         ]
                       : []),
@@ -1859,9 +1861,9 @@ async function resolveQuoteContent(message: APIMessage) {
 
           animation.seekFrame(0);
           animation.render(canvas.getContext('2d'), { x: 0, y: 0, width: 320, height: 320 });
-          data = await canvas.encode('png');
+          data = await sharp(canvas.toBuffer('image/png')).png({ effort: 10 }).toBuffer();
         } else if (sticker.format_type === StickerFormatType.GIF) {
-          data = await sharp(data, { animated: false }).png().toBuffer();
+          data = await sharp(data, { animated: false }).png({ effort: 10 }).toBuffer();
         }
 
         return { data };

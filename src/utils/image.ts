@@ -26,7 +26,7 @@ export type PetpetOptions = {
   handFrames?: readonly Buffer[];
 };
 
-export async function addSpeechBubble(image: Buffer, options: SpeechBubbleOptions = {}): Promise<Buffer> {
+export async function applySpeechBubble(image: Buffer, options: SpeechBubbleOptions = {}): Promise<Buffer> {
   const source = await sharp(image, { animated: false }).rotate().png().toBuffer();
   const { width, height } = await sharp(source).metadata();
 
@@ -155,4 +155,143 @@ function escapeSvgAttribute(value: string): string {
 
     return entities[character]!;
   });
+}
+
+export async function applyCaption(input: Buffer | string, caption: string): Promise<Buffer> {
+  const image = sharp(input);
+
+  const { width = 800 } = await image.metadata();
+
+  const fontSize = Math.max(24, Math.round(width * 0.045));
+  const horizontalPadding = Math.round(width * 0.04);
+  const verticalPadding = Math.round(fontSize * 0.6);
+  const lineHeight = Math.round(fontSize * 1.25);
+
+  const maxTextWidth = width - horizontalPadding * 2;
+
+  const escapedCaption = caption
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+
+  const charsPerLine = Math.max(1, Math.floor(maxTextWidth / (fontSize * 0.55)));
+
+  const words = escapedCaption.split(/\s+/);
+  const lines: string[] = [];
+
+  let currentLine = '';
+
+  for (const word of words) {
+    const testLine = currentLine ? `${currentLine} ${word}` : word;
+
+    if (testLine.length <= charsPerLine) {
+      currentLine = testLine;
+    } else {
+      if (currentLine) {
+        lines.push(currentLine);
+      }
+
+      currentLine = word;
+    }
+  }
+
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+
+  const captionHeight = lines.length * lineHeight + verticalPadding * 2;
+
+  const textStartY = verticalPadding + fontSize;
+
+  const text = lines
+    .map(
+      (line, index) => `
+        <text
+          x="${width / 2}"
+          y="${textStartY + index * lineHeight}"
+          text-anchor="middle"
+          fill="#000"
+          font-family="Arial, sans-serif"
+          font-size="${fontSize}px"
+          font-weight="bold"
+        >
+          ${line}
+        </text>
+      `,
+    )
+    .join('');
+
+  const svg = `
+    <svg
+      width="${width}"
+      height="${captionHeight}"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        width="${width}"
+        height="${captionHeight}"
+        fill="#fff"
+      />
+
+      ${text}
+    </svg>
+  `;
+
+  return image
+    .extend({
+      top: captionHeight,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      background: '#fff',
+    })
+    .composite([
+      {
+        input: Buffer.from(svg),
+        left: 0,
+        top: 0,
+      },
+    ])
+    .png({
+      effort: 10,
+    })
+    .toBuffer();
+}
+
+export async function applyGrayscale(input: Buffer | string): Promise<Buffer> {
+  return sharp(input)
+    .grayscale()
+    .png({
+      effort: 10,
+    })
+    .toBuffer();
+}
+
+export async function applyBlur(input: Buffer | string, sigma = 5): Promise<Buffer> {
+  return sharp(input)
+    .blur(sigma)
+    .png({
+      effort: 10,
+    })
+    .toBuffer();
+}
+
+export async function applyFlip(input: Buffer | string): Promise<Buffer> {
+  return sharp(input)
+    .flip()
+    .png({
+      effort: 10,
+    })
+    .toBuffer();
+}
+
+export async function applyFlop(input: Buffer | string): Promise<Buffer> {
+  return sharp(input)
+    .flop()
+    .png({
+      effort: 10,
+    })
+    .toBuffer();
 }

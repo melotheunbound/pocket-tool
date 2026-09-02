@@ -63,7 +63,7 @@ createApplicationCommand({
       .filter((attachment) => attachment.content_type?.startsWith('image/'))
       .slice(0, 10);
 
-    if (attachments.length === 0) {
+    if (!attachments.length) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
           {

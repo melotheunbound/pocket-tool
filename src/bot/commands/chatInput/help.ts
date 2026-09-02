@@ -333,7 +333,7 @@ createApplicationCommand({
             command.name.trim().toLowerCase().includes(name.trim().toLowerCase()),
           );
 
-          if (results.length === 0) {
+          if (!results.length) {
             await client.api.interactions.followUp(interaction.application_id, interaction.token, {
               components: [
                 {

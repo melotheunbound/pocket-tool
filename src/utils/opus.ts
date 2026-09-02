@@ -25,7 +25,7 @@ export async function decodeOpusBytes(opusBytes: Uint8Array): Promise<OggOpusDec
 }
 
 export function getWaveform({ channelData, samplesDecoded, sampleRate }: OggOpusDecodedAudio): string {
-  if (channelData.length === 0) {
+  if (!channelData.length) {
     throw new Error('No audio channels found');
   }
 

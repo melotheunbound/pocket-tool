@@ -166,7 +166,7 @@ if (env.get('register_commands')!.toBoolean() === true) {
     }
   });
 
-  if (globalCommands.length > 0) {
+  if (globalCommands.length) {
     await client.api.applicationCommands.bulkOverwriteGlobalCommands(
       atob(env.get('token', true)!.toString().split('.')[0]!),
       globalCommands,
@@ -174,7 +174,7 @@ if (env.get('register_commands')!.toBoolean() === true) {
   }
 
   for (const [guildId, commandsForGuild] of commandsForGuilds) {
-    if (commandsForGuild.length > 0) {
+    if (commandsForGuild.length) {
       await client.api.applicationCommands.bulkOverwriteGuildCommands(
         atob(env.get('token', true)!.toString().split('.')[0]!),
         guildId,
