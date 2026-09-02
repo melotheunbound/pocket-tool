@@ -5,9 +5,10 @@ import { RequestMethod, ResponseType } from '../types/types';
 const DEFAULT_PETPET_RESOLUTION = 128;
 const DEFAULT_PETPET_DELAY = 20;
 const PETPET_FRAME_COUNT = 10;
+const PETPET_FRAME_REVISION = 'f591cdc5b809c4d52c2666519571484517ac5c8d';
 const PETPET_HAND_FRAME_URLS = Array.from(
   { length: PETPET_FRAME_COUNT },
-  (_, index) => `https://raw.githubusercontent.com/VenPlugs/petpet/main/frames/pet${index}.gif`,
+  (_, index) => `https://raw.githubusercontent.com/VenPlugs/petpet/${PETPET_FRAME_REVISION}/frames/pet${index}.gif`,
 );
 
 let defaultPetpetHandFrames: Promise<Buffer[]> | undefined;
@@ -123,6 +124,7 @@ function loadDefaultPetpetHandFrames(): Promise<Buffer[]> {
       makeRequest(url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
+        timeout: 10_000,
       }),
     ),
   ).catch((error) => {

@@ -22,6 +22,7 @@ import { makeRequest } from '../../../utils/request';
 import { RequestMethod, ResponseType } from '../../../types/types';
 import { toComponentEmoji } from '../../../utils/utils';
 import { isHex, shuffle, type Hexadecimal } from '@tolga1452/toolbox.js';
+import sharp from 'sharp';
 
 type Session = {
   avatar: Buffer;
@@ -1808,19 +1809,22 @@ async function resolveQuoteContent(message: APIMessage) {
 
   const customEmojiRegex = /<a?:\w+:(\d+)>/g;
 
-  const emojiIds = [...content.matchAll(customEmojiRegex)].map((match) => match[1]!);
+  const emojiIds = [...new Set([...content.matchAll(customEmojiRegex)].map((match) => match[1]!))];
 
   const emojis = Object.fromEntries(
-    await Promise.all(
-      emojiIds.map(async (id) => {
-        const data = await makeRequest(cdn(`/emojis/${id}`, undefined, 'png', false), {
-          method: RequestMethod.GET,
-          response: ResponseType.BUFFER,
-        });
+    (
+      await Promise.allSettled(
+        emojiIds.map(async (id) => {
+          const data = await makeRequest(cdn(`/emojis/${id}`, undefined, 'png', false), {
+            method: RequestMethod.GET,
+            response: ResponseType.BUFFER,
+            timeout: 10_000,
+          });
 
-        return [id, data] as const;
-      }),
-    ),
+          return [id, data] as const;
+        }),
+      )
+    ).flatMap((result) => (result.status === 'fulfilled' ? [result.value] : [])),
   );
 
   const parsedContent = content.replace(/<@!?(\d+)>/g, (_, id) => {
@@ -1831,17 +1835,21 @@ async function resolveQuoteContent(message: APIMessage) {
 
   const resolvedStickers = await Promise.all(
     (message.sticker_items ?? []).map(async (sticker) => {
-      const url = cdn(
-        `/stickers/${sticker.id}`,
-        undefined,
-        sticker.format_type === StickerFormatType.Lottie ? 'json' : 'png',
-        false,
-      );
+      const url =
+        sticker.format_type === StickerFormatType.GIF
+          ? `https://media.discordapp.net/stickers/${sticker.id}.gif`
+          : cdn(
+              `/stickers/${sticker.id}`,
+              undefined,
+              sticker.format_type === StickerFormatType.Lottie ? 'json' : 'png',
+              false,
+            );
 
       try {
         let data = await makeRequest(url, {
           method: RequestMethod.GET,
           response: ResponseType.BUFFER,
+          timeout: 10_000,
         });
 
         if (sticker.format_type === StickerFormatType.Lottie) {
@@ -1852,6 +1860,8 @@ async function resolveQuoteContent(message: APIMessage) {
           animation.seekFrame(0);
           animation.render(canvas.getContext('2d'), { x: 0, y: 0, width: 320, height: 320 });
           data = await canvas.encode('png');
+        } else if (sticker.format_type === StickerFormatType.GIF) {
+          data = await sharp(data, { animated: false }).png().toBuffer();
         }
 
         return { data };

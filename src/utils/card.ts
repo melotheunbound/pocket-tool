@@ -3,6 +3,8 @@ import { isHex, type Hexadecimal } from '@tolga1452/toolbox.js';
 import sharp from 'sharp';
 import emojiRegex from 'emoji-regex';
 import path from 'path';
+import { makeRequest } from './request';
+import { RequestMethod, ResponseType } from '../types/types';
 
 const FONTS = [
   ['M PLUS Rounded 1c', 'MPLUSRounded1c-Regular.ttf'],
@@ -356,6 +358,10 @@ type LineMetrics = {
   descent: number;
   height: number;
 };
+
+const remoteImageCache = new Map<string, Promise<LoadedImage>>();
+const REMOTE_IMAGE_CACHE_LIMIT = 128;
+const TWEMOJI_VERSION = 'v17.0.3';
 
 type TextArea = {
   x: number;
@@ -875,7 +881,7 @@ async function drawRichLine(
 
     if (span.unicode) {
       try {
-        const img = await loadImage(getTwemojiUrl(span.name));
+        const img = await loadRemoteImage(getTwemojiUrl(span.name));
 
         ctx.drawImage(img, x, emojiY, fontSize, fontSize);
       } catch {}
@@ -884,8 +890,11 @@ async function drawRichLine(
       continue;
     }
 
-    ctx.fillText(span.name, x, baseline);
-    x += ctx.measureText(span.name).width;
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.fillText('□', x + fontSize / 2, baseline, fontSize);
+    ctx.restore();
+    x += fontSize;
   }
 }
 
@@ -1002,5 +1011,41 @@ function getTwemojiUrl(emoji: string): string {
     .filter((code) => code !== 'fe0f')
     .join('-');
 
-  return `https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/${code}.png`;
+  return `https://cdn.jsdelivr.net/gh/jdecked/twemoji@${TWEMOJI_VERSION}/assets/72x72/${code}.png`;
+}
+
+function loadRemoteImage(url: string): Promise<LoadedImage> {
+  let image = remoteImageCache.get(url);
+
+  if (image) {
+    remoteImageCache.delete(url);
+    remoteImageCache.set(url, image);
+    return image;
+  }
+
+  const request = makeRequest(url, {
+    method: RequestMethod.GET,
+    response: ResponseType.BUFFER,
+    timeout: 10_000,
+  })
+    .then((data) => loadImage(data))
+    .catch((error) => {
+      if (remoteImageCache.get(url) === request) {
+        remoteImageCache.delete(url);
+      }
+
+      throw error;
+    });
+
+  remoteImageCache.set(url, request);
+
+  if (remoteImageCache.size > REMOTE_IMAGE_CACHE_LIMIT) {
+    const oldestUrl = remoteImageCache.keys().next().value;
+
+    if (oldestUrl) {
+      remoteImageCache.delete(oldestUrl);
+    }
+  }
+
+  return request;
 }
