@@ -92,7 +92,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `-# **Shard #${shardId}**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
+              content: `-# **Shard #${shardId}:**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
             },
             {
               type: ComponentType.Separator,
