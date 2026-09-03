@@ -1,6 +1,6 @@
 <h1 align="center">
   <a href="https://discord.com/oauth2/authorize?client_id=1489362526880796903" target="_blank">
-      Pocket Tool Discord bot
+      Pocket Tool Discord Bot
   </a>
 </h1>
 
