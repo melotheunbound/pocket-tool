@@ -14,7 +14,7 @@ import {
 } from '@discordjs/core';
 import createApplicationCommand from '../../../builders/command';
 import List from '../../../utils/list';
-import { toComponentEmoji } from '../../../utils/utils';
+import { getCommandPaths, toComponentEmoji } from '../../../utils/utils';
 import { emoji } from '../../../utils/markdown';
 
 createApplicationCommand({
@@ -28,24 +28,35 @@ createApplicationCommand({
   async run(interaction, options, client) {
     const globalCommands = await client.api.applicationCommands.getGlobalCommands(interaction.application_id);
 
-    const perPage = 5;
+    const commands = globalCommands.flatMap((command) => {
+      const paths = getCommandPaths(command.options);
+
+      if (!paths.length) {
+        return [command];
+      }
+
+      return paths.map((path) => ({
+        ...command,
+        name: `${command.name} ${path}`,
+      }));
+    });
+
+    const limit = 5;
 
     const list = new List(
       true,
-      ...Array.from({ length: Math.ceil(globalCommands.length / perPage) }, (_, index) =>
-        globalCommands.slice(index * perPage, index * perPage + perPage),
+      ...Array.from({ length: Math.ceil(commands.length / limit) }, (_, index) =>
+        commands.slice(index * limit, index * limit + limit),
       ),
     );
 
     let pages = list;
     let query: string | null = null;
 
-    const page = pages.current ?? [];
-
-    let commands = page
+    let result = (pages.current ?? [])
       .map(
         (command, index) =>
-          `**${pages.pointer * perPage + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
+          `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
       )
       .join('\n\n');
 
@@ -77,7 +88,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: commands,
+              content: result,
             },
             {
               type: ComponentType.Separator,
@@ -126,10 +137,10 @@ createApplicationCommand({
 
           pages.back();
 
-          commands = (pages.current ?? [])
+          result = (pages.current ?? [])
             .map(
               (command, index) =>
-                `**${pages.pointer * perPage + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
+                `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
             )
             .join('\n\n');
 
@@ -163,7 +174,7 @@ createApplicationCommand({
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: commands,
+                    content: result,
                   },
                   {
                     type: ComponentType.Separator,
@@ -212,10 +223,10 @@ createApplicationCommand({
 
           pages.next();
 
-          commands = (pages.current ?? [])
+          result = (pages.current ?? [])
             .map(
               (command, index) =>
-                `**${pages.pointer * perPage + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
+                `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
             )
             .join('\n\n');
 
@@ -249,7 +260,7 @@ createApplicationCommand({
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: commands,
+                    content: result,
                   },
                   {
                     type: ComponentType.Separator,
@@ -329,9 +340,9 @@ createApplicationCommand({
             return;
           }
 
-          const results = globalCommands.filter((command) =>
-            command.name.trim().toLowerCase().includes(name.trim().toLowerCase()),
-          );
+          const search = name.trim().toLowerCase();
+
+          const results = commands.filter((command) => command.name.trim().toLowerCase().includes(search));
 
           if (!results.length) {
             await client.api.interactions.followUp(i.application_id, i.token, {
@@ -354,17 +365,17 @@ createApplicationCommand({
 
           pages = new List(
             true,
-            ...Array.from({ length: Math.ceil(results.length / perPage) }, (_, index) =>
-              results.slice(index * perPage, index * perPage + perPage),
+            ...Array.from({ length: Math.ceil(results.length / limit) }, (_, index) =>
+              results.slice(index * limit, index * limit + limit),
             ),
           );
 
-          query = name.trim().toLowerCase();
+          query = search;
 
-          commands = (pages.current ?? [])
+          result = (pages.current ?? [])
             .map(
               (command, index) =>
-                `**${pages.pointer * perPage + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
+                `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
             )
             .join('\n\n');
 
@@ -395,7 +406,7 @@ createApplicationCommand({
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: commands,
+                    content: result,
                   },
                   {
                     type: ComponentType.Separator,
@@ -441,10 +452,10 @@ createApplicationCommand({
           pages = list;
           query = null;
 
-          commands = (pages.current ?? [])
+          result = (pages.current ?? [])
             .map(
               (c, index) =>
-                `**${pages.pointer * perPage + index + 1}.** </${c.name}:${c.id}>${c.description ? `\n-# ${c.description}` : ''}`,
+                `**${pages.pointer * limit + index + 1}.** </${c.name}:${c.id}>${c.description ? `\n-# ${c.description}` : ''}`,
             )
             .join('\n\n');
 
@@ -476,7 +487,7 @@ createApplicationCommand({
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: commands,
+                    content: result,
                   },
                   {
                     type: ComponentType.Separator,
@@ -546,7 +557,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: commands,
+                  content: result,
                 },
                 {
                   type: ComponentType.Separator,

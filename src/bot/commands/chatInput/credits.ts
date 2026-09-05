@@ -24,7 +24,14 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `-# **Development:**\n> ${hyperlink('https://discord.com/users/782946852278501407', '@melotheunbound')} - Lead Developer\n> ${hyperlink('https://discord.com/users/775273108671430677', '@h0gtt')} - Website Developer & Contributor\n-# **Design:**\n> ${hyperlink('https://merpix.de/', 'Merpix')} - Responsible for the branding\n> ${hyperlink('https://discord.com/users/808606684837576714', '@mineturtle2.')} - Created the emojis\n-# **Additional:**\n> ${hyperlink('https://wispbyte.com', 'David Dobos')} - Hosting Provider\n\n-# This bot wouldn't exist without the support of our community! Thank you! ❤️`,
+              content: `-# **Development:**\n> ${hyperlink('https://discord.com/users/782946852278501407', '@melotheunbound')} - Lead Developer\n> ${hyperlink('https://discord.com/users/775273108671430677', '@h0gtt')} - Website Developer & Contributor\n-# **Design:**\n> ${hyperlink('https://merpix.de/', 'Merpix')} - Responsible for the branding\n> ${hyperlink('https://discord.com/users/808606684837576714', '@mineturtle2.')} - Created the emojis\n-# **Additional:**\n> ${hyperlink('https://wispbyte.com', 'David Dobos')} - Hosting Provider`,
+            },
+            {
+              type: ComponentType.Separator,
+            },
+            {
+              type: ComponentType.TextDisplay,
+              content: "-# This bot wouldn't exist without the support of our community! Thank you! ❤️",
             },
           ],
         },

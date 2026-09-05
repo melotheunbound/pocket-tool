@@ -11,6 +11,7 @@ import {
   type APIApplicationCommandInteractionDataOption,
   type APIApplicationCommandInteractionDataSubcommandGroupOption,
   type APIApplicationCommandInteractionDataSubcommandOption,
+  type APIApplicationCommandOption,
   type APIChatInputApplicationCommandInteraction,
   type APIMessageComponentEmoji,
   type LocalizationMap,
@@ -462,4 +463,20 @@ export function getCommandPath(options: APIApplicationCommandInteractionDataOpti
   }
 
   return '';
+}
+
+export function getCommandPaths(options: APIApplicationCommandOption[] | undefined, parentPath = ''): string[] {
+  if (!options?.length) return [];
+
+  const paths: string[] = [];
+
+  for (const option of options) {
+    if (option.type === ApplicationCommandOptionType.Subcommand) {
+      paths.push(parentPath ? `${parentPath} ${option.name}` : option.name);
+    } else if (option.type === ApplicationCommandOptionType.SubcommandGroup) {
+      paths.push(...getCommandPaths(option.options, parentPath ? `${parentPath} ${option.name}` : option.name));
+    }
+  }
+
+  return paths;
 }

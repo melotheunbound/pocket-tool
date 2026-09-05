@@ -8,7 +8,7 @@
     "prettier": "prettier . --write"
   },
   "devDependencies": {
-    "@types/bun": "^1.4.0",
+    "@types/bun": "^1.4.1",
     "prettier": "^3.9.6",
     "typescript": "^7.0.2"
   },
@@ -19,12 +19,9 @@
     "@discordjs/ws": "^2.0.4",
     "@elevenlabs/elevenlabs-js": "^2.66.0",
     "@napi-rs/canvas": "^1.0.8",
-    "@supabase/supabase-js": "^2.114.0",
     "@tolga1452/toolbox.js": "^2.0.1",
     "chrono-node": "^2.10.1",
     "emoji-regex": "^10.6.0",
-    "i18next": "^26.4.1",
-    "i18next-fs-backend": "^2.6.7",
     "ogg-opus-decoder": "^1.7.5",
     "redis": "^6.2.1",
     "sharp": "^0.35.4"

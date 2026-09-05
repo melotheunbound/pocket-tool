@@ -48,7 +48,7 @@ createApplicationCommand({
 
     const commandsUsage: {
       id: string;
-      path: string;
+      name: string;
       uses: string;
     }[] = [];
 
@@ -63,7 +63,7 @@ createApplicationCommand({
 
         commandsUsage.push({
           id: data.id,
-          path: data.path,
+          name: data.path,
           uses: data.uses,
         });
       }
@@ -72,7 +72,7 @@ createApplicationCommand({
     const topCommands = commandsUsage
       .sort((a, b) => Number(b.uses) - Number(a.uses))
       .slice(0, 5)
-      .map((command) => `> </${command.path}:${command.id}>: **${Number(command.uses).toLocaleString('en-US')} uses**`)
+      .map((command) => `> </${command.name}:${command.id}>: **${Number(command.uses).toLocaleString('en-US')} uses**`)
       .join('\n');
 
     const response = await client.api.interactions.editReply(interaction.application_id, interaction.token, {

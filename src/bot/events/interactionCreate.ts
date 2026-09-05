@@ -463,7 +463,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
     }
   }
 
-  const commandPath = [
+  const extendedCommandName = [
     interaction.data.name,
     'options' in interaction.data ? getCommandPath(interaction.data.options) : undefined,
   ]
@@ -477,8 +477,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
   if (!exists) {
     await redis.hSet(commandKey, {
       id: interaction.data.id,
-      name: interaction.data.name,
-      path: commandPath,
+      name: extendedCommandName,
       uses: '0',
     });
 

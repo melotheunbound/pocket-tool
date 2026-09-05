@@ -18,7 +18,7 @@ import { readDirectory, transformCommand } from '../utils/utils';
 import path from 'path';
 import { REST } from '@discordjs/rest';
 import env from '../utils/env';
-import { CompressionMethod, SimpleShardingStrategy, WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
+import { CompressionMethod, WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
 import { scheduleReshardCheck } from '../crons/reshard';
 import { events } from '../builders/event';
 import { commands } from '../builders/command';
@@ -31,16 +31,20 @@ await readDirectory(path.join(process.cwd(), 'src', 'bot', 'commands'));
 await readDirectory(path.join(process.cwd(), 'src', 'bot', 'events'));
 
 const rest = new REST().setToken(env.get('token', true)!.toString());
+
 const gateway = new WebSocketManager({
   token: env.get('token', true)!.toString(),
   intents: GatewayIntentBits.Guilds,
-  shardCount: null,
+  shardCount: env.get('shard_count')?.toNumber() ?? null,
   rest,
   compression: CompressionMethod.ZlibNative,
-  buildStrategy: (manager) => new SimpleShardingStrategy(manager),
+  buildStrategy: (manager) =>
+    new WorkerShardingStrategy(manager, {
+      shardsPerWorker: env.get('shards_per_worker')?.toNumber() ?? 4,
+    }),
 });
 
-// @ts-ignore
+// @ts-expect-error
 const client = new Client({ rest, gateway });
 
 // some sort of workaround to have extra utilities
