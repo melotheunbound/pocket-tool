@@ -1,5 +1,5 @@
 import type { Collector, CollectorEvents, CollectorOptions } from '../types/types';
-import { EventEmitter } from 'events';
+import { captureRejectionSymbol, EventEmitter } from 'events';
 
 export const collectors = new Set<Collector<unknown>>();
 
@@ -10,7 +10,11 @@ export default function createCollector<Type>(options: CollectorOptions<Type>): 
   let stopped = false;
   let timeout: NodeJS.Timeout | undefined;
 
-  const emitter = new EventEmitter<CollectorEvents<Type>>() as Collector<Type>;
+  const emitter = new EventEmitter<CollectorEvents<Type>>({ captureRejections: true }) as Collector<Type>;
+  // handles rejected end listeners after removeAllListeners() has been run
+  emitter[captureRejectionSymbol] = (error: Error, event: string | symbol) => {
+    console.error(`collector ${options.key} failed during ${String(event)}:`, error);
+  };
 
   const resetTimeout = () => {
     if (!duration) {
