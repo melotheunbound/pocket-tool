@@ -12,8 +12,8 @@ export default function createCollector<Type>(options: CollectorOptions<Type>): 
 
   const emitter = new EventEmitter<CollectorEvents<Type>>({ captureRejections: true }) as Collector<Type>;
   // handles rejected end listeners after removeAllListeners() has been run
-  emitter[captureRejectionSymbol] = (error: Error, event: string) => {
-    console.error(`collector ${options.key} failed during ${event}:`, error);
+  emitter[captureRejectionSymbol] = (error: Error, event: string | symbol) => {
+    console.error(`collector ${options.key} failed during ${String(event)}:`, error);
   };
 
   const resetTimeout = () => {

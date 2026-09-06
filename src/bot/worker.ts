@@ -23,5 +23,5 @@ channel.onmessage = ({ data }) => {
   });
 };
 
-// default forwarding preservesall gateway events = dispatch and heartbeats.
+// Default forwarding preserves all gateway events, including dispatch and heartbeats.
 await bootstrapper.bootstrap();

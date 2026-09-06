@@ -14,7 +14,7 @@ const pending = new Map<
 >();
 let channel: BroadcastChannel | undefined;
 
-/** bytes get returned8i for the worker hosting this shard, rss is process wide. */
+/** Returns memory usage in bytes for the worker hosting this shard. RSS is process-wide. */
 export async function getShardWorkerMemory(shardId: number): Promise<NodeJS.MemoryUsage> {
   if (!isMainThread) throw new Error('Shard memory requests must originate on the main thread');
   if (!Number.isSafeInteger(shardId) || shardId < 0) throw new RangeError('Invalid shard ID');
