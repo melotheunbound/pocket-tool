@@ -116,23 +116,9 @@ createApplicationCommand({
       },
     })
 
-    if (!tweet) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.TextDisplay,
-            content: `${emoji('Exclamation')} Failed to find the tweet.`,
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      })
-
-      return
-    }
-
     let content = tweet.hasText ? tweet.displayText : undefined
 
-    let isTranslated: boolean = false
+    let isTranslated = false
 
     if (language && content) {
       const azureApiKey = env.get('azure_api_key')?.toString()
@@ -190,15 +176,9 @@ createApplicationCommand({
         ],
       })
 
-      const result = translation[0]
-      const translated = result?.translations[0]
-
-      if (!result || !translated) {
-        isTranslated = false
-      } else {
-        content = translated.text
-        isTranslated = true
-      }
+      const translated = translation[0]?.translations?.[0]?.text
+      isTranslated = !!translated
+      content = translated ?? content
     }
 
     for (const hashtag of tweet.hashtags) {
