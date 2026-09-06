@@ -7,11 +7,11 @@ import {
   MessageFlags,
   PermissionFlagsBits,
   type APIMessageTopLevelComponent,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import { cdn, emoji, highlight, timestamp } from '../../../utils/markdown';
-import { getTimestampFromSnowflake } from '../../../utils/utils';
-import { TimestampStyle } from '../../../types/types';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import { cdn, emoji, highlight, timestamp } from '../../../utils/markdown'
+import { getTimestampFromSnowflake } from '../../../utils/utils'
+import { TimestampStyle } from '../../../types/types'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -30,12 +30,12 @@ createApplicationCommand({
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
-    const { role } = options;
+    const { role } = options
 
-    const permissions = formatPermissions(role.permissions);
+    const permissions = formatPermissions(role.permissions)
 
-    const shownPermissions = permissions.slice(0, 5);
-    const extraPermissions = permissions.length - shownPermissions.length;
+    const shownPermissions = permissions.slice(0, 5)
+    const extraPermissions = permissions.length - shownPermissions.length
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
       components: [
@@ -77,14 +77,14 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsComponentsV2,
-    });
+    })
   },
-});
+})
 
 function formatPermissions(bitfield: string): string[] {
-  const bits = BigInt(bitfield);
+  const bits = BigInt(bitfield)
 
   return Object.entries(PermissionFlagsBits)
     .filter(([_, value]) => (bits & BigInt(value)) === BigInt(value))
-    .map(([name]) => name);
+    .map(([name]) => name)
 }

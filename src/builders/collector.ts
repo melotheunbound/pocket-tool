@@ -1,76 +1,67 @@
-import type { Collector, CollectorEvents, CollectorOptions } from '../types/types';
-import { captureRejectionSymbol, EventEmitter } from 'events';
+import type { Collector, CollectorEvents, CollectorOptions } from '../types/types'
+import { captureRejectionSymbol, EventEmitter } from 'events'
 
-export const collectors = new Set<Collector<unknown>>();
+export const collectors = new Set<Collector<unknown>>()
 
 export default function createCollector<Type>(options: CollectorOptions<Type>): Collector<Type> {
-  const { duration, max, filter } = options;
+  const { duration, max, filter } = options
 
-  let collectedCount = 0;
-  let stopped = false;
-  let timeout: NodeJS.Timeout | undefined;
+  let collectedCount = 0
+  let stopped = false
+  let timeout: NodeJS.Timeout | undefined
 
-  const emitter = new EventEmitter<CollectorEvents<Type>>({ captureRejections: true }) as Collector<Type>;
+  const emitter = new EventEmitter<CollectorEvents<Type>>({ captureRejections: true }) as Collector<Type>
+
   // handles rejected end listeners after removeAllListeners() has been run
   emitter[captureRejectionSymbol] = (error: Error, event: string | symbol) => {
-    console.error(`collector ${options.key} failed during ${String(event)}:`, error);
-  };
+    console.error(`collector ${options.key} failed during ${String(event)}:`, error)
+  }
 
   const resetTimeout = () => {
-    if (!duration) {
-      return;
-    }
+    if (!duration) return
 
-    if (timeout) {
-      clearTimeout(timeout);
-    }
+    if (timeout) clearTimeout(timeout)
 
-    timeout = setTimeout(() => emitter.end('expired'), duration);
-  };
+    timeout = setTimeout(() => emitter.end('expired'), duration)
+  }
 
-  collectors.add(emitter);
-  resetTimeout();
+  collectors.add(emitter)
+  resetTimeout()
 
   emitter.collect = (item: Type) => {
-    if (stopped) {
-      return;
-    }
+    if (stopped) return
 
     if (max && collectedCount >= max) {
-      emitter.end('max reached');
-      return;
+      emitter.end('max reached')
+      return
     }
 
-    const pass = filter ? filter(item) : true;
+    const pass = filter ? filter(item) : true
 
-    if (!pass) {
-      return;
-    }
+    if (!pass) return
 
-    collectedCount++;
+    collectedCount++
 
-    emitter.emit('collect', item);
+    emitter.emit('collect', item)
 
-    resetTimeout();
-  };
+    resetTimeout()
+  }
 
   emitter.end = (reason?: string) => {
-    if (stopped) {
-      return;
-    }
+    if (stopped) return
 
-    stopped = true;
+    stopped = true
 
-    if (timeout) clearTimeout(timeout);
-    timeout = undefined;
+    if (timeout) clearTimeout(timeout)
+    timeout = undefined
 
     try {
-      emitter.emit('end', reason ?? '');
+      emitter.emit('end', reason ?? '')
     } finally {
-      collectors.delete(emitter);
-      emitter.removeAllListeners();
+      collectors.delete(emitter)
+      emitter.removeAllListeners()
     }
-  };
+  }
 
-  return emitter;
+  return emitter
 }

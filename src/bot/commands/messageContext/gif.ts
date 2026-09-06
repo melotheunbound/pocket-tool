@@ -4,12 +4,12 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import { emoji } from '../../../utils/markdown';
-import { makeRequest } from '../../../utils/request';
-import { RequestMethod, ResponseType } from '../../../types/types';
-import sharp from 'sharp';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import { emoji } from '../../../utils/markdown'
+import { makeRequest } from '../../../utils/request'
+import { RequestMethod, ResponseType } from '../../../types/types'
+import sharp from 'sharp'
 
 createApplicationCommand({
   type: ApplicationCommandType.Message,
@@ -19,7 +19,7 @@ createApplicationCommand({
   cooldown: 3,
   acknowledge: true,
   async run(interaction, client) {
-    const message = interaction.data.resolved.messages[interaction.data.target_id];
+    const message = interaction.data.resolved.messages[interaction.data.target_id]
 
     if (message?.message_snapshots && message.message_snapshots.length > 0) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -35,9 +35,9 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
     if (!message || message.attachments.length === 0) {
@@ -54,14 +54,14 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
     const attachments = Object.values(message.attachments)
-      .filter((attachment) => attachment.content_type?.startsWith('image/'))
-      .slice(0, 10);
+      .filter(attachment => attachment.content_type?.startsWith('image/'))
+      .slice(0, 10)
 
     if (!attachments.length) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -77,9 +77,9 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
     const files = await Promise.all(
@@ -87,20 +87,20 @@ createApplicationCommand({
         const buffer = await makeRequest(attachment.url, {
           method: RequestMethod.GET,
           response: ResponseType.BUFFER,
-        });
+        })
 
-        const gif = await sharp(buffer).gif({ effort: 10 }).toBuffer();
+        const gif = await sharp(buffer).gif({ effort: 10 }).toBuffer()
 
         return {
           name: `gif-${index + 1}.gif`,
           data: gif,
-        };
+        }
       }),
-    );
+    )
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
       content: `-# ${emoji('GIF')} Hover over the GIFs to add them to your favorites!`,
       files,
-    });
+    })
   },
-});
+})

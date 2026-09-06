@@ -12,8 +12,8 @@ import {
   type APIMessageApplicationCommandInteraction,
   type APIPrimaryEntryPointCommandInteraction,
   type APIUserApplicationCommandInteraction,
-} from '@discordjs/core';
-import createGatewayEvent from '../../builders/event';
+} from '@discordjs/core'
+import createGatewayEvent from '../../builders/event'
 import {
   TimestampStyle,
   type ApplicationCommand,
@@ -21,60 +21,53 @@ import {
   type MessageContextMenuCommand,
   type PrimaryEntryPointCommand,
   type UserContextMenuCommand,
-} from '../../types/types';
-import env from '../../utils/env';
-import { getChatInputOption, getCommandPath, parseCommandOptions } from '../../utils/utils';
-import { emoji, hyperlink, timestamp } from '../../utils/markdown';
-import { MESSAGE_BLOCK_REASONS, SUPPORT } from '../constants';
-import { redis } from '../../utils/redis';
-import { commands } from '../../builders/command';
-import { checkCooldown } from '../../utils/cooldown';
-import { collectors } from '../../builders/collector';
+} from '../../types/types'
+import env from '../../utils/env'
+import { getChatInputOption, getCommandPath, parseCommandOptions } from '../../utils/utils'
+import { emoji, hyperlink, timestamp } from '../../utils/markdown'
+import { MESSAGE_BLOCK_REASONS, SUPPORT } from '../constants'
+import { redis } from '../../utils/redis'
+import { commands } from '../../builders/command'
+import { checkCooldown } from '../../utils/cooldown'
+import { collectors } from '../../builders/collector'
 
 createGatewayEvent({
   event: GatewayDispatchEvents.InteractionCreate,
   async run(interaction, client) {
     console.log(
       `received interaction: ${interaction.id} (${InteractionType[interaction.type]}) from ${interaction.user?.username ?? interaction.member?.user.username} (${interaction.user?.id ?? interaction.member?.user.id})`,
-    );
+    )
 
     switch (interaction.type) {
       case InteractionType.ApplicationCommand:
-        await handleApplicationCommand(interaction, client);
-        break;
+        await handleApplicationCommand(interaction, client)
+        break
       case InteractionType.ApplicationCommandAutocomplete:
-        await handleChatInputCommandAutocomplete(interaction, client);
-        break;
+        await handleChatInputCommandAutocomplete(interaction, client)
+        break
       case InteractionType.MessageComponent:
       case InteractionType.ModalSubmit:
-        collectors.forEach((collector) => collector.collect(interaction));
-        break;
+        collectors.forEach(collector => collector.collect(interaction))
+        break
       default:
-        return console.log('unknown interaction type', interaction.type);
+        console.log('unknown interaction type', interaction.type)
+        break
     }
   },
-});
+})
 
 async function handleApplicationCommand(interaction: APIApplicationCommandInteraction, client: Client) {
-  const command = commands.get(interaction.data.name) as ApplicationCommand;
+  const command = commands.get(interaction.data.name) as ApplicationCommand
 
-  if (!command) {
-    return;
-  }
-
-  const devIds = env.get('dev_ids', true)!.toArray();
-
-  if (
-    'dev' in command &&
-    command.dev === true &&
-    !devIds.includes(interaction.user?.id ?? interaction.member?.user.id)
-  ) {
-    return;
-  }
+  if (!command) return
 
   switch (interaction.data.type) {
     case ApplicationCommandType.ChatInput: {
-      const chatInput = command as ChatInputCommand;
+      const chatInput = command as ChatInputCommand
+
+      const devIds = env.get('dev_ids', true)!.toArray()
+
+      if (chatInput.dev && !devIds.includes(interaction.user?.id ?? interaction.member?.user.id)) return
 
       const ephemeral =
         (
@@ -82,19 +75,19 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
             interaction.data.options ?? [],
             'ephemeral',
           ) as APIApplicationCommandInteractionDataBooleanOption
-        )?.value === true;
+        )?.value ?? false
 
       if (chatInput.acknowledge === true) {
         await client.api.interactions.defer(interaction.id, interaction.token, {
           flags: chatInput.ephemeral || ephemeral ? MessageFlags.Ephemeral : undefined,
-        });
+        })
       }
 
       const expiration = checkCooldown(
         interaction.data.name,
         (interaction.user?.id ?? interaction.member?.user.id)!,
         chatInput.cooldown,
-      );
+      )
 
       if (expiration) {
         if (chatInput.acknowledge) {
@@ -111,7 +104,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               },
             ],
             flags: MessageFlags.IsComponentsV2,
-          });
+          })
         } else {
           await client.api.interactions.reply(interaction.id, interaction.token, {
             components: [
@@ -126,10 +119,10 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               },
             ],
             flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          });
+          })
         }
 
-        return;
+        return
       }
 
       try {
@@ -137,24 +130,24 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
           interaction as APIChatInputApplicationCommandInteraction,
           parseCommandOptions(interaction as APIChatInputApplicationCommandInteraction),
           client,
-        );
+        )
       } catch (error) {
-        const code = (error as any).code;
-        const err = MESSAGE_BLOCK_REASONS[code as keyof typeof MESSAGE_BLOCK_REASONS];
+        const code = (error as any).code
+        const blocked = MESSAGE_BLOCK_REASONS[code as keyof typeof MESSAGE_BLOCK_REASONS]
 
-        if (err) {
+        if (blocked) {
           if (chatInput.acknowledge)
-            await client.api.interactions.deleteReply(interaction.application_id, interaction.token);
+            await client.api.interactions.deleteReply(interaction.application_id, interaction.token)
 
           await client.api.interactions.followUp(interaction.application_id, interaction.token, {
-            content: `-# </${interaction.data.name}:${interaction.data.id}> was blocked due to ${hyperlink(err.article, err.reason)}. Please try again with **ephemeral** enabled.`,
+            content: `-# </${interaction.data.name}:${interaction.data.id}> was blocked due to ${hyperlink(blocked.article, blocked.reason)}. Please try again with **ephemeral** enabled.`,
             flags: MessageFlags.Ephemeral,
-          });
+          })
 
-          return;
+          return
         }
 
-        console.error(`Command ${interaction.data.name} encountered an error:`, error);
+        console.error(`Command ${interaction.data.name} encountered an error:`, error)
 
         if (chatInput.acknowledge) {
           await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -170,7 +163,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               },
             ],
             flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          });
+          })
         } else {
           await client.api.interactions.reply(interaction.id, interaction.token, {
             components: [
@@ -185,28 +178,30 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               },
             ],
             flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          });
+          })
         }
-
-        return;
       }
 
-      break;
+      break
     }
     case ApplicationCommandType.Message: {
-      const messageContext = command as MessageContextMenuCommand;
+      const messageContext = command as MessageContextMenuCommand
+
+      const devIds = env.get('dev_ids', true)!.toArray()
+
+      if (messageContext.dev && !devIds.includes(interaction.user?.id ?? interaction.member?.user.id)) return
 
       if (messageContext.acknowledge) {
         await client.api.interactions.defer(interaction.id, interaction.token, {
           flags: messageContext.ephemeral ? MessageFlags.Ephemeral : undefined,
-        });
+        })
       }
 
       const expiration = checkCooldown(
         interaction.data.name,
         (interaction.user?.id ?? interaction.member?.user.id)!,
         messageContext.cooldown,
-      );
+      )
 
       if (expiration) {
         if (messageContext.acknowledge) {
@@ -223,7 +218,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               },
             ],
             flags: MessageFlags.IsComponentsV2,
-          });
+          })
         } else {
           await client.api.interactions.reply(interaction.id, interaction.token, {
             components: [
@@ -238,31 +233,31 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               },
             ],
             flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          });
+          })
         }
 
-        return;
+        return
       }
 
       try {
-        await messageContext.run(interaction as APIMessageApplicationCommandInteraction, client);
+        await messageContext.run(interaction as APIMessageApplicationCommandInteraction, client)
       } catch (error) {
-        const code = (error as any).code;
-        const err = MESSAGE_BLOCK_REASONS[code as keyof typeof MESSAGE_BLOCK_REASONS];
+        const code = (error as any).code
+        const blocked = MESSAGE_BLOCK_REASONS[code as keyof typeof MESSAGE_BLOCK_REASONS]
 
-        if (err) {
+        if (blocked) {
           if (messageContext.acknowledge)
-            await client.api.interactions.deleteReply(interaction.application_id, interaction.token);
+            await client.api.interactions.deleteReply(interaction.application_id, interaction.token)
 
           await client.api.interactions.followUp(interaction.application_id, interaction.token, {
-            content: `-# </${interaction.data.name}:${interaction.data.id}> was blocked due to ${hyperlink(err.article, err.reason)}.`,
+            content: `-# </${interaction.data.name}:${interaction.data.id}> was blocked due to ${hyperlink(blocked.article, blocked.reason)}.`,
             flags: MessageFlags.Ephemeral,
-          });
+          })
 
-          return;
+          return
         }
 
-        console.error(`Command ${interaction.data.name} encountered an error:`, error);
+        console.error(`Command ${interaction.data.name} encountered an error:`, error)
 
         if (messageContext.acknowledge) {
           await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -278,7 +273,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               },
             ],
             flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          });
+          })
         } else {
           await client.api.interactions.reply(interaction.id, interaction.token, {
             components: [
@@ -293,28 +288,30 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               },
             ],
             flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          });
+          })
         }
-
-        return;
       }
 
-      break;
+      break
     }
     case ApplicationCommandType.User: {
-      const userContext = command as UserContextMenuCommand;
+      const userContext = command as UserContextMenuCommand
+
+      const devIds = env.get('dev_ids', true)!.toArray()
+
+      if (userContext.dev && !devIds.includes(interaction.user?.id ?? interaction.member?.user.id)) return
 
       if (userContext.acknowledge) {
         await client.api.interactions.defer(interaction.id, interaction.token, {
           flags: userContext.ephemeral ? MessageFlags.Ephemeral : undefined,
-        });
+        })
       }
 
       const expiration = checkCooldown(
         interaction.data.name,
         (interaction.user?.id ?? interaction.member?.user.id)!,
         userContext.cooldown,
-      );
+      )
 
       if (expiration) {
         if (userContext.acknowledge) {
@@ -331,7 +328,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               },
             ],
             flags: MessageFlags.IsComponentsV2,
-          });
+          })
         } else {
           await client.api.interactions.reply(interaction.id, interaction.token, {
             components: [
@@ -346,30 +343,31 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               },
             ],
             flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          });
+          })
         }
 
-        return;
+        return
       }
-      try {
-        await userContext.run(interaction as APIUserApplicationCommandInteraction, client);
-      } catch (error) {
-        const code = (error as any).code;
-        const err = MESSAGE_BLOCK_REASONS[code as keyof typeof MESSAGE_BLOCK_REASONS];
 
-        if (err) {
+      try {
+        await userContext.run(interaction as APIUserApplicationCommandInteraction, client)
+      } catch (error) {
+        const code = (error as any).code
+        const blocked = MESSAGE_BLOCK_REASONS[code as keyof typeof MESSAGE_BLOCK_REASONS]
+
+        if (blocked) {
           if (userContext.acknowledge)
-            await client.api.interactions.deleteReply(interaction.application_id, interaction.token);
+            await client.api.interactions.deleteReply(interaction.application_id, interaction.token)
 
           await client.api.interactions.followUp(interaction.application_id, interaction.token, {
-            content: `-# </${interaction.data.name}:${interaction.data.id}> was blocked due to ${hyperlink(err.article, err.reason)}.`,
+            content: `-# </${interaction.data.name}:${interaction.data.id}> was blocked due to ${hyperlink(blocked.article, blocked.reason)}.`,
             flags: MessageFlags.Ephemeral,
-          });
+          })
 
-          return;
+          return
         }
 
-        console.error(`Command ${interaction.data.name} encountered an error:`, error);
+        console.error(`Command ${interaction.data.name} encountered an error:`, error)
 
         if (userContext.acknowledge) {
           await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -385,7 +383,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               },
             ],
             flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          });
+          })
         } else {
           await client.api.interactions.reply(interaction.id, interaction.token, {
             components: [
@@ -400,37 +398,35 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               },
             ],
             flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          });
+          })
         }
-
-        return;
       }
 
-      break;
+      break
     }
     case ApplicationCommandType.PrimaryEntryPoint: {
-      const primaryEntryPoint = command as PrimaryEntryPointCommand;
+      const primaryEntryPoint = command as PrimaryEntryPointCommand
 
       if (primaryEntryPoint.run) {
         try {
-          await primaryEntryPoint.run(interaction as APIPrimaryEntryPointCommandInteraction, client);
+          await primaryEntryPoint.run(interaction as APIPrimaryEntryPointCommandInteraction, client)
         } catch (error) {
-          console.error(`Command ${interaction.data.name} encountered an error:`, error);
+          console.error(`Command ${interaction.data.name} encountered an error:`, error)
         }
       }
 
-      break;
+      break
     }
   }
 
   // analytics
-  const now = Temporal.Now.zonedDateTimeISO('America/Sao_Paulo');
+  const now = Temporal.Now.zonedDateTimeISO('America/Sao_Paulo')
 
-  const analyticsDate = now.hour < 21 ? now.subtract({ days: 1 }) : now;
+  const analyticsDate = now.hour < 21 ? now.subtract({ days: 1 }) : now
 
-  const day = analyticsDate.toPlainDate().toString();
-  const hour = String(now.hour).padStart(2, '0');
-  const minute = String(now.minute).padStart(2, '0');
+  const day = analyticsDate.toPlainDate().toString()
+  const hour = String(now.hour).padStart(2, '0')
+  const minute = String(now.minute).padStart(2, '0')
 
   let nextReset = now.with({
     hour: 21,
@@ -439,28 +435,24 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
     millisecond: 0,
     microsecond: 0,
     nanosecond: 0,
-  });
+  })
 
-  if (Temporal.ZonedDateTime.compare(now, nextReset) >= 0) {
-    nextReset = nextReset.add({ days: 1 });
-  }
+  if (Temporal.ZonedDateTime.compare(now, nextReset) >= 0) nextReset = nextReset.add({ days: 1 })
 
-  const secondsUntilReset = Math.ceil((nextReset.epochMilliseconds - now.epochMilliseconds) / 1000);
+  const secondsUntilReset = Math.ceil((nextReset.epochMilliseconds - now.epochMilliseconds) / 1000)
 
   const globalKeys = [
     `analytics:commands:day:${day}`,
     `analytics:commands:hour:${day}:${hour}`,
     `analytics:commands:minute:${day}:${hour}:${minute}`,
-  ];
+  ]
 
   for (const key of globalKeys) {
-    const exists = await redis.exists(key);
+    const exists = await redis.exists(key)
 
-    await redis.incr(key);
+    await redis.incr(key)
 
-    if (!exists) {
-      await redis.expire(key, secondsUntilReset);
-    }
+    if (!exists) await redis.expire(key, secondsUntilReset)
   }
 
   const extendedCommandName = [
@@ -468,38 +460,36 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
     'options' in interaction.data ? getCommandPath(interaction.data.options) : undefined,
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(' ')
 
-  const commandKey = `analytics:commands:usage:${interaction.data.id}:day:${day}`;
+  const commandKey = `analytics:commands:usage:${interaction.data.id}:day:${day}`
 
-  const exists = await redis.exists(commandKey);
+  const exists = await redis.exists(commandKey)
 
   if (!exists) {
     await redis.hSet(commandKey, {
       id: interaction.data.id,
       name: extendedCommandName,
       uses: '0',
-    });
+    })
 
-    await redis.expire(commandKey, secondsUntilReset);
+    await redis.expire(commandKey, secondsUntilReset)
   }
 
-  await redis.hIncrBy(commandKey, 'uses', 1);
+  await redis.hIncrBy(commandKey, 'uses', 1)
 }
 
 async function handleChatInputCommandAutocomplete(
   interaction: APIApplicationCommandAutocompleteInteraction,
   client: Client,
 ) {
-  const command = commands.get(interaction.data.name) as ChatInputCommand;
+  const command = commands.get(interaction.data.name) as ChatInputCommand
 
-  if (!command || !command.autocomplete) {
-    return;
-  }
+  if (!command || !command.autocomplete) return
 
   try {
-    await command.autocomplete(interaction, client);
+    await command.autocomplete(interaction, client)
   } catch (error) {
-    console.error(`Autocomplete for command ${interaction.data.name} encountered an error:`, error);
+    console.error(`Autocomplete for command ${interaction.data.name} encountered an error:`, error)
   }
 }

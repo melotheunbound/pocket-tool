@@ -5,10 +5,10 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import { getAutocompleteFocusedOption } from '../../../utils/utils';
-import { emoji } from '../../../utils/markdown';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import { getAutocompleteFocusedOption } from '../../../utils/utils'
+import { emoji } from '../../../utils/markdown'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -28,13 +28,13 @@ createApplicationCommand({
   cooldown: 3,
   acknowledge: true,
   async autocomplete(interaction, client) {
-    const focused = getAutocompleteFocusedOption(interaction.data.options);
-    const value = String(focused?.value ?? '').toLowerCase();
+    const focused = getAutocompleteFocusedOption(interaction.data.options)
+    const value = String(focused?.value ?? '').toLowerCase()
 
-    const now = Temporal.Now.instant();
+    const now = Temporal.Now.instant()
 
     const choices = Intl.supportedValuesOf('timeZone')
-      .map((zone) => ({
+      .map(zone => ({
         name: `${zone} (${new Intl.DateTimeFormat('en-US', {
           timeZone: zone,
           timeZoneName: 'short',
@@ -44,15 +44,15 @@ createApplicationCommand({
           .pop()})`,
         value: zone,
       }))
-      .filter((choice) => choice.name.toLowerCase().includes(value))
-      .slice(0, 25);
+      .filter(choice => choice.name.toLowerCase().includes(value))
+      .slice(0, 25)
 
-    await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices });
+    await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices })
   },
   async run(interaction, options, client) {
-    const { zone } = options;
+    const { zone } = options
 
-    const time = Temporal.Now.zonedDateTimeISO(zone);
+    const time = Temporal.Now.zonedDateTimeISO(zone)
 
     const formatted = `${time.toLocaleString('en-US', {
       weekday: 'long',
@@ -64,7 +64,7 @@ createApplicationCommand({
       minute: '2-digit',
       second: '2-digit',
       hour12: false,
-    })}`;
+    })}`
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
       components: [
@@ -79,6 +79,6 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsComponentsV2,
-    });
+    })
   },
-});
+})

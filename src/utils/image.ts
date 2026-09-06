@@ -1,50 +1,48 @@
-import sharp, { type OverlayOptions } from 'sharp';
-import { makeRequest } from './request';
-import { RequestMethod, ResponseType } from '../types/types';
+import sharp, { type OverlayOptions } from 'sharp'
+import { makeRequest } from './request'
+import { RequestMethod, ResponseType } from '../types/types'
 
-const DEFAULT_PETPET_RESOLUTION = 128;
-const DEFAULT_PETPET_DELAY = 20;
-const PETPET_FRAME_COUNT = 10;
-const PETPET_FRAME_REVISION = 'f591cdc5b809c4d52c2666519571484517ac5c8d';
+const DEFAULT_PETPET_RESOLUTION = 128
+const DEFAULT_PETPET_DELAY = 20
+const PETPET_FRAME_COUNT = 10
+const PETPET_FRAME_REVISION = 'f591cdc5b809c4d52c2666519571484517ac5c8d'
 const PETPET_HAND_FRAME_URLS = Array.from(
   { length: PETPET_FRAME_COUNT },
   (_, index) => `https://raw.githubusercontent.com/VenPlugs/petpet/${PETPET_FRAME_REVISION}/frames/pet${index}.gif`,
-);
+)
 
-let defaultPetpetHandFrames: Promise<Buffer[]> | undefined;
+let defaultPetpetHandFrames: Promise<Buffer[]> | undefined
 
 export type SpeechBubbleOptions = {
-  height?: number;
-  fill?: string;
-  tailPosition?: number;
-};
+  height?: number
+  fill?: string
+  tailPosition?: number
+}
 
 export type PetpetOptions = {
-  resolution?: number;
-  delay?: number;
-  background?: string | { r: number; g: number; b: number; alpha?: number };
-  handFrames?: readonly Buffer[];
-};
+  resolution?: number
+  delay?: number
+  background?: string | { r: number; g: number; b: number; alpha?: number }
+  handFrames?: readonly Buffer[]
+}
 
 export async function applySpeechBubble(image: Buffer, options: SpeechBubbleOptions = {}): Promise<Buffer> {
-  const source = await sharp(image, { animated: false }).rotate().png().toBuffer();
-  const { width, height } = await sharp(source).metadata();
+  const source = await sharp(image, { animated: false }).rotate().png().toBuffer()
+  const { width, height } = await sharp(source).metadata()
 
-  if (!width || !height) {
-    throw new Error('Unable to determine the image dimensions.');
-  }
+  if (!width || !height) throw new Error('Unable to determine the image dimensions')
 
-  const requestedHeight = options.height ?? 0.28;
+  const requestedHeight = options.height ?? 0.28
   const bubbleHeight = Math.round(
     Math.min(height * 0.7, Math.max(1, requestedHeight <= 1 ? height * requestedHeight : requestedHeight)),
-  );
-  const tailPosition = Math.min(0.82, Math.max(0.18, options.tailPosition ?? 0.58));
-  const fill = escapeSvgAttribute(options.fill ?? '#ffffff');
-  const bodyY = bubbleHeight * 0.72;
-  const edgeY = bubbleHeight * 0.9;
-  const tailX = width * tailPosition;
-  const tailHalfWidth = Math.max(width * 0.055, 8);
-  const tailTipY = Math.min(height, bubbleHeight * 1.52);
+  )
+  const tailPosition = Math.min(0.82, Math.max(0.18, options.tailPosition ?? 0.58))
+  const fill = escapeSvgAttribute(options.fill ?? '#ffffff')
+  const bodyY = bubbleHeight * 0.72
+  const edgeY = bubbleHeight * 0.9
+  const tailX = width * tailPosition
+  const tailHalfWidth = Math.max(width * 0.055, 8)
+  const tailTipY = Math.min(height, bubbleHeight * 1.52)
 
   const bubble = Buffer.from(`
     <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
@@ -57,44 +55,42 @@ export async function applySpeechBubble(image: Buffer, options: SpeechBubbleOpti
         Z
       "/>
     </svg>
-  `);
+  `)
 
   return sharp(source)
     .composite([{ input: bubble, left: 0, top: 0 }])
     .png()
-    .toBuffer();
+    .toBuffer()
 }
 
 export async function createPetpetGif(avatar: Buffer, options: PetpetOptions = {}): Promise<Buffer> {
-  const resolution = clampInteger(options.resolution ?? DEFAULT_PETPET_RESOLUTION, 32, 1024, 'resolution');
-  const delay = clampInteger(options.delay ?? DEFAULT_PETPET_DELAY, 20, 65_535, 'delay');
-  const handFrames = options.handFrames ? [...options.handFrames] : await loadDefaultPetpetHandFrames();
+  const resolution = clampInteger(options.resolution ?? DEFAULT_PETPET_RESOLUTION, 32, 1024, 'resolution')
+  const delay = clampInteger(options.delay ?? DEFAULT_PETPET_DELAY, 20, 65_535, 'delay')
+  const handFrames = options.handFrames ? [...options.handFrames] : await loadDefaultPetpetHandFrames()
 
-  if (!handFrames.length) {
-    throw new Error('At least one petpet hand frame is required.');
-  }
+  if (!handFrames.length) throw new Error('At least one petpet hand frame is required')
 
-  const avatarSource = await sharp(avatar, { animated: false }).rotate().png().toBuffer();
-  const frameCount = handFrames.length;
-  const overlays: OverlayOptions[] = [];
+  const avatarSource = await sharp(avatar, { animated: false }).rotate().png().toBuffer()
+  const frameCount = handFrames.length
+  const overlays: OverlayOptions[] = []
 
   for (let index = 0; index < frameCount; index++) {
-    const progress = index < frameCount / 2 ? index : frameCount - index;
-    const avatarWidth = Math.round(resolution * (0.8 + progress * 0.02));
-    const avatarHeight = Math.round(resolution * (0.8 - progress * 0.05));
-    const avatarLeft = Math.round(resolution * ((1 - avatarWidth / resolution) * 0.5 + 0.1));
-    const avatarTop = Math.round(resolution * (1 - avatarHeight / resolution - 0.08));
-    const pageTop = index * resolution;
+    const progress = index < frameCount / 2 ? index : frameCount - index
+    const avatarWidth = Math.round(resolution * (0.8 + progress * 0.02))
+    const avatarHeight = Math.round(resolution * (0.8 - progress * 0.05))
+    const avatarLeft = Math.round(resolution * ((1 - avatarWidth / resolution) * 0.5 + 0.1))
+    const avatarTop = Math.round(resolution * (1 - avatarHeight / resolution - 0.08))
+    const pageTop = index * resolution
 
     const [avatarFrame, handFrame] = await Promise.all([
       sharp(avatarSource).resize(avatarWidth, avatarHeight, { fit: 'fill' }).png().toBuffer(),
       sharp(handFrames[index]!).resize(resolution, resolution, { fit: 'fill' }).png().toBuffer(),
-    ]);
+    ])
 
     overlays.push(
       { input: avatarFrame, left: avatarLeft, top: pageTop + avatarTop },
       { input: handFrame, left: 0, top: pageTop },
-    );
+    )
   }
 
   return sharp({
@@ -115,95 +111,86 @@ export async function createPetpetGif(avatar: Buffer, options: PetpetOptions = {
       dither: 1,
       keepDuplicateFrames: true,
     })
-    .toBuffer();
+    .toBuffer()
 }
 
 function loadDefaultPetpetHandFrames(): Promise<Buffer[]> {
   defaultPetpetHandFrames ??= Promise.all(
-    PETPET_HAND_FRAME_URLS.map((url) =>
+    PETPET_HAND_FRAME_URLS.map(url =>
       makeRequest(url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
         timeout: 10 * 1000,
       }),
     ),
-  ).catch((error) => {
-    defaultPetpetHandFrames = undefined;
-    throw error;
-  });
+  ).catch(error => {
+    defaultPetpetHandFrames = undefined
+    throw error
+  })
 
-  return defaultPetpetHandFrames;
+  return defaultPetpetHandFrames
 }
 
 function clampInteger(value: number, min: number, max: number, name: string): number {
-  if (!Number.isFinite(value)) {
-    throw new TypeError(`${name} must be a finite number.`);
-  }
+  if (!Number.isFinite(value)) throw new TypeError(`${name} must be a finite number`)
 
-  return Math.min(max, Math.max(min, Math.round(value)));
+  return Math.min(max, Math.max(min, Math.round(value)))
 }
 
 function escapeSvgAttribute(value: string): string {
-  return value.replace(/[&<>'"]/g, (character) => {
+  return value.replace(/[&<>'"]/g, character => {
     const entities: Record<string, string> = {
       '&': '&amp;',
       '<': '&lt;',
       '>': '&gt;',
       "'": '&apos;',
       '"': '&quot;',
-    };
+    }
 
-    return entities[character]!;
-  });
+    return entities[character]!
+  })
 }
 
 export async function applyCaption(input: Buffer | string, caption: string): Promise<Buffer> {
-  const image = sharp(input);
+  const image = sharp(input)
 
-  const { width = 800 } = await image.metadata();
+  const { width = 800 } = await image.metadata()
 
-  const fontSize = Math.max(24, Math.round(width * 0.045));
-  const horizontalPadding = Math.round(width * 0.04);
-  const verticalPadding = Math.round(fontSize * 0.6);
-  const lineHeight = Math.round(fontSize * 1.25);
+  const fontSize = Math.max(24, Math.round(width * 0.045))
+  const horizontalPadding = Math.round(width * 0.04)
+  const verticalPadding = Math.round(fontSize * 0.6)
+  const lineHeight = Math.round(fontSize * 1.25)
 
-  const maxTextWidth = width - horizontalPadding * 2;
+  const maxTextWidth = width - horizontalPadding * 2
 
   const escapedCaption = caption
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
+    .replace(/'/g, '&apos;')
 
-  const charsPerLine = Math.max(1, Math.floor(maxTextWidth / (fontSize * 0.55)));
+  const charsPerLine = Math.max(1, Math.floor(maxTextWidth / (fontSize * 0.55)))
 
-  const words = escapedCaption.split(/\s+/);
-  const lines: string[] = [];
+  const words = escapedCaption.split(/\s+/)
+  const lines: string[] = []
 
-  let currentLine = '';
+  let currentLine = ''
 
   for (const word of words) {
-    const testLine = currentLine ? `${currentLine} ${word}` : word;
+    const testLine = currentLine ? `${currentLine} ${word}` : word
 
-    if (testLine.length <= charsPerLine) {
-      currentLine = testLine;
-    } else {
-      if (currentLine) {
-        lines.push(currentLine);
-      }
+    if (testLine.length <= charsPerLine) currentLine = testLine
+    else if (currentLine) lines.push(currentLine)
 
-      currentLine = word;
-    }
+    if (testLine.length > charsPerLine) currentLine = word
   }
 
-  if (currentLine) {
-    lines.push(currentLine);
-  }
+  if (currentLine) lines.push(currentLine)
 
-  const captionHeight = lines.length * lineHeight + verticalPadding * 2;
+  const captionHeight = lines.length * lineHeight + verticalPadding * 2
 
-  const textStartY = verticalPadding + fontSize;
+  const textStartY = verticalPadding + fontSize
 
   const text = lines
     .map(
@@ -221,7 +208,7 @@ export async function applyCaption(input: Buffer | string, caption: string): Pro
         </text>
       `,
     )
-    .join('');
+    .join('')
 
   const svg = `
     <svg
@@ -237,7 +224,7 @@ export async function applyCaption(input: Buffer | string, caption: string): Pro
 
       ${text}
     </svg>
-  `;
+  `
 
   return image
     .extend({
@@ -257,7 +244,7 @@ export async function applyCaption(input: Buffer | string, caption: string): Pro
     .png({
       effort: 10,
     })
-    .toBuffer();
+    .toBuffer()
 }
 
 export async function applyGrayscale(input: Buffer | string): Promise<Buffer> {
@@ -266,7 +253,7 @@ export async function applyGrayscale(input: Buffer | string): Promise<Buffer> {
     .png({
       effort: 10,
     })
-    .toBuffer();
+    .toBuffer()
 }
 
 export async function applyBlur(input: Buffer | string, sigma = 5): Promise<Buffer> {
@@ -275,7 +262,7 @@ export async function applyBlur(input: Buffer | string, sigma = 5): Promise<Buff
     .png({
       effort: 10,
     })
-    .toBuffer();
+    .toBuffer()
 }
 
 export async function applyFlip(input: Buffer | string): Promise<Buffer> {
@@ -284,7 +271,7 @@ export async function applyFlip(input: Buffer | string): Promise<Buffer> {
     .png({
       effort: 10,
     })
-    .toBuffer();
+    .toBuffer()
 }
 
 export async function applyFlop(input: Buffer | string): Promise<Buffer> {
@@ -293,5 +280,5 @@ export async function applyFlop(input: Buffer | string): Promise<Buffer> {
     .png({
       effort: 10,
     })
-    .toBuffer();
+    .toBuffer()
 }

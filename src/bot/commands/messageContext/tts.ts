@@ -4,14 +4,14 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import env from '../../../utils/env';
-import { emoji, timestamp, ellipsis } from '../../../utils/markdown';
-import { redis } from '../../../utils/redis';
-import { TimestampStyle } from '../../../types/types';
-import { findClosestMatch, hasPlus } from '../../../utils/utils';
-import { ELEVEN_LABS_LANGUAGES } from '../../constants';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import env from '../../../utils/env'
+import { emoji, timestamp, ellipsis } from '../../../utils/markdown'
+import { redis } from '../../../utils/redis'
+import { TimestampStyle } from '../../../types/types'
+import { findClosestMatch, hasPlus } from '../../../utils/utils'
+import { ELEVEN_LABS_LANGUAGES } from '../../constants'
 
 createApplicationCommand({
   type: ApplicationCommandType.Message,
@@ -21,7 +21,7 @@ createApplicationCommand({
   cooldown: 5,
   acknowledge: true,
   async run(interaction, client) {
-    const elevenLabsApiKey = env.get('eleven_labs_api_key')?.toString();
+    const elevenLabsApiKey = env.get('eleven_labs_api_key')?.toString()
 
     if (!elevenLabsApiKey) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -37,12 +37,12 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
-    const message = interaction.data.resolved.messages[interaction.data.target_id];
+    const message = interaction.data.resolved.messages[interaction.data.target_id]
 
     if (message?.message_snapshots && message.message_snapshots.length > 0) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -58,21 +58,21 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
-    const date = Temporal.Now.zonedDateTimeISO().toPlainDate().toString();
-    const key = `tts:${interaction.user?.id ?? interaction.member?.user.id}:${date}`;
+    const date = Temporal.Now.zonedDateTimeISO().toPlainDate().toString()
+    const key = `tts:${interaction.user?.id ?? interaction.member?.user.id}:${date}`
 
-    const usage = Number((await redis.get(key)) ?? 0);
+    const usage = Number((await redis.get(key)) ?? 0)
 
-    const plus = await hasPlus((interaction.user?.id ?? interaction.member?.user.id)!, client.api);
-    const limit = plus ? 50 : 10;
+    const plus = await hasPlus((interaction.user?.id ?? interaction.member?.user.id)!, client.api)
+    const limit = plus ? 50 : 10
 
     if (usage >= limit) {
-      const resetAt = Temporal.Now.instant().toZonedDateTimeISO('UTC').startOfDay().add({ days: 1 }).toInstant();
+      const resetAt = Temporal.Now.instant().toZonedDateTimeISO('UTC').startOfDay().add({ days: 1 }).toInstant()
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
@@ -87,9 +87,9 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
     if (!message || !message.content.trim()) {
@@ -106,33 +106,33 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
-    const text = message.content.trim();
+    const text = message.content.trim()
 
     const [{ ElevenLabsClient }, { decodeOpusBytes, getWaveform }] = await Promise.all([
       import('@elevenlabs/elevenlabs-js'),
       import('../../../utils/opus'),
-    ]);
+    ])
 
-    const elevenlabs = new ElevenLabsClient({ apiKey: elevenLabsApiKey });
+    const elevenlabs = new ElevenLabsClient({ apiKey: elevenLabsApiKey })
 
     const audio = await elevenlabs.textToSpeech.convertWithTimestamps('M563YhMmA0S8vEYwkgYa', {
       text: ellipsis(text, plus ? 500 : 100),
       languageCode:
         findClosestMatch(
           interaction.locale,
-          ELEVEN_LABS_LANGUAGES.map((language) => language.code),
+          ELEVEN_LABS_LANGUAGES.map(language => language.code),
         ) ?? 'ENG',
       modelId: 'eleven_flash_v2_5',
       outputFormat: 'opus_48000_192',
-    });
+    })
 
-    const buffer = Buffer.from(audio.audioBase64, 'base64');
-    const decoded = await decodeOpusBytes(buffer);
+    const buffer = Buffer.from(audio.audioBase64, 'base64')
+    const decoded = await decodeOpusBytes(buffer)
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
       attachments: [
@@ -150,8 +150,8 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsVoiceMessage,
-    });
+    })
 
-    await redis.incr(key);
+    await redis.incr(key)
   },
-});
+})

@@ -4,9 +4,9 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import { hyperlink } from '../../../utils/markdown';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import { hyperlink } from '../../../utils/markdown'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -37,6 +37,6 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsComponentsV2,
-    });
+    })
   },
-});
+})

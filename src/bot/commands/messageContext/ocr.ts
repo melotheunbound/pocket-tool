@@ -4,12 +4,12 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import env from '../../../utils/env';
-import { codeblock, emoji, ellipsis } from '../../../utils/markdown';
-import { makeRequest } from '../../../utils/request';
-import { RequestMethod, ResponseType } from '../../../types/types';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import env from '../../../utils/env'
+import { codeblock, emoji, ellipsis } from '../../../utils/markdown'
+import { makeRequest } from '../../../utils/request'
+import { RequestMethod, ResponseType } from '../../../types/types'
 
 createApplicationCommand({
   type: ApplicationCommandType.Message,
@@ -19,7 +19,7 @@ createApplicationCommand({
   cooldown: 5,
   acknowledge: true,
   async run(interaction, client) {
-    const ocrApiKey = env.get('ocr_api_key')?.toString();
+    const ocrApiKey = env.get('ocr_api_key')?.toString()
 
     if (!ocrApiKey) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -35,12 +35,12 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
-    const message = interaction.data.resolved.messages[interaction.data.target_id];
+    const message = interaction.data.resolved.messages[interaction.data.target_id]
 
     if (message?.message_snapshots && message.message_snapshots.length > 0) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -56,12 +56,16 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
-    if (!message || message.attachments.length === 0) {
+    if (
+      !message ||
+      !message.attachments.length ||
+      !message.attachments.find(attachment => attachment.content_type?.startsWith('image/'))
+    ) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
           {
@@ -75,56 +79,35 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
-    const attachment = Object.values(message.attachments).find((attachment) =>
-      attachment.content_type?.startsWith('image/'),
-    );
-
-    if (!attachment) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.Container,
-            components: [
-              {
-                type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please select a valid image to extract text from.`,
-              },
-            ],
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      });
-
-      return;
-    }
+    const attachment = message.attachments.find(attachment => attachment.content_type?.startsWith('image/'))!
 
     const image = await makeRequest(attachment.url, {
       method: RequestMethod.GET,
       response: ResponseType.BUFFER,
-    });
+    })
 
-    const form = new FormData();
+    const form = new FormData()
 
-    form.append('apikey', ocrApiKey);
-    form.append('language', 'por');
+    form.append('apikey', ocrApiKey)
+    form.append('language', 'por')
     form.append(
       'file',
       new Blob([image], {
         type: attachment.content_type ?? 'image/jpeg',
       }),
       attachment.filename ?? 'image.jpg',
-    );
+    )
 
     const ocr = await makeRequest('https://api.ocr.space/parse/image', {
       method: RequestMethod.POST,
       response: ResponseType.JSON,
       body: form,
-    });
+    })
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
       components: [
@@ -139,6 +122,6 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsComponentsV2,
-    });
+    })
   },
-});
+})

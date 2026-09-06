@@ -1,6 +1,6 @@
-export const INVITE = 'https://discord.com/oauth2/authorize?client_id=1489362526880796903';
-export const SUPPORT = 'https://discord.gg/Y67yNmsPuf';
-export const WEBSITE = 'https://pocket-tool.xyz/';
+export const INVITE = 'https://discord.com/oauth2/authorize?client_id=1489362526880796903'
+export const SUPPORT = 'https://discord.gg/Y67yNmsPuf'
+export const WEBSITE = 'https://pocket-tool.xyz/'
 
 export enum Emoji {
   Boost = '<:boost:1533281851475628193>',
@@ -86,7 +86,7 @@ export const MESSAGE_BLOCK_REASONS = {
     reason: "the channel's permission setup",
     article: 'https://support.discord.com/hc/en-us/articles/10543994968087',
   },
-};
+}
 
 export const AZURE_LANGUAGES = [
   { name: 'Afrikaans', code: 'af', flag: '🇿🇦' },
@@ -227,7 +227,7 @@ export const AZURE_LANGUAGES = [
   { name: 'Chinese (Simplified)', code: 'zh-Hans', flag: '🇨🇳' },
   { name: 'Chinese (Traditional)', code: 'zh-Hant', flag: '🇹🇼' },
   { name: 'Zulu', code: 'zu', flag: '🇿🇦' },
-] as const;
+] as const
 
 export const ELEVEN_LABS_LANGUAGES = [
   { name: 'Arabic', code: 'ar' },
@@ -262,4 +262,4 @@ export const ELEVEN_LABS_LANGUAGES = [
   { name: 'Turkish', code: 'tr' },
   { name: 'Ukrainian', code: 'uk' },
   { name: 'Vietnamese', code: 'vi' },
-] as const;
+] as const

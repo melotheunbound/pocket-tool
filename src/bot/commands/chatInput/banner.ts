@@ -7,9 +7,9 @@ import {
   InteractionContextType,
   MessageFlags,
   type APIComponentInMessageActionRow,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import { cdn, emoji } from '../../../utils/markdown';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import { cdn, emoji } from '../../../utils/markdown'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -28,15 +28,15 @@ createApplicationCommand({
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
-    let { user: target } = options;
+    let { user: target } = options
 
     if (!target) {
       target = {
         user: (interaction.user ?? interaction.member?.user)!,
-      };
+      }
     }
 
-    const { user } = target;
+    const { user } = target
 
     if (!user) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -52,12 +52,12 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
-    const u = await client.api.users.get(user.id);
+    const u = await client.api.users.get(user.id)
 
     if (!u.banner) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -73,9 +73,9 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -133,6 +133,6 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsComponentsV2,
-    });
+    })
   },
-});
+})

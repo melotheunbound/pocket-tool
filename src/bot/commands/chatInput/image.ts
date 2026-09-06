@@ -2,12 +2,10 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ApplicationIntegrationType,
-  ComponentType,
   InteractionContextType,
-  MessageFlags,
   type APIInteractionDataResolvedGuildMember,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
 import {
   applyBlur,
   applyCaption,
@@ -16,10 +14,10 @@ import {
   applyGrayscale,
   applySpeechBubble,
   createPetpetGif,
-} from '../../../utils/image';
-import { makeRequest } from '../../../utils/request';
-import { RequestMethod, ResponseType } from '../../../types/types';
-import { cdn, emoji } from '../../../utils/markdown';
+} from '../../../utils/image'
+import { makeRequest } from '../../../utils/request'
+import { RequestMethod, ResponseType } from '../../../types/types'
+import { cdn } from '../../../utils/markdown'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -145,17 +143,17 @@ createApplicationCommand({
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
-    const { caption, grayscale, blur, flip, flop, 'speech-bubble': speechBubble, petpet } = options;
+    const { caption, grayscale, blur, flip, flop, 'speech-bubble': speechBubble, petpet } = options
 
     if (caption) {
-      const { image, caption: text } = caption;
+      const { image, caption: text } = caption
 
       const buffer = await makeRequest(image.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
-      });
+      })
 
-      const captioned = await applyCaption(buffer, text);
+      const captioned = await applyCaption(buffer, text)
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         attachments: [
@@ -170,16 +168,16 @@ createApplicationCommand({
             data: captioned,
           },
         ],
-      });
+      })
     } else if (grayscale) {
-      const { image } = grayscale;
+      const { image } = grayscale
 
       const buffer = await makeRequest(image.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
-      });
+      })
 
-      const grayscaled = await applyGrayscale(buffer);
+      const grayscaled = await applyGrayscale(buffer)
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         attachments: [
@@ -194,16 +192,16 @@ createApplicationCommand({
             data: grayscaled,
           },
         ],
-      });
+      })
     } else if (blur) {
-      const { image } = blur;
+      const { image } = blur
 
       const buffer = await makeRequest(image.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
-      });
+      })
 
-      const blurred = await applyBlur(buffer);
+      const blurred = await applyBlur(buffer)
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         attachments: [
@@ -218,16 +216,16 @@ createApplicationCommand({
             data: blurred,
           },
         ],
-      });
+      })
     } else if (flip) {
-      const { image } = flip;
+      const { image } = flip
 
       const buffer = await makeRequest(image.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
-      });
+      })
 
-      const flipped = await applyFlip(buffer);
+      const flipped = await applyFlip(buffer)
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         attachments: [
@@ -242,16 +240,16 @@ createApplicationCommand({
             data: flipped,
           },
         ],
-      });
+      })
     } else if (flop) {
-      const { image } = flop;
+      const { image } = flop
 
       const buffer = await makeRequest(image.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
-      });
+      })
 
-      const flopped = await applyFlop(buffer);
+      const flopped = await applyFlop(buffer)
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         attachments: [
@@ -266,16 +264,16 @@ createApplicationCommand({
             data: flopped,
           },
         ],
-      });
+      })
     } else if (speechBubble) {
-      const { image } = speechBubble;
+      const { image } = speechBubble
 
       const buffer = await makeRequest(image.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
-      });
+      })
 
-      const speechBubbled = await applySpeechBubble(buffer);
+      const speechBubbled = await applySpeechBubble(buffer)
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         attachments: [
@@ -290,41 +288,41 @@ createApplicationCommand({
             data: speechBubbled,
           },
         ],
-      });
+      })
     } else if (petpet) {
-      let { user: target, scope } = petpet;
+      let { user: target, scope } = petpet
 
       if (!target) {
         target = {
           user: (interaction.user ?? interaction.member?.user)!,
           member: interaction.member as APIInteractionDataResolvedGuildMember,
-        };
+        }
       }
 
-      scope ??= 'global';
+      scope ??= 'global'
 
-      const { user, member } = target;
+      const { user, member } = target
 
-      let avatar;
+      let avatar
 
       if (scope === 'server' && member) {
         avatar = member.avatar
           ? cdn(`guilds/${interaction.guild_id}/users/${user.id}/avatars/${member.avatar}`, 4096, 'webp', true)
           : user.avatar
             ? cdn(`/avatars/${user.id}/${user.avatar}`, 4096, 'webp', true)
-            : cdn(`/embed/avatars/${Number(BigInt(user.id) >> 22n) % 6}`, 4096, 'png');
+            : cdn(`/embed/avatars/${Number(BigInt(user.id) >> 22n) % 6}`, 4096, 'png')
       } else {
         avatar = user.avatar
           ? cdn(`/avatars/${user.id}/${user.avatar}`, 4096, 'webp', true)
-          : cdn(`/embed/avatars/${Number(BigInt(user.id) >> 22n) % 6}`, 4096, 'png');
+          : cdn(`/embed/avatars/${Number(BigInt(user.id) >> 22n) % 6}`, 4096, 'png')
       }
 
       const buffer = await makeRequest(avatar, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
-      });
+      })
 
-      const petpeted = await createPetpetGif(buffer);
+      const petpeted = await createPetpetGif(buffer)
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         attachments: [
@@ -339,7 +337,7 @@ createApplicationCommand({
             data: petpeted,
           },
         ],
-      });
+      })
     }
   },
-});
+})

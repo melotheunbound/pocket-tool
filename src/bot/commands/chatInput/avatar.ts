@@ -8,9 +8,9 @@ import {
   MessageFlags,
   type APIComponentInMessageActionRow,
   type APIInteractionDataResolvedGuildMember,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import { cdn, emoji } from '../../../utils/markdown';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import { cdn, emoji } from '../../../utils/markdown'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -45,18 +45,18 @@ createApplicationCommand({
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
-    let { user: target, scope } = options;
+    let { user: target, scope } = options
 
     if (!target) {
       target = {
         user: (interaction.user ?? interaction.member?.user)!,
         member: interaction.member as APIInteractionDataResolvedGuildMember,
-      };
+      }
     }
 
-    scope ??= 'global';
+    scope ??= 'global'
 
-    const { user, member } = target;
+    const { user, member } = target
 
     if (scope === 'server' && member) {
       if (!member.avatar) {
@@ -73,9 +73,9 @@ createApplicationCommand({
             },
           ],
           flags: MessageFlags.IsComponentsV2,
-        });
+        })
 
-        return;
+        return
       }
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -142,7 +142,7 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
     } else {
       if (!user.avatar) {
         await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -158,9 +158,9 @@ createApplicationCommand({
             },
           ],
           flags: MessageFlags.IsComponentsV2,
-        });
+        })
 
-        return;
+        return
       }
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -218,7 +218,7 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
     }
   },
-});
+})

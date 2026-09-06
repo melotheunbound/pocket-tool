@@ -11,11 +11,11 @@ import {
   type APIModalSubmitInteraction,
   type APIModalSubmitTextInputComponent,
   type ModalSubmitLabelComponent,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import List from '../../../utils/list';
-import { getCommandPaths, toComponentEmoji } from '../../../utils/utils';
-import { emoji } from '../../../utils/markdown';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import List from '../../../utils/list'
+import { getSubcommandPaths, toComponentEmoji } from '../../../utils/utils'
+import { emoji } from '../../../utils/markdown'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -26,39 +26,39 @@ createApplicationCommand({
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
-    const globalCommands = await client.api.applicationCommands.getGlobalCommands(interaction.application_id);
+    const globalCommands = await client.api.applicationCommands.getGlobalCommands(interaction.application_id)
 
-    const commands = globalCommands.flatMap((command) => {
-      const paths = getCommandPaths(command.options);
+    const commands = globalCommands.flatMap(command => {
+      const paths = getSubcommandPaths(command.options)
 
       if (!paths.length) {
-        return [command];
+        return [command]
       }
 
-      return paths.map((path) => ({
+      return paths.map(path => ({
         ...command,
         name: `${command.name} ${path}`,
-      }));
-    });
+      }))
+    })
 
-    const limit = 5;
+    const limit = 5
 
     const list = new List(
       true,
       ...Array.from({ length: Math.ceil(commands.length / limit) }, (_, index) =>
         commands.slice(index * limit, index * limit + limit),
       ),
-    );
+    )
 
-    let pages = list;
-    let query: string | null = null;
+    let pages = list
+    let query: string | null = null
 
     let result = (pages.current ?? [])
       .map(
         (command, index) =>
           `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
       )
-      .join('\n\n');
+      .join('\n\n')
 
     const response = await client.api.interactions.editReply(interaction.application_id, interaction.token, {
       components: [
@@ -118,31 +118,31 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsComponentsV2,
-    });
+    })
 
     const collector = client.api.interactions.createCollector<
       APIMessageComponentButtonInteraction | APIModalSubmitInteraction
     >({
       key: 'command-browser',
-      filter: (i) =>
+      filter: i =>
         i.message?.id === response.id &&
         (i.user?.id ?? i.member?.user.id) === (interaction.user?.id ?? interaction.member?.user.id),
       duration: 5 * 60 * 1000,
-    });
+    })
 
-    collector.on('collect', async (i) => {
+    collector.on('collect', async i => {
       switch (i.data.custom_id) {
         case 'commands-prev': {
-          await client.api.interactions.deferMessageUpdate(i.id, i.token);
+          await client.api.interactions.deferMessageUpdate(i.id, i.token)
 
-          pages.back();
+          pages.back()
 
           result = (pages.current ?? [])
             .map(
               (command, index) =>
                 `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
             )
-            .join('\n\n');
+            .join('\n\n')
 
           await client.api.interactions.editReply(i.application_id, i.token, {
             components: [
@@ -214,21 +214,21 @@ createApplicationCommand({
               },
             ],
             flags: MessageFlags.IsComponentsV2,
-          });
+          })
 
-          break;
+          break
         }
         case 'commands-next': {
-          await client.api.interactions.deferMessageUpdate(i.id, i.token);
+          await client.api.interactions.deferMessageUpdate(i.id, i.token)
 
-          pages.next();
+          pages.next()
 
           result = (pages.current ?? [])
             .map(
               (command, index) =>
                 `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
             )
-            .join('\n\n');
+            .join('\n\n')
 
           await client.api.interactions.editReply(i.application_id, i.token, {
             components: [
@@ -300,9 +300,9 @@ createApplicationCommand({
               },
             ],
             flags: MessageFlags.IsComponentsV2,
-          });
+          })
 
-          break;
+          break
         }
         case 'commands-search': {
           await client.api.interactions.createModal(i.id, i.token, {
@@ -321,12 +321,12 @@ createApplicationCommand({
                 },
               },
             ],
-          });
+          })
 
-          break;
+          break
         }
         case 'commands-search-modal': {
-          await client.api.interactions.deferMessageUpdate(i.id, i.token);
+          await client.api.interactions.deferMessageUpdate(i.id, i.token)
 
           const name =
             (i as APIModalSubmitInteraction).data.components?.[0]?.type === ComponentType.Label
@@ -334,15 +334,15 @@ createApplicationCommand({
                   ((i as APIModalSubmitInteraction).data.components[0] as ModalSubmitLabelComponent)
                     .component as APIModalSubmitTextInputComponent
                 ).value
-              : undefined;
+              : undefined
 
           if (!name || !name.trim().toLowerCase()) {
-            return;
+            return
           }
 
-          const search = name.trim().toLowerCase();
+          const search = name.trim().toLowerCase()
 
-          const results = commands.filter((command) => command.name.trim().toLowerCase().includes(search));
+          const results = commands.filter(command => command.name.trim().toLowerCase().includes(search))
 
           if (!results.length) {
             await client.api.interactions.followUp(i.application_id, i.token, {
@@ -358,9 +358,9 @@ createApplicationCommand({
                 },
               ],
               flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-            });
+            })
 
-            return;
+            return
           }
 
           pages = new List(
@@ -368,16 +368,16 @@ createApplicationCommand({
             ...Array.from({ length: Math.ceil(results.length / limit) }, (_, index) =>
               results.slice(index * limit, index * limit + limit),
             ),
-          );
+          )
 
-          query = search;
+          query = search
 
           result = (pages.current ?? [])
             .map(
               (command, index) =>
                 `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
             )
-            .join('\n\n');
+            .join('\n\n')
 
           await client.api.interactions.editReply(i.application_id, i.token, {
             components: [
@@ -442,22 +442,22 @@ createApplicationCommand({
               },
             ],
             flags: MessageFlags.IsComponentsV2,
-          });
+          })
 
-          break;
+          break
         }
         case 'commands-back': {
-          await client.api.interactions.deferMessageUpdate(i.id, i.token);
+          await client.api.interactions.deferMessageUpdate(i.id, i.token)
 
-          pages = list;
-          query = null;
+          pages = list
+          query = null
 
           result = (pages.current ?? [])
             .map(
               (c, index) =>
                 `**${pages.pointer * limit + index + 1}.** </${c.name}:${c.id}>${c.description ? `\n-# ${c.description}` : ''}`,
             )
-            .join('\n\n');
+            .join('\n\n')
 
           await client.api.interactions.editReply(i.application_id, i.token, {
             components: [
@@ -517,15 +517,15 @@ createApplicationCommand({
               },
             ],
             flags: MessageFlags.IsComponentsV2,
-          });
+          })
 
-          break;
+          break
         }
       }
-    });
+    })
 
-    collector.once('end', async () => {
-      await client.api.interactions
+    collector.once('end', () => {
+      void client.api.interactions
         .editReply(interaction.application_id, interaction.token, {
           components: [
             {
@@ -601,7 +601,7 @@ createApplicationCommand({
           ],
           flags: MessageFlags.IsComponentsV2,
         })
-        .catch(() => null);
-    });
+        .catch(() => null)
+    })
   },
-});
+})

@@ -10,13 +10,13 @@ import {
   type APIModalSubmitInteraction,
   type APIModalSubmitTextInputComponent,
   type ModalSubmitLabelComponent,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import { getShardIdForGuildId, msToReadableTime, toComponentEmoji } from '../../../utils/utils';
-import { emoji, timestamp } from '../../../utils/markdown';
-import { TimestampStyle } from '../../../types/types';
-import { INVITE, SUPPORT } from '../../constants';
-import { redis } from '../../../utils/redis';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import { getShardIdForGuildId, msToReadableTime, readableSize, toComponentEmoji } from '../../../utils/utils'
+import { emoji, timestamp } from '../../../utils/markdown'
+import { TimestampStyle } from '../../../types/types'
+import { INVITE, SUPPORT } from '../../constants'
+import { redis } from '../../../utils/redis'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -27,53 +27,54 @@ createApplicationCommand({
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
-    const shards = client.gateway.shards.size;
-    let shardId = interaction.guild_id ? getShardIdForGuildId(interaction.guild_id, shards) : 0;
-    let shard = client.gateway.shards.get(shardId)!;
-    const app = await client.api.applications.getCurrent();
+    const shards = client.gateway.shards.size
+    let shardId = interaction.guild_id ? getShardIdForGuildId(interaction.guild_id, shards) : 0
+    let shard = client.gateway.shards.get(shardId)!
+    const app = await client.api.applications.getCurrent()
+    let memory = await shard.memory()
 
-    const now = Temporal.Now.zonedDateTimeISO('America/Sao_Paulo');
+    const now = Temporal.Now.zonedDateTimeISO('America/Sao_Paulo')
 
-    const analyticsDate = now.hour < 21 ? now.subtract({ days: 1 }) : now;
+    const analyticsDate = now.hour < 21 ? now.subtract({ days: 1 }) : now
 
-    const day = analyticsDate.toPlainDate().toString();
-    const hour = String(now.hour).padStart(2, '0');
-    const minute = String(now.minute).padStart(2, '0');
+    const day = analyticsDate.toPlainDate().toString()
+    const hour = String(now.hour).padStart(2, '0')
+    const minute = String(now.minute).padStart(2, '0')
 
-    const today = (await redis.get(`analytics:commands:day:${day}`)) ?? '0';
+    const today = (await redis.get(`analytics:commands:day:${day}`)) ?? '0'
 
-    const lastHour = (await redis.get(`analytics:commands:hour:${day}:${hour}`)) ?? '0';
+    const lastHour = (await redis.get(`analytics:commands:hour:${day}:${hour}`)) ?? '0'
 
-    const lastMinute = (await redis.get(`analytics:commands:minute:${day}:${hour}:${minute}`)) ?? '0';
+    const lastMinute = (await redis.get(`analytics:commands:minute:${day}:${hour}:${minute}`)) ?? '0'
 
     const commandsUsage: {
-      id: string;
-      name: string;
-      uses: string;
-    }[] = [];
+      id: string
+      name: string
+      uses: string
+    }[] = []
 
     for await (const keys of redis.scanIterator({
       MATCH: `analytics:commands:usage:*:day:${day}`,
       COUNT: 100,
     })) {
       for (const key of keys) {
-        const data = await redis.hGetAll(key);
+        const data = await redis.hGetAll(key)
 
-        if (!data.id || !data.path || !data.uses) continue;
+        if (!data.id || !data.path || !data.uses) continue
 
         commandsUsage.push({
           id: data.id,
           name: data.path,
           uses: data.uses,
-        });
+        })
       }
     }
 
     const topCommands = commandsUsage
       .sort((a, b) => Number(b.uses) - Number(a.uses))
       .slice(0, 5)
-      .map((command) => `> </${command.name}:${command.id}>: **${Number(command.uses).toLocaleString('en-US')} uses**`)
-      .join('\n');
+      .map(command => `> </${command.name}:${command.id}>: **${Number(command.uses).toLocaleString('en-US')} uses**`)
+      .join('\n')
 
     const response = await client.api.interactions.editReply(interaction.application_id, interaction.token, {
       components: [
@@ -102,7 +103,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `-# **Shard #${shardId}:**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
+              content: `-# **Shard #${shardId}:**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> Memory: **${readableSize(memory.rss)} (${readableSize(process.constrainedMemory())})**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
             },
             {
               type: ComponentType.Separator,
@@ -130,19 +131,19 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsComponentsV2,
-    });
+    })
 
     const collector = client.api.interactions.createCollector<
       APIMessageComponentButtonInteraction | APIModalSubmitInteraction
     >({
       key: 'shard-browser',
-      filter: (i) =>
+      filter: i =>
         i.message?.id === response.id &&
         (i.user?.id ?? i.member?.user.id) === (interaction.user?.id ?? interaction.member?.user.id),
       duration: 5 * 60 * 1000,
-    });
+    })
 
-    collector.on('collect', async (i) => {
+    collector.on('collect', async i => {
       switch (i.data.custom_id) {
         case 'shard-search': {
           await client.api.interactions.createModal(i.id, i.token, {
@@ -161,12 +162,12 @@ createApplicationCommand({
                 },
               },
             ],
-          });
+          })
 
-          break;
+          break
         }
         case 'shard-search-modal': {
-          await client.api.interactions.deferMessageUpdate(i.id, i.token);
+          await client.api.interactions.deferMessageUpdate(i.id, i.token)
 
           const guildId =
             (i as APIModalSubmitInteraction).data.components?.[0]?.type === ComponentType.Label
@@ -174,9 +175,9 @@ createApplicationCommand({
                   ((i as APIModalSubmitInteraction).data.components[0] as ModalSubmitLabelComponent)
                     .component as APIModalSubmitTextInputComponent
                 ).value
-              : undefined;
+              : undefined
 
-          const regex = /^\d{17,20}$/;
+          const regex = /^\d{17,20}$/
 
           if (!guildId || !regex.test(guildId)) {
             await client.api.interactions.followUp(i.application_id, i.token, {
@@ -192,12 +193,12 @@ createApplicationCommand({
                 },
               ],
               flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-            });
+            })
 
-            return;
+            return
           }
 
-          const guild = await client.api.guilds.get(guildId).catch(() => null);
+          const guild = await client.api.guilds.get(guildId).catch(() => null)
 
           if (!guild) {
             await client.api.interactions.followUp(i.application_id, i.token, {
@@ -213,13 +214,14 @@ createApplicationCommand({
                 },
               ],
               flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-            });
+            })
 
-            return;
+            return
           }
 
-          shardId = getShardIdForGuildId(guild.id, shards);
-          shard = client.gateway.shards.get(shardId)!;
+          shardId = getShardIdForGuildId(guild.id, shards)
+          shard = client.gateway.shards.get(shardId)!
+          memory = await shard.memory()
 
           await client.api.interactions.editReply(interaction.application_id, interaction.token, {
             components: [
@@ -248,7 +250,7 @@ createApplicationCommand({
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `-# **Shard #${shardId}**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
+                    content: `-# **Shard #${shardId}**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> Memory: **${readableSize(memory.rss)} (${readableSize(process.constrainedMemory())})**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
                   },
                   {
                     type: ComponentType.Separator,
@@ -276,15 +278,15 @@ createApplicationCommand({
               },
             ],
             flags: MessageFlags.IsComponentsV2,
-          });
+          })
 
-          break;
+          break
         }
       }
-    });
+    })
 
-    collector.once('end', async () => {
-      await client.api.interactions
+    collector.once('end', () => {
+      void client.api.interactions
         .editReply(interaction.application_id, interaction.token, {
           components: [
             {
@@ -341,7 +343,7 @@ createApplicationCommand({
           ],
           flags: MessageFlags.IsComponentsV2,
         })
-        .catch(() => null);
-    });
+        .catch(() => null)
+    })
   },
-});
+})

@@ -5,11 +5,11 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import { cdn, emoji, highlight, timestamp } from '../../../utils/markdown';
-import { getTimestampFromSnowflake } from '../../../utils/utils';
-import { HighlightStyle, TimestampStyle } from '../../../types/types';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import { cdn, emoji, highlight, timestamp } from '../../../utils/markdown'
+import { getTimestampFromSnowflake } from '../../../utils/utils'
+import { HighlightStyle, TimestampStyle } from '../../../types/types'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -28,11 +28,11 @@ createApplicationCommand({
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
-    const { link } = options;
+    const { link } = options
 
     const code = link
       .trim()
-      .match(/^(?:https?:\/\/)?(?:www\.)?(?:discord\.gg|discord\.com\/invite)\/([a-zA-Z0-9-]{2,64})\/?$/i)?.[1];
+      .match(/^(?:https?:\/\/)?(?:www\.)?(?:discord\.gg|discord\.com\/invite)\/([a-zA-Z0-9-]{2,64})\/?$/i)?.[1]
 
     if (!code) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -48,12 +48,12 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
-    const invite = await client.api.invites.get(code, { with_counts: true });
+    const invite = await client.api.invites.get(code, { with_counts: true })
 
     if (!invite || !invite.guild) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -69,9 +69,9 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -105,6 +105,6 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsComponentsV2,
-    });
+    })
   },
-});
+})

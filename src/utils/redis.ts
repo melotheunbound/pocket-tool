@@ -1,5 +1,5 @@
-import { createClient } from 'redis';
-import env from './env';
+import { createClient } from 'redis'
+import env from './env'
 
 export const redis = createClient({
   username: env.get('redis_username', true).toString(),
@@ -8,8 +8,8 @@ export const redis = createClient({
     host: env.get('redis_host', true).toString(),
     port: env.get('redis_port', true).toNumber(),
   },
-});
+})
 
-redis.on('error', (e) => console.log('redis client errored:', e));
+redis.on('error', e => console.log('redis client errored:', e))
 
-await redis.connect();
+await redis.connect()

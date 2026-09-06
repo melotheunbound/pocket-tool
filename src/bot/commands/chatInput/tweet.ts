@@ -7,14 +7,14 @@ import {
   InteractionContextType,
   MessageFlags,
   type APIMessageTopLevelComponent,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import { findClosestMatch, getAutocompleteFocusedOption } from '../../../utils/utils';
-import env from '../../../utils/env';
-import { emoji, hyperlink, timestamp } from '../../../utils/markdown';
-import { makeRequest } from '../../../utils/request';
-import { RequestMethod, ResponseType, TimestampStyle } from '../../../types/types';
-import { AZURE_LANGUAGES } from '../../constants';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import { findClosestMatch, getAutocompleteFocusedOption } from '../../../utils/utils'
+import env from '../../../utils/env'
+import { emoji, hyperlink, timestamp } from '../../../utils/markdown'
+import { makeRequest } from '../../../utils/request'
+import { RequestMethod, ResponseType, TimestampStyle } from '../../../types/types'
+import { AZURE_LANGUAGES } from '../../constants'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -40,30 +40,30 @@ createApplicationCommand({
   cooldown: 5,
   acknowledge: true,
   async autocomplete(interaction, client) {
-    const focused = getAutocompleteFocusedOption(interaction.data.options);
-    const value = String(focused?.value ?? '').toLowerCase();
+    const focused = getAutocompleteFocusedOption(interaction.data.options)
+    const value = String(focused?.value ?? '').toLowerCase()
 
-    const languages = AZURE_LANGUAGES.filter((language) => {
-      return language.name.toLowerCase().includes(value) || language.code.toLowerCase().includes(value);
-    });
+    const languages = AZURE_LANGUAGES.filter(language => {
+      return language.name.toLowerCase().includes(value) || language.code.toLowerCase().includes(value)
+    })
 
     const choices = [
       {
         name: 'Use My Locale',
         value: 'auto',
       },
-      ...languages.map((language) => ({
+      ...languages.map(language => ({
         name: language.name,
         value: language.code,
       })),
-    ].slice(0, 25);
+    ].slice(0, 25)
 
-    await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices });
+    await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices })
   },
   async run(interaction, options, client) {
-    const { url, language } = options;
+    const { url, language } = options
 
-    const tolgchuTwitterApiKey = env.get('tolgchu_twitter_api_key')?.toString();
+    const tolgchuTwitterApiKey = env.get('tolgchu_twitter_api_key')?.toString()
 
     if (!tolgchuTwitterApiKey) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -79,12 +79,12 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
-    const tweetId = extractTweetId(url);
+    const tweetId = extractTweetId(url)
 
     if (!tweetId) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -100,9 +100,9 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
     const tweet = await makeRequest('https://x.tolgchu.dev/post', {
@@ -114,7 +114,7 @@ createApplicationCommand({
       params: {
         id: tweetId,
       },
-    });
+    })
 
     if (!tweet) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -125,17 +125,17 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
-    let content = tweet.hasText ? tweet.displayText : undefined;
+    let content = tweet.hasText ? tweet.displayText : undefined
 
-    let isTranslated: boolean = false;
+    let isTranslated: boolean = false
 
     if (language && content) {
-      const azureApiKey = env.get('azure_api_key')?.toString();
+      const azureApiKey = env.get('azure_api_key')?.toString()
 
       if (!azureApiKey) {
         await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -151,25 +151,25 @@ createApplicationCommand({
             },
           ],
           flags: MessageFlags.IsComponentsV2,
-        });
+        })
 
-        return;
+        return
       }
 
       const sourceCode = tweet.language
         ? findClosestMatch(
             tweet.language,
-            AZURE_LANGUAGES.map((language) => language.code),
+            AZURE_LANGUAGES.map(language => language.code),
           )
-        : undefined;
+        : undefined
 
       const targetCode =
         language === 'auto'
           ? (findClosestMatch(
               interaction.locale,
-              AZURE_LANGUAGES.map((language) => language.code),
+              AZURE_LANGUAGES.map(language => language.code),
             ) ?? 'en')
-          : language;
+          : language
 
       const translation = await makeRequest('https://api.cognitive.microsofttranslator.com/translate', {
         method: RequestMethod.POST,
@@ -188,24 +188,24 @@ createApplicationCommand({
             text: content,
           },
         ],
-      });
+      })
 
-      const result = translation[0];
-      const translated = result?.translations[0];
+      const result = translation[0]
+      const translated = result?.translations[0]
 
       if (!result || !translated) {
-        isTranslated = false;
+        isTranslated = false
       } else {
-        content = translated.text;
-        isTranslated = true;
+        content = translated.text
+        isTranslated = true
       }
     }
 
     for (const hashtag of tweet.hashtags) {
-      const escaped = hashtag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const pattern = new RegExp(`#${escaped}(?![\\p{L}\\p{N}_])`, 'gu');
+      const escaped = hashtag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const pattern = new RegExp(`#${escaped}(?![\\p{L}\\p{N}_])`, 'gu')
 
-      content = content?.replace(pattern, hyperlink(`https://x.com/hashtag/${hashtag}`, `#${hashtag}`));
+      content = content?.replace(pattern, hyperlink(`https://x.com/hashtag/${hashtag}`, `#${hashtag}`))
     }
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -278,22 +278,20 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsComponentsV2,
-    });
+    })
   },
-});
+})
 
 function extractTweetId(input: string): string | undefined {
-  const trimmed = input.trim();
+  const trimmed = input.trim()
 
-  if (/^\d+$/.test(trimmed)) {
-    return trimmed;
-  }
+  if (/^\d+$/.test(trimmed)) return trimmed
 
   try {
-    const tweetUrl = new URL(trimmed);
-    const id = tweetUrl.pathname.split('/').pop();
-    return id && /^\d+$/.test(id) ? id : undefined;
+    const tweetUrl = new URL(trimmed)
+    const id = tweetUrl.pathname.split('/').pop()
+    return id && /^\d+$/.test(id) ? id : undefined
   } catch {
-    return undefined;
+    return undefined
   }
 }

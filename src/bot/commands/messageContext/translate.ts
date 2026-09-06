@@ -4,14 +4,14 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import { emoji } from '../../../utils/markdown';
-import { makeRequest } from '../../../utils/request';
-import { RequestMethod, ResponseType } from '../../../types/types';
-import { AZURE_LANGUAGES } from '../../constants';
-import env from '../../../utils/env';
-import { findClosestMatch } from '../../../utils/utils';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import { emoji } from '../../../utils/markdown'
+import { makeRequest } from '../../../utils/request'
+import { RequestMethod, ResponseType } from '../../../types/types'
+import { AZURE_LANGUAGES } from '../../constants'
+import env from '../../../utils/env'
+import { findClosestMatch } from '../../../utils/utils'
 
 createApplicationCommand({
   type: ApplicationCommandType.Message,
@@ -21,7 +21,7 @@ createApplicationCommand({
   cooldown: 5,
   acknowledge: true,
   async run(interaction, client) {
-    const azureApiKey = env.get('azure_api_key')?.toString();
+    const azureApiKey = env.get('azure_api_key')?.toString()
 
     if (!azureApiKey) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -37,12 +37,12 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
-    const message = interaction.data.resolved.messages[interaction.data.target_id];
+    const message = interaction.data.resolved.messages[interaction.data.target_id]
 
     if (message?.message_snapshots && message.message_snapshots.length > 0) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -58,9 +58,9 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
     if (!message || !message.content.trim()) {
@@ -77,18 +77,18 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
-    const text = message.content.trim();
+    const text = message.content.trim()
 
     const targetCode =
       findClosestMatch(
         interaction.locale,
-        AZURE_LANGUAGES.map((language) => language.code),
-      ) ?? 'en';
+        AZURE_LANGUAGES.map(language => language.code),
+      ) ?? 'en'
 
     const translation = await makeRequest('https://api.cognitive.microsofttranslator.com/translate', {
       method: RequestMethod.POST,
@@ -106,21 +106,17 @@ createApplicationCommand({
           text,
         },
       ],
-    });
+    })
 
-    const sourceCode = translation[0].detectedLanguage?.language;
+    const sourceCode = translation[0].detectedLanguage?.language
 
-    const sourceLanguage = AZURE_LANGUAGES.find((language) => language.code === sourceCode);
+    const sourceLanguage = AZURE_LANGUAGES.find(language => language.code === sourceCode)
 
-    if (!sourceLanguage) {
-      throw new Error(`Unsupported source language: ${sourceCode}`);
-    }
+    if (!sourceLanguage) throw new Error(`Unsupported source language: ${sourceCode}`)
 
-    const targetLanguage = AZURE_LANGUAGES.find((language) => language.code === translation[0].translations[0].to);
+    const targetLanguage = AZURE_LANGUAGES.find(language => language.code === translation[0].translations[0].to)
 
-    if (!targetLanguage) {
-      throw new Error(`Unsupported target language: ${translation[0].translations[0].to}`);
-    }
+    if (!targetLanguage) throw new Error(`Unsupported target language: ${translation[0].translations[0].to}`)
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
       components: [
@@ -142,6 +138,6 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsComponentsV2,
-    });
+    })
   },
-});
+})

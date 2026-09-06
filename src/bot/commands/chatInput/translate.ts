@@ -5,14 +5,14 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import { findClosestMatch, getAutocompleteFocusedOption } from '../../../utils/utils';
-import { makeRequest } from '../../../utils/request';
-import { RequestMethod, ResponseType } from '../../../types/types';
-import { emoji } from '../../../utils/markdown';
-import { AZURE_LANGUAGES } from '../../constants';
-import env from '../../../utils/env';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import { findClosestMatch, getAutocompleteFocusedOption } from '../../../utils/utils'
+import { makeRequest } from '../../../utils/request'
+import { RequestMethod, ResponseType } from '../../../types/types'
+import { emoji } from '../../../utils/markdown'
+import { AZURE_LANGUAGES } from '../../constants'
+import env from '../../../utils/env'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -45,12 +45,12 @@ createApplicationCommand({
   cooldown: 5,
   acknowledge: true,
   async autocomplete(interaction, client) {
-    const focused = getAutocompleteFocusedOption(interaction.data.options);
-    const value = String(focused?.value ?? '').toLowerCase();
+    const focused = getAutocompleteFocusedOption(interaction.data.options)
+    const value = String(focused?.value ?? '').toLowerCase()
 
-    const languages = AZURE_LANGUAGES.filter((language) => {
-      return language.name.toLowerCase().includes(value) || language.code.toLowerCase().includes(value);
-    });
+    const languages = AZURE_LANGUAGES.filter(language => {
+      return language.name.toLowerCase().includes(value) || language.code.toLowerCase().includes(value)
+    })
 
     switch (focused?.name) {
       case 'from': {
@@ -59,15 +59,15 @@ createApplicationCommand({
             name: 'Detect Automatically',
             value: 'auto',
           },
-          ...languages.map((language) => ({
+          ...languages.map(language => ({
             name: language.name,
             value: language.code,
           })),
-        ].slice(0, 25);
+        ].slice(0, 25)
 
-        await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices });
+        await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices })
 
-        break;
+        break
       }
       case 'to': {
         const choices = [
@@ -75,22 +75,22 @@ createApplicationCommand({
             name: 'Use My Locale',
             value: 'auto',
           },
-          ...languages.map((language) => ({
+          ...languages.map(language => ({
             name: language.name,
             value: language.code,
           })),
-        ].slice(0, 25);
+        ].slice(0, 25)
 
-        await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices });
+        await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices })
 
-        break;
+        break
       }
     }
   },
   async run(interaction, options, client) {
-    const { text: rawText, from, to } = options;
+    const { text: rawText, from, to } = options
 
-    const azureApiKey = env.get('azure_api_key')?.toString();
+    const azureApiKey = env.get('azure_api_key')?.toString()
 
     if (!azureApiKey) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -106,12 +106,12 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
-    const text = rawText.trim();
+    const text = rawText.trim()
 
     if (!text) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -127,19 +127,19 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
-    const sourceCode = from === 'auto' ? undefined : from;
+    const sourceCode = from === 'auto' ? undefined : from
     const targetCode =
       to === 'auto'
         ? (findClosestMatch(
             interaction.locale,
-            AZURE_LANGUAGES.map((l) => l.code),
+            AZURE_LANGUAGES.map(l => l.code),
           ) ?? 'en')
-        : (to ?? 'en');
+        : (to ?? 'en')
 
     const translation = await makeRequest('https://api.cognitive.microsofttranslator.com/translate', {
       method: RequestMethod.POST,
@@ -158,21 +158,17 @@ createApplicationCommand({
           text,
         },
       ],
-    });
+    })
 
-    const actualSourceCode = sourceCode ?? translation[0].detectedLanguage?.language;
+    const actualSourceCode = sourceCode ?? translation[0].detectedLanguage?.language
 
-    const sourceLanguage = AZURE_LANGUAGES.find((language) => language.code === actualSourceCode);
+    const sourceLanguage = AZURE_LANGUAGES.find(language => language.code === actualSourceCode)
 
-    if (!sourceLanguage) {
-      throw new Error(`Unsupported source language: ${actualSourceCode}`);
-    }
+    if (!sourceLanguage) throw new Error(`Unsupported source language: ${actualSourceCode}`)
 
-    const targetLanguage = AZURE_LANGUAGES.find((language) => language.code === translation[0].translations[0].to);
+    const targetLanguage = AZURE_LANGUAGES.find(language => language.code === translation[0].translations[0].to)
 
-    if (!targetLanguage) {
-      throw new Error(`Unsupported target language: ${translation[0].translations[0].to}`);
-    }
+    if (!targetLanguage) throw new Error(`Unsupported target language: ${translation[0].translations[0].to}`)
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
       components: [
@@ -198,6 +194,6 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsComponentsV2,
-    });
+    })
   },
-});
+})

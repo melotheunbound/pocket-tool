@@ -6,11 +6,11 @@ import {
   InteractionContextType,
   MessageFlags,
   type APIInteractionDataResolvedGuildMember,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import { cdn, emoji, highlight, hyperlink, timestamp } from '../../../utils/markdown';
-import { getTimestampFromSnowflake } from '../../../utils/utils';
-import { TimestampStyle } from '../../../types/types';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import { cdn, emoji, highlight, hyperlink, timestamp } from '../../../utils/markdown'
+import { getTimestampFromSnowflake } from '../../../utils/utils'
+import { TimestampStyle } from '../../../types/types'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -45,18 +45,18 @@ createApplicationCommand({
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
-    let { user: target, scope } = options;
+    let { user: target, scope } = options
 
     if (!target) {
       target = {
         user: (interaction.user ?? interaction.member?.user)!,
         member: interaction.member as APIInteractionDataResolvedGuildMember,
-      };
+      }
     }
 
-    scope ??= 'global';
+    scope ??= 'global'
 
-    const { user, member } = target;
+    const { user, member } = target
 
     if (scope === 'server' && member) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -97,7 +97,7 @@ createApplicationCommand({
                   member.roles.length > 0
                     ? `\n\n${emoji('Role')} **Roles:**\n${member.roles
                         .slice(0, 5)
-                        .map((id) => `<@&${id}>`)
+                        .map(id => `<@&${id}>`)
                         .join(', ')}`
                     : ''
                 }${member.roles.length > 5 ? ` ${highlight(`+${(member.roles.length - 5).toLocaleString('en-US')}`)}` : ``}\n\n-# ${emoji('Exclamation')} Due to Discord limitations, this profile can't be fully displayed. ${hyperlink(`discord://-/users/${user.id}`, 'Open it in Discord.')}`,
@@ -106,7 +106,7 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
     } else {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
@@ -141,7 +141,7 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
     }
   },
-});
+})

@@ -5,12 +5,12 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import { parse } from 'chrono-node';
-import { emoji, timestamp } from '../../../utils/markdown';
-import type { TimestampStyle } from '../../../types/types';
-import { getAutocompleteFocusedOption } from '../../../utils/utils';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import { parse } from 'chrono-node'
+import { emoji, timestamp } from '../../../utils/markdown'
+import type { TimestampStyle } from '../../../types/types'
+import { getAutocompleteFocusedOption } from '../../../utils/utils'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -80,13 +80,13 @@ createApplicationCommand({
   cooldown: 3,
   acknowledge: true,
   async autocomplete(interaction, client) {
-    const focused = getAutocompleteFocusedOption(interaction.data.options);
-    const value = String(focused?.value ?? '').toLowerCase();
+    const focused = getAutocompleteFocusedOption(interaction.data.options)
+    const value = String(focused?.value ?? '').toLowerCase()
 
-    const now = Temporal.Now.instant();
+    const now = Temporal.Now.instant()
 
     const choices = Intl.supportedValuesOf('timeZone')
-      .map((zone) => ({
+      .map(zone => ({
         name: `${zone} (${new Intl.DateTimeFormat('en-US', {
           timeZone: zone,
           timeZoneName: 'short',
@@ -96,15 +96,15 @@ createApplicationCommand({
           .pop()})`,
         value: zone,
       }))
-      .filter((choice) => choice.name.toLowerCase().includes(value))
-      .slice(0, 25);
+      .filter(choice => choice.name.toLowerCase().includes(value))
+      .slice(0, 25)
 
-    await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices });
+    await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices })
   },
   async run(interaction, options, client) {
-    const { time, timezone, style } = options;
+    const { time, timezone, style } = options
 
-    const date = parseDate(time, timezone ?? 'UTC');
+    const date = parseDate(time, timezone ?? 'UTC')
 
     if (!date) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -120,9 +120,9 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -133,21 +133,19 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsComponentsV2,
-    });
+    })
   },
-});
+})
 
 function parseDate(time: string, timezone: string): number {
-  const reference = Temporal.Now.instant();
+  const reference = Temporal.Now.instant()
 
   const parsed = parse(time, {
     instant: new Date(reference.epochMilliseconds),
     timezone,
-  })[0];
+  })[0]
 
-  if (!parsed) {
-    throw new Error('Invalid date provided');
-  }
+  if (!parsed) throw new Error('Invalid date provided')
 
-  return parsed.date().getTime();
+  return parsed.date().getTime()
 }

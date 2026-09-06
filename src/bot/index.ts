@@ -1,5 +1,5 @@
-import { Collection } from '@discordjs/collection';
-import type { BooleanChatInputOption, GatewayShard } from '../types/types';
+import { Collection } from '@discordjs/collection'
+import type { BooleanChatInputOption, GatewayShard } from '../types/types'
 import {
   ActivityType,
   ApplicationCommandOptionType,
@@ -13,26 +13,26 @@ import {
   type RESTPutAPIApplicationCommandsJSONBody,
   type RESTPutAPIApplicationGuildCommandsJSONBody,
   type ToEventProps,
-} from '@discordjs/core';
-import { readDirectory, transformCommand } from '../utils/utils';
-import path from 'path';
-import { REST } from '@discordjs/rest';
-import env from '../utils/env';
-import { CompressionMethod, WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
-import { scheduleReshardCheck } from '../crons/reshard';
-import { events } from '../builders/event';
-import { commands } from '../builders/command';
-import createCollector from '../builders/collector';
-import { fileURLToPath } from 'node:url';
-import { getShardWorkerMemory, handleShardMemoryResponse } from '../utils/shardMemory';
+} from '@discordjs/core'
+import { readDirectory, transformCommand } from '../utils/utils'
+import path from 'path'
+import { REST } from '@discordjs/rest'
+import env from '../utils/env'
+import { CompressionMethod, WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws'
+import { scheduleReshardCheck } from '../crons/reshard'
+import { events } from '../builders/event'
+import { commands } from '../builders/command'
+import createCollector from '../builders/collector'
+import { fileURLToPath } from 'node:url'
+import { getShardMemory, handleShardMemoryResponse } from '../utils/shard'
 
-process.on('uncaughtException', console.error);
-process.on('unhandledRejection', console.error);
+process.on('uncaughtException', console.error)
+process.on('unhandledRejection', console.error)
 
-await readDirectory(path.join(process.cwd(), 'src', 'bot', 'commands'));
-await readDirectory(path.join(process.cwd(), 'src', 'bot', 'events'));
+await readDirectory(path.join(process.cwd(), 'src', 'bot', 'commands'))
+await readDirectory(path.join(process.cwd(), 'src', 'bot', 'events'))
 
-const rest = new REST().setToken(env.get('token', true)!.toString());
+const rest = new REST().setToken(env.get('token', true)!.toString())
 
 const gateway = new WebSocketManager({
   token: env.get('token', true)!.toString(),
@@ -40,31 +40,30 @@ const gateway = new WebSocketManager({
   shardCount: env.get('shard_count')?.toNumber() ?? null,
   rest,
   compression: CompressionMethod.ZlibNative,
-  buildStrategy: (manager) =>
+  buildStrategy: manager =>
     new WorkerShardingStrategy(manager, {
       shardsPerWorker: env.get('shards_per_worker')?.toNumber() ?? 4,
       workerPath: fileURLToPath(new URL('./worker.ts', import.meta.url)),
       unknownPayloadHandler: handleShardMemoryResponse,
     }),
-});
+})
 
 // @ts-expect-error
-const client = new Client({ rest, gateway });
+const client = new Client({ rest, gateway })
 
 // some sort of workaround to have extra utilities
-client.gateway.shards = new Collection<number, GatewayShard>();
-client.gateway.getShardWorkerMemory = getShardWorkerMemory;
+client.gateway.shards = new Collection<number, GatewayShard>()
 
 client.rest.ping = async () => {
-  const start = performance.now();
-  await rest.get(Routes.gateway());
-  return Math.round(performance.now() - start);
-};
+  const start = performance.now()
+  await rest.get(Routes.gateway())
+  return Math.round(performance.now() - start)
+}
 
-client.api.interactions.createCollector = createCollector;
+client.api.interactions.createCollector = createCollector
 
-client.on(GatewayDispatchEvents.Ready, async (payload) => {
-  console.log(`shard #${payload.shardId} is ready!`);
+client.on(GatewayDispatchEvents.Ready, async payload => {
+  console.log(`shard #${payload.shardId} is ready!`)
 
   await client
     .updatePresence(payload.shardId, {
@@ -79,97 +78,93 @@ client.on(GatewayDispatchEvents.Ready, async (payload) => {
       status: PresenceUpdateStatus.Online,
       afk: false,
     })
-    .catch((error) => {
-      console.error(`failed to update presence for shard #${payload.shardId}:`, error);
-    });
-});
+    .catch(error => {
+      console.error(`failed to update presence for shard #${payload.shardId}:`, error)
+    })
+})
 
 // track uptime and latency
 gateway.on(WebSocketShardEvents.Ready, (_, shardId) => {
   client.gateway.shards.set(shardId, {
+    ping: -1,
     uptime: Temporal.Now.instant().epochMilliseconds,
-  });
-});
+    memory: () => getShardMemory(shardId),
+  })
+})
 
 gateway.on(WebSocketShardEvents.HeartbeatComplete, (payload, shardId) => {
-  const shard = client.gateway.shards.get(shardId);
+  const shard = client.gateway.shards.get(shardId)
 
-  if (shard) {
-    shard.ping = payload.latency;
-  }
-});
+  if (shard) shard.ping = payload.latency
+})
 
-events.forEach((event) => {
+events.forEach(event => {
   client.on(
     event.event,
     async (payload: ToEventProps<Extract<GatewayDispatchPayload, { t: typeof event.event }>['d']>) => {
-      await event.run(payload.data, client).catch((error) => {
-        console.error(`an error occurred while running event ${event.event}:`, error);
-      });
+      await event.run(payload.data, client).catch(error => {
+        console.error(`an error occurred while running event ${event.event}:`, error)
+      })
     },
-  );
-});
+  )
+})
 
 if (env.get('register_commands')!.toBoolean() === true) {
-  console.log('refreshing application (/) commands');
+  console.log('refreshing application (/) commands')
 
-  commands.forEach((command) => {
-    if (command.type !== ApplicationCommandType.ChatInput) {
-      return;
-    }
+  commands.forEach(command => {
+    if (command.type !== ApplicationCommandType.ChatInput) return
 
-    command.options ??= [];
+    command.options ??= []
 
-    const subcommands = command.options.flatMap((option) =>
+    const subcommands = command.options.flatMap(option =>
       option.type === ApplicationCommandOptionType.Subcommand
         ? [option]
         : option.type === ApplicationCommandOptionType.SubcommandGroup
           ? (option.options ?? [])
           : [],
-    );
+    )
 
     const subcommandOptions =
-      subcommands.length > 0 ? subcommands.map((subcommand) => (subcommand.options ??= [])) : [command.options];
+      subcommands.length > 0 ? subcommands.map(subcommand => (subcommand.options ??= [])) : [command.options]
 
-    subcommandOptions.forEach((options) => {
-      if (!options.some((o) => o.name === 'ephemeral')) {
+    subcommandOptions.forEach(options => {
+      if (!options.some(o => o.name === 'ephemeral')) {
         options.push({
           type: ApplicationCommandOptionType.Boolean,
           name: 'ephemeral',
           description: 'Whether the response should only be visible to you',
-        } satisfies BooleanChatInputOption);
+        } satisfies BooleanChatInputOption)
       }
-    });
-  });
+    })
+  })
 
-  const globalCommands: RESTPutAPIApplicationCommandsJSONBody = [];
-  const commandsForGuilds = new Collection<string, RESTPutAPIApplicationGuildCommandsJSONBody>();
+  const globalCommands: RESTPutAPIApplicationCommandsJSONBody = []
+  const commandsForGuilds = new Collection<string, RESTPutAPIApplicationGuildCommandsJSONBody>()
 
-  commands.forEach((command) => {
-    const resolved = transformCommand(command);
+  commands.forEach(command => {
+    const resolved = transformCommand(command)
 
     if (!('guilds' in command)) {
-      globalCommands.push(resolved);
+      globalCommands.push(resolved)
 
-      return;
+      return
     }
 
     for (const guildId of command.guilds ?? []) {
-      if (resolved.type === ApplicationCommandType.PrimaryEntryPoint) {
-        return;
-      }
+      if (resolved.type === ApplicationCommandType.PrimaryEntryPoint) return
 
-      const list = commandsForGuilds.get(guildId) ?? [];
-      list.push(resolved);
-      commandsForGuilds.set(guildId, list);
+      const list = commandsForGuilds.get(guildId) ?? []
+      list.push(resolved)
+      commandsForGuilds.set(guildId, list)
     }
-  });
+  })
 
   if (globalCommands.length) {
     await client.api.applicationCommands.bulkOverwriteGlobalCommands(
       atob(env.get('token', true)!.toString().split('.')[0]!),
       globalCommands,
-    );
+    )
   }
 
   for (const [guildId, commandsForGuild] of commandsForGuilds) {
@@ -178,18 +173,18 @@ if (env.get('register_commands')!.toBoolean() === true) {
         atob(env.get('token', true)!.toString().split('.')[0]!),
         guildId,
         commandsForGuild,
-      );
+      )
     }
   }
 
-  console.log('application (/) commands refreshed');
+  console.log('application (/) commands refreshed')
 }
 
 try {
-  await gateway.connect();
+  await gateway.connect()
 
-  console.log('gateway connected');
-  scheduleReshardCheck(gateway, client.api);
+  console.log('gateway connected')
+  scheduleReshardCheck(gateway, client.api)
 } catch (error) {
-  console.error('an error occurred while connecting to the gateway:', error);
+  console.error('an error occurred while connecting to the gateway:', error)
 }

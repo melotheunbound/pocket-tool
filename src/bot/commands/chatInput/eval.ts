@@ -5,10 +5,10 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import util from 'util';
-import { codeblock, ellipsis } from '../../../utils/markdown';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import util from 'util'
+import { codeblock, ellipsis } from '../../../utils/markdown'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -28,27 +28,27 @@ createApplicationCommand({
   dev: true,
   acknowledge: true,
   async run(interaction, options, client) {
-    const { code } = options;
+    const { code } = options
 
-    let result;
+    let result
 
     try {
-      result = eval(code);
+      result = eval(code)
     } catch (error) {
-      result = error;
+      result = error
     }
 
-    let value = result;
+    let value = result
 
     if (result && typeof result.then === 'function') {
       try {
-        value = await result;
+        value = await result
       } catch (error) {
-        value = error;
+        value = error
       }
     }
 
-    const formatted = typeof value === 'string' ? value : util.inspect(value);
+    const formatted = typeof value === 'string' ? value : util.inspect(value)
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
       components: [
@@ -63,6 +63,6 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsComponentsV2,
-    });
+    })
   },
-});
+})

@@ -4,11 +4,11 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
-} from '@discordjs/core';
-import createApplicationCommand from '../../../builders/command';
-import { cdn, emoji, highlight, hyperlink, timestamp } from '../../../utils/markdown';
-import { getTimestampFromSnowflake } from '../../../utils/utils';
-import { TimestampStyle } from '../../../types/types';
+} from '@discordjs/core'
+import createApplicationCommand from '../../../builders/command'
+import { cdn, emoji, highlight, hyperlink, timestamp } from '../../../utils/markdown'
+import { getTimestampFromSnowflake } from '../../../utils/utils'
+import { TimestampStyle } from '../../../types/types'
 
 createApplicationCommand({
   type: ApplicationCommandType.User,
@@ -18,9 +18,9 @@ createApplicationCommand({
   cooldown: 3,
   acknowledge: true,
   async run(interaction, client) {
-    const userId = interaction.data.target_id;
-    const user = interaction.data.resolved.users[userId];
-    const member = interaction.data.resolved.members?.[userId];
+    const userId = interaction.data.target_id
+    const user = interaction.data.resolved.users[userId]
+    const member = interaction.data.resolved.members?.[userId]
 
     if (!user) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -36,9 +36,9 @@ createApplicationCommand({
           },
         ],
         flags: MessageFlags.IsComponentsV2,
-      });
+      })
 
-      return;
+      return
     }
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
@@ -81,7 +81,7 @@ createApplicationCommand({
                       member.roles.length > 0
                         ? `\n\n${emoji('Role')} **Roles:**\n${member.roles
                             .slice(0, 5)
-                            .map((id) => `<@&${id}>`)
+                            .map(id => `<@&${id}>`)
                             .join(', ')}`
                         : ''
                     }${member.roles.length > 5 ? ` ${highlight(`+${(member.roles.length - 5).toLocaleString('en-US')}`)}` : ``}`
@@ -92,6 +92,6 @@ createApplicationCommand({
         },
       ],
       flags: MessageFlags.IsComponentsV2,
-    });
+    })
   },
-});
+})
