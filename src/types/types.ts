@@ -225,7 +225,6 @@ export type ApplicationCommand<Options extends ChatInputOptions = ChatInputOptio
 
 export interface GatewayEvent<Event extends GatewayDispatchEvents = GatewayDispatchEvents> {
   event: Event;
-  once?: boolean;
   run: (args: Extract<GatewayDispatchPayload, { t: Event }>['d'], client: Client) => Promise<void>;
 }
 

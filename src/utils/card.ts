@@ -1029,7 +1029,7 @@ function loadRemoteImage(url: string): Promise<LoadedImage> {
   const request = makeRequest(url, {
     method: RequestMethod.GET,
     response: ResponseType.BUFFER,
-    timeout: 10_000,
+    timeout: 10 * 1000,
   })
     .then((data) => loadImage(data))
     .catch((error) => {

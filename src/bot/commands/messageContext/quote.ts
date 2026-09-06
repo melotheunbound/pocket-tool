@@ -1820,7 +1820,7 @@ async function resolveQuoteContent(message: APIMessage) {
           const data = await makeRequest(cdn(`/emojis/${id}`, undefined, 'png', false), {
             method: RequestMethod.GET,
             response: ResponseType.BUFFER,
-            timeout: 10_000,
+            timeout: 10 * 1000,
           });
 
           return [id, data] as const;
@@ -1851,7 +1851,7 @@ async function resolveQuoteContent(message: APIMessage) {
         let data = await makeRequest(url, {
           method: RequestMethod.GET,
           response: ResponseType.BUFFER,
-          timeout: 10_000,
+          timeout: 10 * 1000,
         });
 
         if (sticker.format_type === StickerFormatType.Lottie) {

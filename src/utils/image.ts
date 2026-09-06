@@ -124,7 +124,7 @@ function loadDefaultPetpetHandFrames(): Promise<Buffer[]> {
       makeRequest(url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
-        timeout: 10_000,
+        timeout: 10 * 1000,
       }),
     ),
   ).catch((error) => {

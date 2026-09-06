@@ -91,28 +91,14 @@ gateway.on(WebSocketShardEvents.HeartbeatComplete, (payload, shardId) => {
 });
 
 events.forEach((event) => {
-  if (event.once) {
-    client.once(
-      event.event,
-      (payload: ToEventProps<Extract<GatewayDispatchPayload, { t: typeof event.event }>['d']>) => {
-        event.run(payload.data, client).catch((error) => {
-          console.error(`an error occurred while running event ${event.event}:`, error);
-        });
-      },
-    );
-  } else {
-    client.on(event.event, (payload: ToEventProps<Extract<GatewayDispatchPayload, { t: typeof event.event }>['d']>) => {
-      event.run(payload.data, client).catch((error) => {
+  client.on(
+    event.event,
+    async (payload: ToEventProps<Extract<GatewayDispatchPayload, { t: typeof event.event }>['d']>) => {
+      await event.run(payload.data, client).catch((error) => {
         console.error(`an error occurred while running event ${event.event}:`, error);
       });
-    });
-  }
-});
-
-await gateway.connect().then(() => {
-  console.log('gateway connected');
-
-  scheduleReshardCheck(gateway, client.api);
+    },
+  );
 });
 
 if (env.get('register_commands')!.toBoolean() === true) {
@@ -188,4 +174,13 @@ if (env.get('register_commands')!.toBoolean() === true) {
   }
 
   console.log('application (/) commands refreshed');
+}
+
+try {
+  await gateway.connect();
+
+  console.log('gateway connected');
+  scheduleReshardCheck(gateway, client.api);
+} catch (error) {
+  console.error('an error occurred while connecting to the gateway:', error);
 }
