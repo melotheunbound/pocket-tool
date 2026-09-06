@@ -1,6 +1,6 @@
 import { ApplicationCommandType, ApplicationIntegrationType, InteractionContextType } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
-import { getShardIdForGuildId } from '../../../utils/utils'
+import { getShardIdForGuildId } from '../../../utils/shard'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -18,7 +18,7 @@ createApplicationCommand({
     const restPing = await client.rest.ping()
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-      content: `Pong!\n-# Gateway (shard #${shardId}): **${wsPing}ms** • REST: **${restPing}ms**`,
+      content: `Pong!\n-# Gateway (Shard #${shardId}): **${wsPing}ms** • REST: **${restPing}ms**`,
     })
   },
 })

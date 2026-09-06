@@ -1,5 +1,5 @@
 import { WorkerBootstrapper } from '@discordjs/ws'
-import { BroadcastChannel, parentPort } from 'node:worker_threads'
+import { BroadcastChannel, parentPort } from 'worker_threads'
 import { SHARD_MEMORY_CHANNEL } from '../utils/shard'
 
 const worker = new WorkerBootstrapper()

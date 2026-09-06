@@ -1,6 +1,6 @@
 import { Collection } from '@discordjs/collection'
-import { randomUUID } from 'node:crypto'
-import { BroadcastChannel, isMainThread } from 'node:worker_threads'
+import { randomUUID } from 'crypto'
+import { BroadcastChannel, isMainThread } from 'worker_threads'
 
 export const SHARD_MEMORY_CHANNEL = 'pocket-tool:shard-memory'
 const REQUEST_TIMEOUT_MS = 5 * 1000
@@ -70,4 +70,8 @@ export function handleShardMemoryResponse(payload: unknown): void {
   clearTimeout(request.timeout)
   pending.delete(response.requestId)
   request.resolve(memory)
+}
+
+export function getShardIdForGuildId(guildId: string, totalShards: number): number {
+  return Number((BigInt(guildId) >> 22n) % BigInt(totalShards))
 }

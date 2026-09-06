@@ -12,11 +12,12 @@ import {
   type ModalSubmitLabelComponent,
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
-import { getShardIdForGuildId, msToReadableTime, readableSize, toComponentEmoji } from '../../../utils/utils'
+import { msToReadableTime, readableSize, toComponentEmoji } from '../../../utils/utils'
 import { emoji, timestamp } from '../../../utils/markdown'
 import { TimestampStyle } from '../../../types/types'
 import { INVITE, SUPPORT } from '../../constants'
 import { redis } from '../../../utils/redis'
+import { getShardIdForGuildId } from '../../../utils/shard'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -103,7 +104,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `-# **Shard #${shardId}:**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> Memory: **${readableSize(memory.rss)} (${readableSize(process.constrainedMemory())})**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
+              content: `-# **Shard #${shardId}:**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> Memory: **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
             },
             {
               type: ComponentType.Separator,
@@ -250,7 +251,7 @@ createApplicationCommand({
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `-# **Shard #${shardId}**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> Memory: **${readableSize(memory.rss)} (${readableSize(process.constrainedMemory())})**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
+                    content: `-# **Shard #${shardId}**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> Memory: **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
                   },
                   {
                     type: ComponentType.Separator,
@@ -314,7 +315,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `-# **Shard #${shardId}**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
+                  content: `-# **Shard #${shardId}**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> Memory: **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
                 },
                 {
                   type: ComponentType.Separator,

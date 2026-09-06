@@ -342,10 +342,6 @@ export async function hasPlus(userId: string, api: API): Promise<boolean> {
   return result.length > 0
 }
 
-export function getShardIdForGuildId(guildId: string, totalShards: number): number {
-  return Number((BigInt(guildId) >> 22n) % BigInt(totalShards))
-}
-
 export function findClosestMatch(input: string, strings: string[]): string | null {
   if (!strings.length) return null
 

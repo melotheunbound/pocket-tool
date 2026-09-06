@@ -23,7 +23,6 @@ import { scheduleReshardCheck } from '../crons/reshard'
 import { events } from '../builders/event'
 import { commands } from '../builders/command'
 import createCollector from '../builders/collector'
-import { fileURLToPath } from 'node:url'
 import { getShardMemory, handleShardMemoryResponse } from '../utils/shard'
 
 process.on('uncaughtException', console.error)
@@ -43,7 +42,7 @@ const gateway = new WebSocketManager({
   buildStrategy: manager =>
     new WorkerShardingStrategy(manager, {
       shardsPerWorker: env.get('shards_per_worker')?.toNumber() ?? 4,
-      workerPath: fileURLToPath(new URL('./worker.ts', import.meta.url)),
+      workerPath: path.join(process.cwd(), 'src', 'bot', 'worker.ts'),
       unknownPayloadHandler: handleShardMemoryResponse,
     }),
 })
@@ -53,13 +52,11 @@ const client = new Client({ rest, gateway })
 
 // some sort of workaround to have extra utilities
 client.gateway.shards = new Collection<number, GatewayShard>()
-
 client.rest.ping = async () => {
   const start = performance.now()
   await rest.get(Routes.gateway())
   return Math.round(performance.now() - start)
 }
-
 client.api.interactions.createCollector = createCollector
 
 client.on(GatewayDispatchEvents.Ready, async payload => {
