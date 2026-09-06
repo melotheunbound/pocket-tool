@@ -4,6 +4,7 @@ import type { Collector, CollectorOptions, GatewayShard } from './types';
 declare module '@discordjs/core' {
   interface Gateway {
     shards: Collection<number, GatewayShard>;
+    getShardWorkerMemory(shardId: number): Promise<NodeJS.MemoryUsage>;
   }
 
   interface InteractionsAPI {

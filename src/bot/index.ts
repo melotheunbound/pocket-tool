@@ -23,6 +23,8 @@ import { scheduleReshardCheck } from '../crons/reshard';
 import { events } from '../builders/event';
 import { commands } from '../builders/command';
 import createCollector from '../builders/collector';
+import { fileURLToPath } from 'node:url';
+import { getShardWorkerMemory, handleShardMemoryResponse } from '../utils/shardMemory';
 
 process.on('uncaughtException', console.error);
 process.on('unhandledRejection', console.error);
@@ -41,6 +43,8 @@ const gateway = new WebSocketManager({
   buildStrategy: (manager) =>
     new WorkerShardingStrategy(manager, {
       shardsPerWorker: env.get('shards_per_worker')?.toNumber() ?? 4,
+      workerPath: fileURLToPath(new URL('./worker.ts', import.meta.url)),
+      unknownPayloadHandler: handleShardMemoryResponse,
     }),
 });
 
@@ -49,6 +53,7 @@ const client = new Client({ rest, gateway });
 
 // some sort of workaround to have extra utilities
 client.gateway.shards = new Collection<number, GatewayShard>();
+client.gateway.getShardWorkerMemory = getShardWorkerMemory;
 
 client.rest.ping = async () => {
   const start = performance.now();
@@ -61,18 +66,22 @@ client.api.interactions.createCollector = createCollector;
 client.on(GatewayDispatchEvents.Ready, async (payload) => {
   console.log(`shard #${payload.shardId} is ready!`);
 
-  await client.updatePresence(payload.shardId, {
-    since: null,
-    activities: [
-      {
-        type: ActivityType.Custom,
-        name: 'shardId',
-        state: `You're on shard #${payload.shardId}!`,
-      },
-    ],
-    status: PresenceUpdateStatus.Online,
-    afk: false,
-  });
+  await client
+    .updatePresence(payload.shardId, {
+      since: null,
+      activities: [
+        {
+          type: ActivityType.Custom,
+          name: 'shardId',
+          state: `You're on shard #${payload.shardId}!`,
+        },
+      ],
+      status: PresenceUpdateStatus.Online,
+      afk: false,
+    })
+    .catch((error) => {
+      console.error(`failed to update presence for shard #${payload.shardId}:`, error);
+    });
 });
 
 // track uptime and latency
