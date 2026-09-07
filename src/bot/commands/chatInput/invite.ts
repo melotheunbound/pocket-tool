@@ -10,24 +10,36 @@ import createApplicationCommand from '../../../builders/command'
 import { cdn, emoji, highlight, timestamp } from '../../../utils/markdown'
 import { getTimestampFromSnowflake } from '../../../utils/utils'
 import { HighlightStyle, TimestampStyle } from '../../../types/types'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'invite',
-  description: 'View information about an invite',
+  name: {
+    global: 'invite',
+    'pt-BR': 'convite',
+  },
+  description: {
+    global: 'View information about an invite',
+    'pt-BR': 'Veja informações sobre um convite',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   options: [
     {
       type: ApplicationCommandOptionType.String,
       name: 'link',
-      description: 'The invite link to view',
+      description: {
+        global: 'The invite link to view',
+        'pt-BR': 'O link do convite para visualizar',
+      },
       required: true,
     },
   ],
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
+    const l = interaction.locale
+
     const { link } = options
 
     const code = link
@@ -42,7 +54,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please provide an invite link to view information about.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.invite.invalid_link')}`,
               },
             ],
           },
@@ -63,7 +75,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please provide a valid invite link to view information about.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.invite.invalid_link')}`,
               },
             ],
           },
@@ -99,7 +111,7 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${emoji('Calendar')} **Created At:**\n${timestamp(getTimestampFromSnowflake(invite.guild.id), TimestampStyle.LongDate)}\n\n${emoji('People')} ${highlight(invite.approximate_member_count?.toLocaleString('en-US'), HighlightStyle.Bold)}   ${emoji('Boost')} ${highlight(invite.guild.premium_subscription_count?.toLocaleString('en-US'))}`,
+              content: `${emoji('Calendar')} **${t(l, 'invite.created_at')}**\n${timestamp(getTimestampFromSnowflake(invite.guild.id), TimestampStyle.LongDate)}\n\n${emoji('People')} ${highlight(invite.approximate_member_count?.toLocaleString('en-US'), HighlightStyle.Bold)}   ${emoji('Boost')} ${highlight(invite.guild.premium_subscription_count?.toLocaleString('en-US'))}`,
             },
           ],
         },

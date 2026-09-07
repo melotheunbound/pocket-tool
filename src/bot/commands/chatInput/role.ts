@@ -12,24 +12,39 @@ import createApplicationCommand from '../../../builders/command'
 import { cdn, emoji, highlight, timestamp } from '../../../utils/markdown'
 import { getTimestampFromSnowflake } from '../../../utils/utils'
 import { TimestampStyle } from '../../../types/types'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'role',
-  description: 'View information about a role',
+  name: {
+    global: 'role',
+    'pt-BR': 'cargo',
+  },
+  description: {
+    global: 'View information about a role',
+    'pt-BR': 'Veja informações sobre um cargo',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.Guild],
   options: [
     {
       type: ApplicationCommandOptionType.Role,
-      name: 'role',
-      description: 'The role to view',
+      name: {
+        global: 'role',
+        'pt-BR': 'cargo',
+      },
+      description: {
+        global: 'The role to view',
+        'pt-BR': 'O cargo a ser visualizado',
+      },
       required: true,
     },
   ],
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
+    const l = interaction.locale
+
     const { role } = options
 
     const permissions = formatPermissions(role.permissions)
@@ -71,7 +86,7 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${emoji('Calendar')} **Created At:**\n${timestamp(getTimestampFromSnowflake(role.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(role.id), TimestampStyle.RelativeTime)})\n\n> Hoisted: **${role.hoist ? 'Yes' : 'No'}**\n> Mentionable: **${role.mentionable ? 'Yes' : 'No'}**\n> Managed: **${role.managed ? 'Yes' : 'No'}**\n> Position: **${role.position}**\n> Colors: **#${role.colors.primary_color.toString(16).padStart(6, '0')}${role.colors.secondary_color ? `, #${role.colors.secondary_color.toString(16).padStart(6, '0')}` : ''}${role.colors.tertiary_color ? `, #${role.colors.tertiary_color.toString(16).padStart(6, '0')}` : ''}**\n> Permissions: **${shownPermissions.join(', ') || 'None'}**${extraPermissions > 0 ? ` \`+${extraPermissions}\`` : ''}`,
+              content: `${emoji('Calendar')} **${t(l, 'commands.role.created_at')}**\n${timestamp(getTimestampFromSnowflake(role.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(role.id), TimestampStyle.RelativeTime)})\n\n> ${t(l, 'commands.role.hoisted')}: **${role.hoist ? t(l, 'commands.role.yes') : t(l, 'commands.role.no')}**\n> ${t(l, 'commands.role.mentionable')}: **${role.mentionable ? t(l, 'commands.role.yes') : t(l, 'commands.role.no')}**\n> ${t(l, 'commands.role.managed')}: **${role.managed ? t(l, 'commands.role.yes') : t(l, 'commands.role.no')}**\n> ${t(l, 'commands.role.position')}: **${role.position}**\n> ${t(l, 'commands.role.colors')}: **#${role.colors.primary_color.toString(16).padStart(6, '0')}${role.colors.secondary_color ? `, #${role.colors.secondary_color.toString(16).padStart(6, '0')}` : ''}${role.colors.tertiary_color ? `, #${role.colors.tertiary_color.toString(16).padStart(6, '0')}` : ''}**\n> ${t(l, 'commands.role.permissions')}: **${shownPermissions.join(', ') || 'None'}**${extraPermissions > 0 ? ` \`+${extraPermissions}\`` : ''}`,
             },
           ],
         },

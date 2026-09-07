@@ -21,117 +21,225 @@ import { cdn } from '../../../utils/markdown'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'image',
-  description: 'Play around with image manipulation',
+  name: {
+    global: 'image',
+    'pt-BR': 'imagem',
+  },
+  description: {
+    global: 'Play around with image manipulation',
+    'pt-BR': 'Brinque com manipulação de imagens',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   options: [
     {
       type: ApplicationCommandOptionType.Subcommand,
-      name: 'caption',
-      description: 'Add a caption to an image',
+      name: {
+        global: 'caption',
+        'pt-BR': 'legenda',
+      },
+      description: {
+        global: 'Add a caption to an image',
+        'pt-BR': 'Adicione uma legenda a uma imagem',
+      },
       options: [
         {
           type: ApplicationCommandOptionType.Attachment,
-          name: 'image',
-          description: 'The image to add a caption to',
+          name: {
+            global: 'attachment',
+            'pt-BR': 'anexo',
+          },
+          description: {
+            global: 'The image to add a caption to',
+            'pt-BR': 'A imagem para adicionar uma legenda',
+          },
           required: true,
         },
         {
           type: ApplicationCommandOptionType.String,
-          name: 'caption',
-          description: 'The caption to add to the image',
+          name: {
+            global: 'text',
+            'pt-BR': 'texto',
+          },
+          description: {
+            global: 'The caption to add to the image',
+            'pt-BR': 'A legenda para adicionar à imagem',
+          },
           required: true,
         },
       ],
     },
     {
       type: ApplicationCommandOptionType.Subcommand,
-      name: 'grayscale',
-      description: 'Convert an image to grayscale',
+      name: {
+        global: 'grayscale',
+        'pt-BR': 'preto-e-branco',
+      },
+      description: {
+        global: 'Convert an image to grayscale',
+        'pt-BR': 'Converta uma imagem para tons de cinza',
+      },
       options: [
         {
           type: ApplicationCommandOptionType.Attachment,
-          name: 'image',
-          description: 'The image to convert to grayscale',
+          name: {
+            global: 'attachment',
+            'pt-BR': 'anexo',
+          },
+          description: {
+            global: 'The image to convert to grayscale',
+            'pt-BR': 'A imagem para converter para tons de cinza',
+          },
           required: true,
         },
       ],
     },
     {
       type: ApplicationCommandOptionType.Subcommand,
-      name: 'blur',
-      description: 'Apply a blur effect to an image',
+      name: {
+        global: 'blur',
+        'pt-BR': 'desfocar',
+      },
+      description: {
+        global: 'Apply a blur effect to an image',
+        'pt-BR': 'Aplicar um efeito de desfoque a uma imagem',
+      },
       options: [
         {
           type: ApplicationCommandOptionType.Attachment,
-          name: 'image',
-          description: 'The image to apply a blur effect to',
+          name: {
+            global: 'attachment',
+            'pt-BR': 'anexo',
+          },
+          description: {
+            global: 'The image to apply a blur effect to',
+            'pt-BR': 'A imagem para aplicar um efeito de desfoque',
+          },
           required: true,
         },
       ],
     },
     {
       type: ApplicationCommandOptionType.Subcommand,
-      name: 'flip',
-      description: 'Flip an image vertically',
+      name: {
+        global: 'flip',
+        'pt-BR': 'virar',
+      },
+      description: {
+        global: 'Flip an image vertically',
+        'pt-BR': 'Virar uma imagem verticalmente',
+      },
       options: [
         {
           type: ApplicationCommandOptionType.Attachment,
-          name: 'image',
-          description: 'The image to flip vertically',
+          name: {
+            global: 'attachment',
+            'pt-BR': 'anexo',
+          },
+          description: {
+            global: 'The image to flip vertically',
+            'pt-BR': 'A imagem para virar verticalmente',
+          },
           required: true,
         },
       ],
     },
     {
       type: ApplicationCommandOptionType.Subcommand,
-      name: 'flop',
-      description: 'Flip an image horizontally',
+      name: {
+        global: 'flop',
+        'pt-BR': 'flop',
+      },
+      description: {
+        global: 'Flip an image horizontally',
+        'pt-BR': 'Virar uma imagem horizontalmente',
+      },
       options: [
         {
           type: ApplicationCommandOptionType.Attachment,
-          name: 'image',
-          description: 'The image to flip horizontally',
+          name: {
+            global: 'attachment',
+            'pt-BR': 'anexo',
+          },
+          description: {
+            global: 'The image to flip horizontally',
+            'pt-BR': 'A imagem para virar horizontalmente',
+          },
           required: true,
         },
       ],
     },
     {
       type: ApplicationCommandOptionType.Subcommand,
-      name: 'speech-bubble',
-      description: 'Add a speech bubble to an image',
+      name: {
+        global: 'speech-bubble',
+        'pt-BR': 'balao-de-fala',
+      },
+      description: {
+        global: 'Add a speech bubble to an image',
+        'pt-BR': 'Adicionar um balão de fala a uma imagem',
+      },
       options: [
         {
           type: ApplicationCommandOptionType.Attachment,
-          name: 'image',
-          description: 'The image to add a speech bubble to',
+          name: {
+            global: 'attachment',
+            'pt-BR': 'anexo',
+          },
+          description: {
+            global: 'The image to add a speech bubble to',
+            'pt-BR': 'A imagem para adicionar um balão de fala',
+          },
           required: true,
         },
       ],
     },
     {
       type: ApplicationCommandOptionType.Subcommand,
-      name: 'petpet',
-      description: 'Add a petpet effect to an image',
+      name: {
+        global: 'petpet',
+        'pt-BR': 'petpet',
+      },
+      description: {
+        global: 'Add a petpet effect to an image',
+        'pt-BR': 'Adicionar um efeito petpet a uma imagem',
+      },
       options: [
         {
           type: ApplicationCommandOptionType.User,
-          name: 'user',
-          description: 'The  user whose avatar to add a petpet effect to',
+          name: {
+            global: 'target',
+            'pt-BR': 'alvo',
+          },
+          description: {
+            global: 'The user whose avatar to add a petpet effect to',
+            'pt-BR': 'O usuário cujo avatar adicionar um efeito petpet',
+          },
           required: false,
         },
         {
           type: ApplicationCommandOptionType.String,
-          name: 'scope',
-          description: 'the scope of the avatar to petpet',
+          name: {
+            global: 'scope',
+            'pt-BR': 'escopo',
+          },
+          description: {
+            global: 'the scope of the avatar to petpet',
+            'pt-BR': 'o escopo do avatar a petpet',
+          },
           choices: [
             {
-              name: 'Global',
+              name: {
+                global: 'Global',
+                'pt-BR': 'Global',
+              },
               value: 'global',
             },
             {
-              name: 'Server',
+              name: {
+                global: 'Server',
+                'pt-BR': 'Servidor',
+              },
               value: 'server',
             },
           ],
@@ -146,9 +254,9 @@ createApplicationCommand({
     const { caption, grayscale, blur, flip, flop, 'speech-bubble': speechBubble, petpet } = options
 
     if (caption) {
-      const { image, caption: text } = caption
+      const { attachment, text } = caption
 
-      const buffer = await makeRequest(image.url, {
+      const buffer = await makeRequest(attachment.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
       })
@@ -170,9 +278,9 @@ createApplicationCommand({
         ],
       })
     } else if (grayscale) {
-      const { image } = grayscale
+      const { attachment } = grayscale
 
-      const buffer = await makeRequest(image.url, {
+      const buffer = await makeRequest(attachment.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
       })
@@ -194,9 +302,9 @@ createApplicationCommand({
         ],
       })
     } else if (blur) {
-      const { image } = blur
+      const { attachment } = blur
 
-      const buffer = await makeRequest(image.url, {
+      const buffer = await makeRequest(attachment.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
       })
@@ -218,9 +326,9 @@ createApplicationCommand({
         ],
       })
     } else if (flip) {
-      const { image } = flip
+      const { attachment } = flip
 
-      const buffer = await makeRequest(image.url, {
+      const buffer = await makeRequest(attachment.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
       })
@@ -242,9 +350,9 @@ createApplicationCommand({
         ],
       })
     } else if (flop) {
-      const { image } = flop
+      const { attachment } = flop
 
-      const buffer = await makeRequest(image.url, {
+      const buffer = await makeRequest(attachment.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
       })
@@ -266,9 +374,9 @@ createApplicationCommand({
         ],
       })
     } else if (speechBubble) {
-      const { image } = speechBubble
+      const { attachment } = speechBubble
 
-      const buffer = await makeRequest(image.url, {
+      const buffer = await makeRequest(attachment.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
       })
@@ -290,7 +398,7 @@ createApplicationCommand({
         ],
       })
     } else if (petpet) {
-      let { user: target, scope } = petpet
+      let { target, scope } = petpet
 
       if (!target) {
         target = {

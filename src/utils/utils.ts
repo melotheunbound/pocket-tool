@@ -1,6 +1,5 @@
 import { join } from 'path'
 import { pathToFileURL } from 'url'
-import { readdir } from 'fs/promises'
 import { Emoji } from '../bot/constants'
 import type { ApplicationCommand, ChatInputOptions, Localization } from '../types/types'
 import {
@@ -17,6 +16,7 @@ import {
   type RESTPostAPIApplicationGuildCommandsJSONBody,
   type Snowflake,
 } from '@discordjs/core'
+import { readdir } from 'fs/promises'
 
 export async function readDirectory(folder: string): Promise<void> {
   const files = await readdir(folder, { recursive: true })
@@ -29,7 +29,7 @@ export async function readDirectory(folder: string): Promise<void> {
     const fullPath = join(folder, filename)
 
     await import(pathToFileURL(fullPath).href).catch(error =>
-      console.log(`cannot import file (${fullPath}) for reason:`, error),
+      console.log(`Cannot import file (${fullPath}) for reason:`, error),
     )
   }
 }

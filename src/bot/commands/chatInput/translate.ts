@@ -13,31 +13,56 @@ import { RequestMethod, ResponseType } from '../../../types/types'
 import { emoji } from '../../../utils/markdown'
 import { AZURE_LANGUAGES } from '../../constants'
 import env from '../../../utils/env'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'translate',
-  description: 'Translates the given text into almost any language',
+  name: {
+    global: 'translate',
+    'pt-BR': 'traduzir',
+  },
+  description: {
+    global: 'Translates the given text into almost any language',
+    'pt-BR': 'Traduz o texto fornecido para quase qualquer idioma',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   options: [
     {
       type: ApplicationCommandOptionType.String,
-      name: 'text',
-      description: 'The text to translate',
+      name: {
+        global: 'text',
+        'pt-BR': 'texto',
+      },
+      description: {
+        global: 'The text to translate',
+        'pt-BR': 'O texto a ser traduzido',
+      },
       required: true,
     },
     {
       type: ApplicationCommandOptionType.String,
-      name: 'from',
-      description: 'The language to translate from',
+      name: {
+        global: 'from',
+        'pt-BR': 'de',
+      },
+      description: {
+        global: 'The language to translate from',
+        'pt-BR': 'O idioma para traduzir de',
+      },
       required: false,
       autocomplete: true,
     },
     {
       type: ApplicationCommandOptionType.String,
-      name: 'to',
-      description: 'The language to translate to',
+      name: {
+        global: 'to',
+        'pt-BR': 'para',
+      },
+      description: {
+        global: 'The language to translate to',
+        'pt-BR': 'O idioma para traduzir para',
+      },
       required: false,
       autocomplete: true,
     },
@@ -57,6 +82,9 @@ createApplicationCommand({
         const choices = [
           {
             name: 'Detect Automatically',
+            nameLocalizations: {
+              'pt-BR': 'Detectar Automáticamente',
+            },
             value: 'auto',
           },
           ...languages.map(language => ({
@@ -73,6 +101,9 @@ createApplicationCommand({
         const choices = [
           {
             name: 'Use My Locale',
+            nameLocalizations: {
+              'pt-BR': 'Usar Meu Locale',
+            },
             value: 'auto',
           },
           ...languages.map(language => ({
@@ -88,6 +119,8 @@ createApplicationCommand({
     }
   },
   async run(interaction, options, client) {
+    const l = interaction.locale
+
     const { text: rawText, from, to } = options
 
     const azureApiKey = env.get('azure_api_key')?.toString()
@@ -100,7 +133,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Wrong')} The Microsoft Azure API key is not set.`,
+                content: `${emoji('Wrong')} ${t(l, 'commands.translate.missing_api_key')}`,
               },
             ],
           },
@@ -121,7 +154,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please provide some text to translate.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.translate.no_text')}`,
               },
             ],
           },
@@ -177,7 +210,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `> ${emoji('Translate')} Translated from **${sourceLanguage.flag ? `${sourceLanguage.flag} ` : ''}${sourceLanguage.name}** to **${targetLanguage.flag ? `${targetLanguage.flag} ` : ''}${targetLanguage.name}**`,
+              content: `> ${emoji('Translate')} ${t(l, 'commands.translate.translated', { sourceFlag: sourceLanguage.flag ? `${sourceLanguage.flag} ` : '', sourceLanguage: sourceLanguage.name, targetFlag: targetLanguage.flag ? `${targetLanguage.flag} ` : '', targetLanguage: targetLanguage.name })}`,
             },
             {
               type: ComponentType.Separator,
@@ -186,7 +219,7 @@ createApplicationCommand({
               type: ComponentType.TextDisplay,
               content: `${translation[0].translations[0].text}${
                 to === undefined || to === 'auto'
-                  ? `\n\n-# ${emoji('Exclamation')} The target language was selected based on the user's locale`
+                  ? `\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.translate.auto_detected_target')}`
                   : ''
               }`,
             },

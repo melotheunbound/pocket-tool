@@ -9,30 +9,46 @@ import {
   type APIMessageTopLevelComponent,
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
-import { findClosestMatch, getAutocompleteFocusedOption } from '../../../utils/utils'
+import { findClosestMatch, getAutocompleteFocusedOption, toComponentEmoji } from '../../../utils/utils'
 import env from '../../../utils/env'
 import { emoji, hyperlink, timestamp } from '../../../utils/markdown'
 import { makeRequest } from '../../../utils/request'
 import { RequestMethod, ResponseType, TimestampStyle } from '../../../types/types'
 import { AZURE_LANGUAGES } from '../../constants'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'tweet',
-  description: 'Display a tweet preview',
+  name: {
+    global: 'tweet',
+    'pt-BR': 'tweet',
+  },
+  description: {
+    global: 'Display a tweet preview',
+    'pt-BR': 'Visualize uma prévia de tweet',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   options: [
     {
       type: ApplicationCommandOptionType.String,
       name: 'url',
-      description: 'The URL or ID of the tweet',
+      description: {
+        global: 'The URL or ID of the tweet',
+        'pt-BR': 'A URL ou ID do tweet',
+      },
       required: true,
     },
     {
       type: ApplicationCommandOptionType.String,
-      name: 'language',
-      description: 'The language of the tweet (auto for Discord locale)',
+      name: {
+        global: 'language',
+        'pt-BR': 'idioma',
+      },
+      description: {
+        global: 'The language of the tweet (auto for Discord locale)',
+        'pt-BR': 'O idioma do tweet (auto para o idioma do Discord)',
+      },
       required: false,
       autocomplete: true,
     },
@@ -50,6 +66,9 @@ createApplicationCommand({
     const choices = [
       {
         name: 'Use My Locale',
+        name_localizations: {
+          'pt-BR': 'Use Meu Locale',
+        },
         value: 'auto',
       },
       ...languages.map(language => ({
@@ -61,6 +80,8 @@ createApplicationCommand({
     await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices })
   },
   async run(interaction, options, client) {
+    const l = interaction.locale
+
     const { url, language } = options
 
     const tolgchuTwitterApiKey = env.get('tolgchu_twitter_api_key')?.toString()
@@ -73,7 +94,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Wrong')} The Tolgchu Twitter API key is not set.`,
+                content: `${emoji('Wrong')} ${t(l, 'commands.tweet.missing_api_key')}`,
               },
             ],
           },
@@ -94,7 +115,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please provide a valid tweet URL or ID to view the tweet.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.tweet.invalid_tweet')}`,
               },
             ],
           },
@@ -131,7 +152,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `${emoji('Wrong')} The Microsoft Azure API key is not set.`,
+                  content: `${emoji('Wrong')} ${t(l, 'commands.tweet.missing_api_key_2')}`,
                 },
               ],
             },
@@ -194,14 +215,14 @@ createApplicationCommand({
           ? ([
               {
                 type: ComponentType.TextDisplay,
-                content: `-# *Quoting ${hyperlink(`https://x.com/${tweet.quotedPost?.author.username}/status/${tweet.quotedPost?.id}`, 'this tweet')}, posted by ${hyperlink(`https://x.com/${tweet.quotedPost?.author.username}`, `@${tweet.quotedPost?.author.username}`)}*`,
+                content: `-# ${t(l, 'commands.tweet.quoting_tweet', { tweet: hyperlink(`https://x.com/${tweet.quotedPost?.author.username}/status/${tweet.quotedPost?.id}`, 'this tweet'), author: hyperlink(`https://x.com/${tweet.quotedPost?.author.username}`, `@${tweet.quotedPost?.author.username}`) })}`,
               },
             ] satisfies APIMessageTopLevelComponent[])
           : tweet.parentPost
             ? ([
                 {
                   type: ComponentType.TextDisplay,
-                  content: `-# *Replying to ${hyperlink(`https://x.com/${tweet.parentPost?.author.username}/status/${tweet.parentPost?.id}`, 'this tweet')}, posted by ${hyperlink(`https://x.com/${tweet.parentPost?.author.username}`, `@${tweet.parentPost?.author.username}`)}*`,
+                  content: `-# ${t(l, 'commands.tweet.replying_to_tweet', { tweet: hyperlink(`https://x.com/${tweet.parentPost?.author.username}/status/${tweet.parentPost?.id}`, 'this tweet'), author: hyperlink(`https://x.com/${tweet.parentPost?.author.username}`, `@${tweet.parentPost?.author.username}`) })}`,
                 },
               ] satisfies APIMessageTopLevelComponent[])
             : []),
@@ -210,7 +231,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `-# Posted by ${tweet.author.isVerified ? `${emoji('Verified')} ` : ''}**${tweet.author.name} (${hyperlink(`https://x.com/${tweet.author.username}`, `@${tweet.author.username}`)})**${content ? `\n\n${content}` : ''}`,
+              content: `-# ${t(l, 'commands.tweet.posted_by', { verified: tweet.author.isVerified ? `${emoji('Verified')} ` : '', author: tweet.author.name, username: hyperlink(`https://x.com/${tweet.author.username}`, `@${tweet.author.username}`), content: content ? `\n\n${content}` : '' })}`,
             },
             ...(tweet.media.length > 0
               ? ([
@@ -228,7 +249,7 @@ createApplicationCommand({
               ? ([
                   {
                     type: ComponentType.TextDisplay,
-                    content: '-# Translated tweets may be inaccurate or may not reflect the original content',
+                    content: `-# ${t(l, 'commands.tweet.translated')}`,
                   },
                 ] satisfies APIMessageTopLevelComponent[])
               : []),
@@ -249,8 +270,9 @@ createApplicationCommand({
               ],
               accessory: {
                 type: ComponentType.Button,
+                label: t(l, 'commands.tweet.button.view'),
+                emoji: toComponentEmoji('Link'),
                 url: `https://x.com/${tweet.author.username}/status/${tweetId}`,
-                label: 'View Tweet',
                 style: ButtonStyle.Link,
               },
             },

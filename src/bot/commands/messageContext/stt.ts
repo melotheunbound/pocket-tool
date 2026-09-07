@@ -12,15 +12,21 @@ import { makeRequest } from '../../../utils/request'
 import { RequestMethod, ResponseType, TimestampStyle } from '../../../types/types'
 import { redis } from '../../../utils/redis'
 import { hasPlus } from '../../../utils/utils'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.Message,
-  name: 'Speech to Text',
+  name: {
+    global: 'Speech to Text',
+    'pt-BR': 'Fala para Texto',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   cooldown: 5,
   acknowledge: true,
   async run(interaction, client) {
+    const l = interaction.locale
+
     const elevenLabsApiKey = env.get('eleven_labs_api_key')?.toString()
 
     if (!elevenLabsApiKey) {
@@ -31,7 +37,28 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Wrong')} The Eleven Labs API key is not set.`,
+                content: `${emoji('Wrong')} ${t(l, 'commands.stt.missing_api_key')}`,
+              },
+            ],
+          },
+        ],
+        flags: MessageFlags.IsComponentsV2,
+      })
+
+      return
+    }
+
+    const message = interaction.data.resolved.messages[interaction.data.target_id]
+
+    if (message?.message_snapshots && message.message_snapshots.length > 0) {
+      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+        components: [
+          {
+            type: ComponentType.Container,
+            components: [
+              {
+                type: ComponentType.TextDisplay,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.stt.forwarded')}`,
               },
             ],
           },
@@ -60,28 +87,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} You have reached your daily STT limit of ${limit} messages. Try again ${timestamp(resetAt.epochMilliseconds, TimestampStyle.RelativeTime)}.`,
-              },
-            ],
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      })
-
-      return
-    }
-
-    const message = interaction.data.resolved.messages[interaction.data.target_id]
-
-    if (message?.message_snapshots && message.message_snapshots.length > 0) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.Container,
-            components: [
-              {
-                type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Forwarded messages are currently unsupported.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.stt.limit', { limit, timestamp: timestamp(resetAt.epochMilliseconds, TimestampStyle.RelativeTime) })}`,
               },
             ],
           },
@@ -104,7 +110,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please select a voice message to transcribe.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.stt.no_voice_message')}`,
               },
             ],
           },
@@ -125,7 +131,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Voice message must be shorter than ${plus ? '5' : '1'} minutes.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.stt.voice_message_length', { max: plus ? 5 : 1 })}`,
               },
             ],
           },

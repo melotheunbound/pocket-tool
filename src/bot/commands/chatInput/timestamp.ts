@@ -11,67 +11,119 @@ import { parse } from 'chrono-node'
 import { emoji, timestamp } from '../../../utils/markdown'
 import type { TimestampStyle } from '../../../types/types'
 import { getAutocompleteFocusedOption } from '../../../utils/utils'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'timestamp',
-  description: 'Generates a Discord-style timestamp for the given time',
+  name: {
+    global: 'timestamp',
+    'pt-BR': 'timestamp',
+  },
+  description: {
+    global: 'Generates a Discord-style timestamp for the given time',
+    'pt-BR': 'Gera um timestamp do Discord para o tempo dado',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   options: [
     {
       type: ApplicationCommandOptionType.String,
-      name: 'time',
-      description: 'The time to convert to a timestamp',
+      name: {
+        global: 'time',
+        'pt-BR': 'tempo',
+      },
+      description: {
+        global: 'The time to convert to a timestamp',
+        'pt-BR': 'O tempo a ser convertido em timestamp',
+      },
       required: true,
     },
     {
       type: ApplicationCommandOptionType.String,
-      name: 'timezone',
-      description: 'The timezone to use for the timestamp',
+      name: {
+        global: 'timezone',
+        'pt-BR': 'fuso-horário',
+      },
+      description: {
+        global: 'The timezone to use for the timestamp',
+        'pt-BR': 'O fuso horário a ser usado para o timestamp',
+      },
       required: false,
       autocomplete: true,
     },
     {
       type: ApplicationCommandOptionType.String,
-      name: 'style',
-      description: 'The timestamp style to use',
+      name: {
+        global: 'style',
+        'pt-BR': 'estilo',
+      },
+      description: {
+        global: 'The timestamp style to use',
+        'pt-BR': 'O estilo do timestamp a ser usado',
+      },
       required: false,
       choices: [
         {
-          name: 'Short Time',
+          name: {
+            global: 'Short Time',
+            'pt-BR': 'Tempo curto',
+          },
           value: 't',
         },
         {
-          name: 'Medium Time',
+          name: {
+            global: 'Medium Time',
+            'pt-BR': 'Tempo médio',
+          },
           value: 'T',
         },
         {
-          name: 'Short Date',
+          name: {
+            global: 'Short Date',
+            'pt-BR': 'Data curta',
+          },
           value: 'd',
         },
         {
-          name: 'Long Date',
+          name: {
+            global: 'Long Date',
+            'pt-BR': 'Data longa',
+          },
           value: 'D',
         },
         {
-          name: 'Long Date and Short Time',
+          name: {
+            global: 'Long Date and Short Time',
+            'pt-BR': 'Data longa e tempo curto',
+          },
           value: 'f',
         },
         {
-          name: 'Full Date and Short Time',
+          name: {
+            global: 'Full Date and Short Time',
+            'pt-BR': 'Data completa e tempo curto',
+          },
           value: 'F',
         },
         {
-          name: 'Short Date and Short Time',
+          name: {
+            global: 'Short Date and Short Time',
+            'pt-BR': 'Data curta e tempo curto',
+          },
           value: 's',
         },
         {
-          name: 'Short Date and Medium Time',
+          name: {
+            global: 'Short Date and Medium Time',
+            'pt-BR': 'Data curta e tempo médio',
+          },
           value: 'S',
         },
         {
-          name: 'Relative Time',
+          name: {
+            global: 'Relative Time',
+            'pt-BR': 'Tempo relativo',
+          },
           value: 'R',
         },
       ],
@@ -102,6 +154,8 @@ createApplicationCommand({
     await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices })
   },
   async run(interaction, options, client) {
+    const l = interaction.locale
+
     const { time, timezone, style } = options
 
     const date = parseDate(time, timezone ?? 'UTC')
@@ -114,7 +168,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please provide a valid time to convert.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.timestamp.invalid_time')}`,
               },
             ],
           },

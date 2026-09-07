@@ -4,8 +4,14 @@ import { getShardIdForGuildId } from '../../../utils/shard'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'ping',
-  description: 'Pong!',
+  name: {
+    global: 'ping',
+    'pt-BR': 'ping',
+  },
+  description: {
+    global: 'Pong!',
+    'pt-BR': 'Pong!',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   acknowledge: true,

@@ -9,15 +9,21 @@ import createApplicationCommand from '../../../builders/command'
 import { cdn, emoji, highlight, hyperlink, timestamp } from '../../../utils/markdown'
 import { getTimestampFromSnowflake } from '../../../utils/utils'
 import { TimestampStyle } from '../../../types/types'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.User,
-  name: 'View User Profile',
+  name: {
+    global: 'View User Profile',
+    'pt-BR': 'Ver Perfil do Usuário',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   cooldown: 3,
   acknowledge: true,
   async run(interaction, client) {
+    const l = interaction.locale
+
     const userId = interaction.data.target_id
     const user = interaction.data.resolved.users[userId]
     const member = interaction.data.resolved.members?.[userId]
@@ -30,7 +36,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please select a valid user to view information for.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.user.no_user')}`,
               },
             ],
           },
@@ -75,18 +81,18 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${emoji('Calendar')} **Created:**\n${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})${
+              content: `${emoji('Calendar')} **${t(l, 'commands.user.created_at')}**\n${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})${
                 member
-                  ? `\n\n${emoji('Newbie')} **Joined:**\n${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.RelativeTime)})${
+                  ? `\n\n${emoji('Newbie')} **${t(l, 'commands.user.joined_at')}**\n${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.RelativeTime)})${
                       member.roles.length > 0
-                        ? `\n\n${emoji('Role')} **Roles:**\n${member.roles
+                        ? `\n\n${emoji('Role')} **${t(l, 'commands.user.roles')}**\n${member.roles
                             .slice(0, 5)
                             .map(id => `<@&${id}>`)
                             .join(', ')}`
                         : ''
                     }${member.roles.length > 5 ? ` ${highlight(`+${(member.roles.length - 5).toLocaleString('en-US')}`)}` : ``}`
                   : ''
-              }\n\n-# ${emoji('Exclamation')} Due to Discord limitations, this profile can't be fully displayed. ${hyperlink(`discord://-/users/${user.id}`, 'Open it in Discord.')}`,
+              }\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.user.footer.text', { profile: hyperlink(`discord://-/users/${user.id}`, t(l, 'commands.user.footer.profile')) })}`,
             },
           ],
         },

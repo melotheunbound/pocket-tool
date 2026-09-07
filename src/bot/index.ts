@@ -15,7 +15,6 @@ import {
   type ToEventProps,
 } from '@discordjs/core'
 import { readDirectory, transformCommand } from '../utils/utils'
-import path from 'path'
 import { REST } from '@discordjs/rest'
 import env from '../utils/env'
 import { CompressionMethod, WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws'
@@ -24,12 +23,13 @@ import { events } from '../builders/event'
 import { commands } from '../builders/command'
 import createCollector from '../builders/collector'
 import { getShardMemory, handleShardMemoryResponse } from '../utils/shard'
+import { join } from 'path'
 
 process.on('uncaughtException', console.error)
 process.on('unhandledRejection', console.error)
 
-await readDirectory(path.join(process.cwd(), 'src', 'bot', 'commands'))
-await readDirectory(path.join(process.cwd(), 'src', 'bot', 'events'))
+await readDirectory(join(process.cwd(), 'src', 'bot', 'commands'))
+await readDirectory(join(process.cwd(), 'src', 'bot', 'events'))
 
 const rest = new REST().setToken(env.get('token', true)!.toString())
 
@@ -42,7 +42,7 @@ const gateway = new WebSocketManager({
   buildStrategy: manager =>
     new WorkerShardingStrategy(manager, {
       shardsPerWorker: env.get('shards_per_worker')?.toNumber() ?? 4,
-      workerPath: path.join(process.cwd(), 'src', 'bot', 'worker.ts'),
+      workerPath: join(process.cwd(), 'src', 'bot', 'worker.ts'),
       unknownPayloadHandler: handleShardMemoryResponse,
     }),
 })
@@ -76,7 +76,7 @@ client.on(GatewayDispatchEvents.Ready, async payload => {
       afk: false,
     })
     .catch(error => {
-      console.error(`failed to update presence for shard #${payload.shardId}:`, error)
+      console.error(`Failed to update presence for shard #${payload.shardId}:`, error)
     })
 })
 
@@ -100,14 +100,14 @@ events.forEach(event => {
     event.event,
     async (payload: ToEventProps<Extract<GatewayDispatchPayload, { t: typeof event.event }>['d']>) => {
       await event.run(payload.data, client).catch(error => {
-        console.error(`an error occurred while running event ${event.event}:`, error)
+        console.error(`An error occurred while running event ${event.event}:`, error)
       })
     },
   )
 })
 
 if (env.get('register_commands')!.toBoolean() === true) {
-  console.log('refreshing application (/) commands')
+  console.log('Refreshing application (/) commands')
 
   commands.forEach(command => {
     if (command.type !== ApplicationCommandType.ChatInput) return
@@ -129,8 +129,14 @@ if (env.get('register_commands')!.toBoolean() === true) {
       if (!options.some(o => o.name === 'ephemeral')) {
         options.push({
           type: ApplicationCommandOptionType.Boolean,
-          name: 'ephemeral',
-          description: 'Whether the response should only be visible to you',
+          name: {
+            global: 'ephemeral',
+            'pt-BR': 'efêmero',
+          },
+          description: {
+            global: 'Whether the response should only be visible to you',
+            'pt-BR': 'Se a resposta deve ser visível apenas para você',
+          },
         } satisfies BooleanChatInputOption)
       }
     })
@@ -174,14 +180,14 @@ if (env.get('register_commands')!.toBoolean() === true) {
     }
   }
 
-  console.log('application (/) commands refreshed')
+  console.log('Application (/) commands refreshed')
 }
 
 try {
   await gateway.connect()
 
-  console.log('gateway connected')
+  console.log('Gateway connected')
   scheduleReshardCheck(gateway, client.api)
 } catch (error) {
-  console.error('an error occurred while connecting to the gateway:', error)
+  console.error('An error occurred while connecting to the gateway:', error)
 }

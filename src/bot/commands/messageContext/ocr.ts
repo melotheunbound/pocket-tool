@@ -10,15 +10,21 @@ import env from '../../../utils/env'
 import { codeblock, emoji, ellipsis } from '../../../utils/markdown'
 import { makeRequest } from '../../../utils/request'
 import { RequestMethod, ResponseType } from '../../../types/types'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.Message,
-  name: 'OCR',
+  name: {
+    global: 'OCR',
+    'pt-BR': 'OCR',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   cooldown: 5,
   acknowledge: true,
   async run(interaction, client) {
+    const l = interaction.locale
+
     const ocrApiKey = env.get('ocr_api_key')?.toString()
 
     if (!ocrApiKey) {
@@ -29,7 +35,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Wrong')} OCR API key is not set.`,
+                content: `${emoji('Wrong')} ${t(l, 'commands.ocr.missing_api_key')}`,
               },
             ],
           },
@@ -50,7 +56,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Forwarded messages are currently unsupported.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.ocr.forwarded')}`,
               },
             ],
           },
@@ -73,7 +79,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please select an image to extract text from.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.ocr.no_image')}`,
               },
             ],
           },
