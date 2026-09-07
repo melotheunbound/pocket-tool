@@ -32,7 +32,7 @@
     "debug": {
       "browser": "Navegador de Shards\n-# Insira o ID de um servidor para visualizar as informações do shard. Atualmente no shard **{shardId}/{shards}**",
       "shard": {
-        "title": "Shard:",
+        "title": "Shard",
         "latency": "Latência:",
         "uptime": "Tempo de Atividade:",
         "memory": "Memória:"

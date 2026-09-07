@@ -1285,7 +1285,7 @@ createApplicationCommand({
                 )
               : undefined
 
-          if (fontSize === undefined || Number.isNaN(fontSize) || fontSize < 20 || fontSize > 100) {
+          if (!fontSize || Number.isNaN(fontSize) || fontSize < 20 || fontSize > 100) {
             await client.api.interactions.followUp(i.application_id, i.token, {
               components: [
                 {
@@ -1491,7 +1491,7 @@ createApplicationCommand({
                 ).value
               : undefined
 
-          if (color === undefined || !isHex(color)) {
+          if (!isHex(color)) {
             await client.api.interactions.followUp(i.application_id, i.token, {
               components: [
                 {

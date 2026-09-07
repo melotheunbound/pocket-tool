@@ -32,7 +32,7 @@
     "debug": {
       "browser": "Shard Browser\n-# Enter a server ID to view its shard information. Currently on shard **{shardId}/{shards}**",
       "shard": {
-        "title": "Shard:",
+        "title": "Shard",
         "latency": "Latency:",
         "uptime": "Uptime:",
         "memory": "Memory:"

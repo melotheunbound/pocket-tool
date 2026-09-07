@@ -298,7 +298,7 @@ createApplicationCommand({
                         emoji: toComponentEmoji('Previous'),
                         style: ButtonStyle.Secondary,
                       },
-                      ...(query !== null
+                      ...(query
                         ? ([
                             {
                               type: ComponentType.Button,
@@ -600,7 +600,7 @@ createApplicationCommand({
                       style: ButtonStyle.Secondary,
                       disabled: true,
                     },
-                    ...(query !== null
+                    ...(query
                       ? ([
                           {
                             type: ComponentType.Button,
