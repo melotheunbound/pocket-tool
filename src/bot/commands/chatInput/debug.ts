@@ -315,6 +315,7 @@ createApplicationCommand({
                     custom_id: 'shard-browser',
                     emoji: toComponentEmoji('Search'),
                     style: ButtonStyle.Secondary,
+                    disabled: true,
                   },
                 },
               ],
