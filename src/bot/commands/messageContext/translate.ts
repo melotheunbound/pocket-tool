@@ -131,7 +131,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `> ${emoji('Translate')} ${t(l, 'commands.translate.translated', { sourceFlag: sourceLanguage.flag ? `${sourceLanguage.flag} ` : '', sourceLanguage: sourceLanguage.name, targetFlag: targetLanguage.flag ? `${targetLanguage.flag} ` : '', targetLanguage: targetLanguage.name })}`,
+              content: `> ${emoji('Translate')} ${t(l, 'commands.translate.translated', { sourceFlag: sourceLanguage.flag ? sourceLanguage.flag : '', sourceLanguage: sourceLanguage.name, targetFlag: targetLanguage.flag ? targetLanguage.flag : '', targetLanguage: targetLanguage.name })}`,
             },
             {
               type: ComponentType.Separator,
