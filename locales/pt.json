@@ -35,15 +35,15 @@
         "title": "Shard:",
         "latency": "Latência:",
         "uptime": "Tempo de Atividade:",
-        "memory": "Memória:",
-        "user_installs": "Instalações de Usuários:",
-        "servers": "Servidores:",
-        "today_command_usage": "Uso de Comandos Hoje:",
-        "today": "Hoje:",
-        "last_hour": "Última Hora:",
-        "last_minute": "Último Minuto:",
-        "today_top_commands": "Comandos Mais Usados Hoje:"
+        "memory": "Memória:"
       },
+      "user_installs": "Instalações de Usuários:",
+      "servers": "Servidores:",
+      "today_command_usage": "Uso de Comandos Hoje:",
+      "today": "Hoje:",
+      "last_hour": "Última Hora:",
+      "last_minute": "Último Minuto:",
+      "today_top_commands": "Comandos Mais Usados Hoje:",
       "buttons": {
         "authorize": "Autorizar",
         "support": "Servidor de Suporte"

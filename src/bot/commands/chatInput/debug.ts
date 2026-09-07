@@ -113,7 +113,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `-# **${t(l, 'commands.debug.shard.title')} #${shardId}:**\n> ${t(l, 'commands.debug.shard.latency')}: **${shard.ping}**\n> ${t(l, 'commands.debug.shard.uptime')}: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> ${t(l, 'commands.debug.shard.memory')}: **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> ${t(l, 'commands.debug.shard.user_installs')}: **${app.approximate_user_install_count}**\n> ${t(l, 'commands.debug.shard.servers')}: **${app.approximate_guild_count}**\n-# **${t(l, 'commands.debug.shard.today_command_usage')}**\n> ${t(l, 'commands.debug.shard.today')}: **${today}**\n> ${t(l, 'commands.debug.shard.last_hour')}: **${lastHour}**\n> ${t(l, 'commands.debug.shard.last_minute')}: **${lastMinute}**\n-# **${t(l, 'commands.debug.shard.today_top_commands')}**\n${topCommands}`,
+              content: `-# **${t(l, 'commands.debug.shard.title')} #${shardId}:**\n> ${t(l, 'commands.debug.shard.latency')}: **${shard.ping}**\n> ${t(l, 'commands.debug.shard.uptime')}: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> ${t(l, 'commands.debug.shard.memory')}: **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> ${t(l, 'commands.debug.user_installs')}: **${app.approximate_user_install_count}**\n> ${t(l, 'commands.debug.servers')}: **${app.approximate_guild_count}**\n-# **${t(l, 'commands.debug.today_command_usage')}**\n> ${t(l, 'commands.debug.today')}: **${today}**\n> ${t(l, 'commands.debug.last_hour')}: **${lastHour}**\n> ${t(l, 'commands.debug.last_minute')}: **${lastMinute}**\n-# **${t(l, 'commands.debug.today_top_commands')}**\n${topCommands}`,
             },
             {
               type: ComponentType.Separator,
@@ -123,14 +123,14 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.Button,
-                  label: t(l, 'commands.debug.shard.buttons.authorize'),
+                  label: t(l, 'commands.debug.buttons.authorize'),
                   emoji: toComponentEmoji('Link'),
                   url: INVITE,
                   style: ButtonStyle.Link,
                 },
                 {
                   type: ComponentType.Button,
-                  label: t(l, 'commands.debug.shard.buttons.support'),
+                  label: t(l, 'commands.debug.buttons.support'),
                   emoji: toComponentEmoji('Discord'),
                   url: SUPPORT,
                   style: ButtonStyle.Link,
@@ -197,7 +197,7 @@ createApplicationCommand({
                   components: [
                     {
                       type: ComponentType.TextDisplay,
-                      content: `${emoji('Exclamation')} ${t(l, 'commands.debug.shard.modal.invalid_server_id')}`,
+                      content: `${emoji('Exclamation')} ${t(l, 'commands.debug.modal.invalid_server_id')}`,
                     },
                   ],
                 },
@@ -218,7 +218,7 @@ createApplicationCommand({
                   components: [
                     {
                       type: ComponentType.TextDisplay,
-                      content: `${emoji('Exclamation')} ${t(l, 'commands.debug.shard.modal.guild_not_found')}`,
+                      content: `${emoji('Exclamation')} ${t(l, 'commands.debug.modal.guild_not_found')}`,
                     },
                   ],
                 },
@@ -248,7 +248,7 @@ createApplicationCommand({
                     ],
                     accessory: {
                       type: ComponentType.Button,
-                      custom_id: 'shard-search',
+                      custom_id: 'shard-browser',
                       emoji: toComponentEmoji('Search'),
                       style: ButtonStyle.Secondary,
                     },
@@ -260,7 +260,7 @@ createApplicationCommand({
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `-# **${t(l, 'commands.debug.shard.title')} #${shardId}:**\n> ${t(l, 'commands.debug.shard.latency')}: **${shard.ping}**\n> ${t(l, 'commands.debug.shard.uptime')}: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> ${t(l, 'commands.debug.shard.memory')}: **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> ${t(l, 'commands.debug.shard.user_installs')}: **${app.approximate_user_install_count}**\n> ${t(l, 'commands.debug.shard.servers')}: **${app.approximate_guild_count}**\n-# **${t(l, 'commands.debug.shard.today_command_usage')}**\n> ${t(l, 'commands.debug.shard.today')}: **${today}**\n> ${t(l, 'commands.debug.shard.last_hour')}: **${lastHour}**\n> ${t(l, 'commands.debug.shard.last_minute')}: **${lastMinute}**\n-# **${t(l, 'commands.debug.shard.today_top_commands')}**\n${topCommands}`,
+                    content: `-# **${t(l, 'commands.debug.shard.title')} #${shardId}:**\n> ${t(l, 'commands.debug.shard.latency')}: **${shard.ping}**\n> ${t(l, 'commands.debug.shard.uptime')}: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> ${t(l, 'commands.debug.shard.memory')}: **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> ${t(l, 'commands.debug.user_installs')}: **${app.approximate_user_install_count}**\n> ${t(l, 'commands.debug.servers')}: **${app.approximate_guild_count}**\n-# **${t(l, 'commands.debug.today_command_usage')}**\n> ${t(l, 'commands.debug.today')}: **${today}**\n> ${t(l, 'commands.debug.last_hour')}: **${lastHour}**\n> ${t(l, 'commands.debug.last_minute')}: **${lastMinute}**\n-# **${t(l, 'commands.debug.today_top_commands')}**\n${topCommands}`,
                   },
                   {
                     type: ComponentType.Separator,
@@ -270,14 +270,14 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.Button,
-                        label: t(l, 'commands.debug.shard.buttons.authorize'),
+                        label: t(l, 'commands.debug.buttons.authorize'),
                         emoji: toComponentEmoji('Link'),
                         url: INVITE,
                         style: ButtonStyle.Link,
                       },
                       {
                         type: ComponentType.Button,
-                        label: t(l, 'commands.debug.shard.buttons.support'),
+                        label: t(l, 'commands.debug.buttons.support'),
                         emoji: toComponentEmoji('Discord'),
                         url: SUPPORT,
                         style: ButtonStyle.Link,
@@ -312,7 +312,7 @@ createApplicationCommand({
                   ],
                   accessory: {
                     type: ComponentType.Button,
-                    custom_id: 'shard-search',
+                    custom_id: 'shard-browser',
                     emoji: toComponentEmoji('Search'),
                     style: ButtonStyle.Secondary,
                   },
@@ -324,7 +324,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `-# **${t(l, 'commands.debug.shard.title')} #${shardId}:**\n> ${t(l, 'commands.debug.shard.latency')}: **${shard.ping}**\n> ${t(l, 'commands.debug.shard.uptime')}: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> ${t(l, 'commands.debug.shard.memory')}: **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> ${t(l, 'commands.debug.shard.user_installs')}: **${app.approximate_user_install_count}**\n> ${t(l, 'commands.debug.shard.servers')}: **${app.approximate_guild_count}**\n-# **${t(l, 'commands.debug.shard.today_command_usage')}**\n> ${t(l, 'commands.debug.shard.today')}: **${today}**\n> ${t(l, 'commands.debug.shard.last_hour')}: **${lastHour}**\n> ${t(l, 'commands.debug.shard.last_minute')}: **${lastMinute}**\n-# **${t(l, 'commands.debug.shard.today_top_commands')}**\n${topCommands}`,
+                  content: `-# **${t(l, 'commands.debug.shard.title')} #${shardId}:**\n> ${t(l, 'commands.debug.shard.latency')}: **${shard.ping}**\n> ${t(l, 'commands.debug.shard.uptime')}: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> ${t(l, 'commands.debug.shard.memory')}: **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> ${t(l, 'commands.debug.user_installs')}: **${app.approximate_user_install_count}**\n> ${t(l, 'commands.debug.servers')}: **${app.approximate_guild_count}**\n-# **${t(l, 'commands.debug.today_command_usage')}**\n> ${t(l, 'commands.debug.today')}: **${today}**\n> ${t(l, 'commands.debug.last_hour')}: **${lastHour}**\n> ${t(l, 'commands.debug.last_minute')}: **${lastMinute}**\n-# **${t(l, 'commands.debug.today_top_commands')}**\n${topCommands}`,
                 },
                 {
                   type: ComponentType.Separator,
@@ -334,14 +334,14 @@ createApplicationCommand({
                   components: [
                     {
                       type: ComponentType.Button,
-                      label: t(l, 'commands.debug.shard.buttons.authorize'),
+                      label: t(l, 'commands.debug.buttons.authorize'),
                       emoji: toComponentEmoji('Link'),
                       url: INVITE,
                       style: ButtonStyle.Link,
                     },
                     {
                       type: ComponentType.Button,
-                      label: t(l, 'commands.debug.shard.buttons.support'),
+                      label: t(l, 'commands.debug.buttons.support'),
                       emoji: toComponentEmoji('Discord'),
                       url: SUPPORT,
                       style: ButtonStyle.Link,
