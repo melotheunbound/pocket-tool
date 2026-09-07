@@ -106,6 +106,7 @@ events.forEach(event => {
   )
 })
 
+// meow
 if (env.get('register_commands')!.toBoolean() === true) {
   console.log('refreshing application (/) commands')
 
