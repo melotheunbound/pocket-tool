@@ -61,11 +61,11 @@ createApplicationCommand({
       for (const key of keys) {
         const data = await redis.hGetAll(key)
 
-        if (!data.id || !data.path || !data.uses) continue
+        if (!data.id || !data.name || !data.uses) continue
 
         commandsUsage.push({
           id: data.id,
-          name: data.path,
+          name: data.name,
           uses: data.uses,
         })
       }

@@ -40,7 +40,7 @@ createApplicationCommand({
       return
     }
 
-    if (!message || message.attachments.length === 0) {
+    if (!message || !message.attachments.length) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
           {
