@@ -18,10 +18,14 @@ createApplicationCommand({
   name: {
     global: 'avatar',
     'pt-BR': 'avatar',
+    "es-ES": 'avatar',
+    "es-419": 'avatar',
   },
   description: {
     global: "View a user's avatar",
     'pt-BR': 'Veja o avatar de um usuário',
+    "es-ES": 'Veja el avatar de un usuario',
+    "es-419": 'Veja el avatar de un usuario',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
@@ -31,10 +35,14 @@ createApplicationCommand({
       name: {
         global: 'target',
         'pt-BR': 'alvo',
+        "es-ES": 'alvo',
+        "es-419": 'alvo',
       },
       description: {
         global: 'The user to view the avatar of',
         'pt-BR': 'O usuário para ver o avatar',
+        "es-ES": 'El usuario para ver el avatar',
+        "es-419": 'El usuario para ver el avatar',
       },
       required: false,
     },
@@ -43,16 +51,22 @@ createApplicationCommand({
       name: {
         global: 'scope',
         'pt-BR': 'escopo',
+        "es-ES": 'escopo',
+        "es-419": 'escopo',
       },
       description: {
         global: 'the scope of the avatar to view',
         'pt-BR': 'o escopo do avatar para ver',
+        "es-ES": 'el escopo del avatar para ver',
+        "es-419": 'el escopo del avatar para ver',
       },
       choices: [
         {
           name: {
             global: 'Global',
             'pt-BR': 'Global',
+            "es-ES": 'Global',
+            "es-419": 'Global',
           },
           value: 'global',
         },
@@ -60,6 +74,8 @@ createApplicationCommand({
           name: {
             global: 'Server',
             'pt-BR': 'Servidor',
+            "es-ES": 'Servidor',
+            "es-419": 'Servidor',
           },
           value: 'server',
         },

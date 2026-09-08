@@ -17,10 +17,14 @@ createApplicationCommand({
   name: {
     global: 'invite',
     'pt-BR': 'convite',
+    "es-ES": 'convite',
+    "es-419": 'convite',
   },
   description: {
     global: 'View information about an invite',
     'pt-BR': 'Veja informações sobre um convite',
+    "es-ES": 'Ver información sobre un convite',
+    "es-419": 'Ver información sobre un convite',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
@@ -31,6 +35,8 @@ createApplicationCommand({
       description: {
         global: 'The invite link to view',
         'pt-BR': 'O link do convite para visualizar',
+        "es-ES": 'El link del convite para visualizar',
+        "es-419": 'El link del convite para visualizar',
       },
       required: true,
     },

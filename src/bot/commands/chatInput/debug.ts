@@ -25,10 +25,14 @@ createApplicationCommand({
   name: {
     global: 'debug',
     'pt-BR': 'debug',
+    "es-ES": 'debug',
+    "es-419": 'debug',
   },
   description: {
     global: 'View stats about Pocket Tool',
     'pt-BR': 'Veja as estatísticas do Pocket Tool',
+    "es-ES": 'Ver estadísticas de Pocket Tool',
+    "es-419": 'Ver estadísticas de Pocket Tool',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],

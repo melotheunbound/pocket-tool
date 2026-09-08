@@ -20,10 +20,14 @@ createApplicationCommand({
   name: {
     global: 'tts',
     'pt-BR': 'tts',
+    'es-ES': 'tts',
+    'es-419': 'tts',
   },
   description: {
     global: 'Converts text to speech',
     'pt-BR': 'Converte texto para fala',
+    'es-ES': 'Convierte texto a voz',
+    'es-419': 'Convierte texto a voz',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
@@ -33,10 +37,14 @@ createApplicationCommand({
       name: {
         global: 'text',
         'pt-BR': 'texto',
+        'es-ES': 'texto',
+        'es-419': 'texto',
       },
       description: {
         global: 'The text to convert to speech',
         'pt-BR': 'O texto a ser convertido para fala',
+        'es-ES': 'El texto a convertir a voz',
+        'es-419': 'El texto a convertir a voz',
       },
       required: true,
     },
@@ -45,10 +53,14 @@ createApplicationCommand({
       name: {
         global: 'voice',
         'pt-BR': 'voz',
+        'es-ES': 'voz',
+        'es-419': 'voz',
       },
       description: {
         global: 'The voice to use for TTS',
         'pt-BR': 'A voz a ser usada para TTS',
+        'es-ES': 'La voz a usar para TTS',
+        'es-419': 'La voz a usar para TTS',
       },
       required: false,
       choices: [
@@ -56,6 +68,8 @@ createApplicationCommand({
           name: {
             global: 'Male',
             'pt-BR': 'Masculino',
+            'es-ES': 'Masculino',
+            'es-419': 'Masculino',
           },
           value: 'UgBBYS2sOqTuMpoF3BR0',
         },
@@ -63,6 +77,8 @@ createApplicationCommand({
           name: {
             global: 'Female',
             'pt-BR': 'Feminino',
+            'es-ES': 'Feminino',
+            'es-419': 'Feminino',
           },
           value: 'nf4MCGNSdM0hxM95ZBQR',
         },
@@ -70,6 +86,8 @@ createApplicationCommand({
           name: {
             global: 'Neutral',
             'pt-BR': 'Neutro',
+            'es-ES': 'Neutro',
+            'es-419': 'Neutro',
           },
           value: 'M563YhMmA0S8vEYwkgYa',
         },
@@ -80,10 +98,14 @@ createApplicationCommand({
       name: {
         global: 'language',
         'pt-BR': 'idioma',
+        'es-ES': 'idioma',
+        'es-419': 'idioma',
       },
       description: {
         global: 'The language to use for TTS',
         'pt-BR': 'O idioma a ser usado para TTS',
+        'es-ES': 'El idioma a usar para TTS',
+        'es-419': 'El idioma a usar para TTS',
       },
       required: false,
       autocomplete: true,
@@ -104,6 +126,8 @@ createApplicationCommand({
         name: 'Use My Locale',
         nameLocalizations: {
           'pt-BR': 'Use Meu Locale',
+          'es-ES': 'Use Meu Locale',
+          'es-419': 'Use Meu Locale',
         },
         value: 'auto',
       },

@@ -7,10 +7,14 @@ createApplicationCommand({
   name: {
     global: 'ping',
     'pt-BR': 'ping',
+    "es-ES": 'ping',
+    "es-419": 'ping',
   },
   description: {
     global: 'Pong!',
     'pt-BR': 'Pong!',
+    "es-ES": 'Pong!',
+    "es-419": 'Pong!',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],

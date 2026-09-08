@@ -41,6 +41,8 @@ createApplicationCommand({
   name: {
     global: 'Quote This Message',
     'pt-BR': 'Citar Este Mensagem',
+    'es-ES': 'Citar Este Mensaje',
+    'es-419': 'Citar Este Mensaje',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],

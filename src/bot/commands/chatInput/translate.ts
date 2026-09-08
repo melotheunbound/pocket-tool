@@ -20,10 +20,14 @@ createApplicationCommand({
   name: {
     global: 'translate',
     'pt-BR': 'traduzir',
+    "es-ES": 'traducir',
+    "es-419": 'traducir',
   },
   description: {
     global: 'Translates the given text into almost any language',
     'pt-BR': 'Traduz o texto fornecido para quase qualquer idioma',
+    "es-ES": 'Traduce el texto proporcionado a casi cualquier idioma',
+    "es-419": 'Traduce el texto proporcionado a casi cualquier idioma',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
@@ -33,10 +37,14 @@ createApplicationCommand({
       name: {
         global: 'text',
         'pt-BR': 'texto',
+        "es-ES": 'texto',
+        "es-419": 'texto',
       },
       description: {
         global: 'The text to translate',
         'pt-BR': 'O texto a ser traduzido',
+        "es-ES": 'El texto a traducir',
+        "es-419": 'El texto a traducir',
       },
       required: true,
     },
@@ -45,10 +53,14 @@ createApplicationCommand({
       name: {
         global: 'from',
         'pt-BR': 'de',
+        "es-ES": 'de',
+        "es-419": 'de',
       },
       description: {
         global: 'The language to translate from',
         'pt-BR': 'O idioma para traduzir de',
+        "es-ES": 'El idioma para traducir de',
+        "es-419": 'El idioma para traducir de',
       },
       required: false,
       autocomplete: true,
@@ -58,10 +70,14 @@ createApplicationCommand({
       name: {
         global: 'to',
         'pt-BR': 'para',
+        "es-ES": 'para',
+        "es-419": 'para',
       },
       description: {
         global: 'The language to translate to',
         'pt-BR': 'O idioma para traduzir para',
+        "es-ES": 'El idioma para traducir para',
+        "es-419": 'El idioma para traducir para',
       },
       required: false,
       autocomplete: true,
@@ -84,6 +100,8 @@ createApplicationCommand({
             name: 'Detect Automatically',
             nameLocalizations: {
               'pt-BR': 'Detectar Automáticamente',
+              'es-ES': 'Detectar Automáticamente',
+              'es-419': 'Detectar Automáticamente',
             },
             value: 'auto',
           },
@@ -103,6 +121,8 @@ createApplicationCommand({
             name: 'Use My Locale',
             nameLocalizations: {
               'pt-BR': 'Usar Meu Locale',
+              'es-ES': 'Usar Meu Locale',
+              'es-419': 'Usar Meu Locale',
             },
             value: 'auto',
           },

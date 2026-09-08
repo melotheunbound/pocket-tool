@@ -18,10 +18,14 @@ createApplicationCommand({
   name: {
     global: 'timestamp',
     'pt-BR': 'timestamp',
+    "es-ES": 'timestamp',
+    "es-419": 'timestamp',
   },
   description: {
     global: 'Generates a Discord-style timestamp for the given time',
     'pt-BR': 'Gera um timestamp do Discord para o tempo dado',
+    "es-ES": 'Genera un timestamp de estilo Discord para el tiempo dado',
+    "es-419": 'Genera un timestamp de estilo Discord para el tiempo dado',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
@@ -31,10 +35,14 @@ createApplicationCommand({
       name: {
         global: 'time',
         'pt-BR': 'tempo',
+        "es-ES": 'tiempo',
+        "es-419": 'tiempo',
       },
       description: {
         global: 'The time to convert to a timestamp',
         'pt-BR': 'O tempo a ser convertido em timestamp',
+        "es-ES": 'El tiempo a ser convertido en timestamp',
+        "es-419": 'El tiempo a ser convertido en timestamp',
       },
       required: true,
     },
@@ -43,10 +51,14 @@ createApplicationCommand({
       name: {
         global: 'timezone',
         'pt-BR': 'fuso-horário',
+        "es-ES": 'zona-horaria',
+        "es-419": 'zona-horaria',
       },
       description: {
         global: 'The timezone to use for the timestamp',
         'pt-BR': 'O fuso horário a ser usado para o timestamp',
+        "es-ES": 'La zona horaria a usar para el timestamp',
+        "es-419": 'La zona horaria a usar para el timestamp',
       },
       required: false,
       autocomplete: true,
@@ -56,10 +68,14 @@ createApplicationCommand({
       name: {
         global: 'style',
         'pt-BR': 'estilo',
+        "es-ES": 'estilo',
+        "es-419": 'estilo',
       },
       description: {
         global: 'The timestamp style to use',
         'pt-BR': 'O estilo do timestamp a ser usado',
+        "es-ES": 'El estilo del timestamp a usar',
+        "es-419": 'El estilo del timestamp a usar',
       },
       required: false,
       choices: [
@@ -67,6 +83,8 @@ createApplicationCommand({
           name: {
             global: 'Short Time',
             'pt-BR': 'Tempo curto',
+            "es-ES": 'Tiempo corto',
+            "es-419": 'Tiempo corto',
           },
           value: 't',
         },
@@ -74,6 +92,8 @@ createApplicationCommand({
           name: {
             global: 'Medium Time',
             'pt-BR': 'Tempo médio',
+            "es-ES": 'Tiempo medio',
+            "es-419": 'Tiempo medio',
           },
           value: 'T',
         },
@@ -81,6 +101,8 @@ createApplicationCommand({
           name: {
             global: 'Short Date',
             'pt-BR': 'Data curta',
+            "es-ES": 'Fecha corta',
+            "es-419": 'Fecha corta',
           },
           value: 'd',
         },
@@ -88,6 +110,8 @@ createApplicationCommand({
           name: {
             global: 'Long Date',
             'pt-BR': 'Data longa',
+            "es-ES": 'Fecha larga',
+            "es-419": 'Fecha larga',
           },
           value: 'D',
         },
@@ -95,6 +119,8 @@ createApplicationCommand({
           name: {
             global: 'Long Date and Short Time',
             'pt-BR': 'Data longa e tempo curto',
+            "es-ES": 'Fecha larga y tiempo corto',
+            "es-419": 'Fecha larga y tiempo corto',
           },
           value: 'f',
         },
@@ -102,6 +128,8 @@ createApplicationCommand({
           name: {
             global: 'Full Date and Short Time',
             'pt-BR': 'Data completa e tempo curto',
+            "es-ES": 'Fecha completa y tiempo corto',
+            "es-419": 'Fecha completa y tiempo corto',
           },
           value: 'F',
         },
@@ -109,6 +137,8 @@ createApplicationCommand({
           name: {
             global: 'Short Date and Short Time',
             'pt-BR': 'Data curta e tempo curto',
+            "es-ES": 'Fecha corta y tiempo corto',
+            "es-419": 'Fecha corta y tiempo corto',
           },
           value: 's',
         },
@@ -116,6 +146,8 @@ createApplicationCommand({
           name: {
             global: 'Short Date and Medium Time',
             'pt-BR': 'Data curta e tempo médio',
+            "es-ES": 'Fecha corta y tiempo medio',
+            "es-419": 'Fecha corta y tiempo medio',
           },
           value: 'S',
         },
@@ -123,6 +155,8 @@ createApplicationCommand({
           name: {
             global: 'Relative Time',
             'pt-BR': 'Tempo relativo',
+            "es-ES": 'Tiempo relativo',
+            "es-419": 'Tiempo relativo',
           },
           value: 'R',
         },

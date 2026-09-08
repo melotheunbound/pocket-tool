@@ -18,10 +18,14 @@ createApplicationCommand({
   name: {
     global: 'user',
     'pt-BR': 'usuário',
+    'es-ES': 'usuario',
+    'es-419': 'usuario',
   },
   description: {
     global: 'View information about a user or yourself',
     'pt-BR': 'Veja informações sobre um usuário ou você mesmo',
+    'es-ES': 'Veja información sobre un usuario o usted mismo',
+    'es-419': 'Veja información sobre un usuario o usted mismo',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
@@ -31,10 +35,14 @@ createApplicationCommand({
       name: {
         global: 'target',
         'pt-BR': 'alvo',
+        'es-ES': 'alvo',
+        'es-419': 'alvo',
       },
       description: {
         global: 'The user to view',
         'pt-BR': 'O usuário a ser visualizado',
+        "es-ES": 'El usuario a visualizar',
+        'es-419': 'El usuario a visualizar',
       },
       required: false,
     },
@@ -43,16 +51,22 @@ createApplicationCommand({
       name: {
         global: 'scope',
         'pt-BR': 'escopo',
+        'es-ES': 'escopo',
+        'es-419': 'escopo',
       },
       description: {
         global: 'The scope of the information to display',
         'pt-BR': 'O escopo da informação a ser exibida',
+        'es-ES': 'El escopo de la información a mostrar',
+        'es-419': 'El escopo de la información a mostrar',
       },
       choices: [
         {
           name: {
             global: 'Global',
             'pt-BR': 'Global',
+            'es-ES': 'Global',
+            'es-419': 'Global',
           },
           value: 'global',
         },
@@ -60,6 +74,8 @@ createApplicationCommand({
           name: {
             global: 'Server',
             'pt-BR': 'Servidor',
+            'es-ES': 'Servidor',
+            'es-419': 'Servidor',
           },
           value: 'server',
         },

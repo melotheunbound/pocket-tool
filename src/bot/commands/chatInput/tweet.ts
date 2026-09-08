@@ -22,10 +22,14 @@ createApplicationCommand({
   name: {
     global: 'tweet',
     'pt-BR': 'tweet',
+    'es-ES': 'tweet',
+    'es-419': 'tweet',
   },
   description: {
     global: 'Display a tweet preview',
     'pt-BR': 'Visualize uma prévia de tweet',
+    'es-ES': 'Visualiza una vista previa de tweet',
+    'es-419': 'Visualiza una vista previa de tweet',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
@@ -36,6 +40,8 @@ createApplicationCommand({
       description: {
         global: 'The URL or ID of the tweet',
         'pt-BR': 'A URL ou ID do tweet',
+        'es-ES': 'La URL o ID del tweet',
+        'es-419': 'La URL o ID del tweet',
       },
       required: true,
     },
@@ -44,10 +50,14 @@ createApplicationCommand({
       name: {
         global: 'language',
         'pt-BR': 'idioma',
+        'es-ES': 'idioma',
+        'es-419': 'idioma',
       },
       description: {
         global: 'The language of the tweet (auto for Discord locale)',
         'pt-BR': 'O idioma do tweet (auto para o idioma do Discord)',
+        'es-ES': 'El idioma del tweet (auto para el idioma del Discord)',
+        'es-419': 'El idioma del tweet (auto para el idioma del Discord)',
       },
       required: false,
       autocomplete: true,
@@ -68,6 +78,8 @@ createApplicationCommand({
         name: 'Use My Locale',
         name_localizations: {
           'pt-BR': 'Use Meu Locale',
+          'es-ES': 'Use Meu Locale',
+          'es-419': 'Use Meu Locale',
         },
         value: 'auto',
       },

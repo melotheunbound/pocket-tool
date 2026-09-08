@@ -16,6 +16,8 @@ createApplicationCommand({
   name: {
     global: 'View User Profile',
     'pt-BR': 'Ver Perfil do Usuário',
+    'es-ES': 'Ver Perfil del Usuario',
+    'es-419': 'Ver Perfil del Usuario',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],

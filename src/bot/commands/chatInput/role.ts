@@ -19,10 +19,14 @@ createApplicationCommand({
   name: {
     global: 'role',
     'pt-BR': 'cargo',
+    "es-ES": 'cargo',
+    "es-419": 'cargo',
   },
   description: {
     global: 'View information about a role',
     'pt-BR': 'Veja informações sobre um cargo',
+    "es-ES": 'Ver información sobre un cargo',
+    "es-419": 'Ver información sobre un cargo',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.Guild],
@@ -32,10 +36,14 @@ createApplicationCommand({
       name: {
         global: 'role',
         'pt-BR': 'cargo',
+        "es-ES": 'cargo',
+        "es-419": 'cargo',
       },
       description: {
         global: 'The role to view',
         'pt-BR': 'O cargo a ser visualizado',
+        "es-ES": 'El cargo a ser visualizado',
+        "es-419": 'El cargo a ser visualizado',
       },
       required: true,
     },

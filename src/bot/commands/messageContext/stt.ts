@@ -19,6 +19,8 @@ createApplicationCommand({
   name: {
     global: 'Speech to Text',
     'pt-BR': 'Fala para Texto',
+    'es-ES': 'Fala para Texto',
+    'es-419': 'Fala para Texto',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],

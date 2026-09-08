@@ -23,10 +23,14 @@ createApplicationCommand({
   name: {
     global: 'help',
     'pt-BR': 'ajuda',
+    "es-ES": 'ayuda',
+    "es-419": 'ayuda',
   },
   description: {
     global: 'View and search through all available commands',
     'pt-BR': 'Visualize e pesquise por todos os comandos disponíveis',
+    "es-ES": 'Ver y buscar todos los comandos disponibles',
+    "es-419": 'Ver y buscar todos los comandos disponibles',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
