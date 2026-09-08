@@ -231,7 +231,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `-# ${t(l, 'commands.tweet.posted_by', { verified: tweet.author.isVerified ? `${emoji('Verified')} ` : '', author: tweet.author.name, username: hyperlink(`https://x.com/${tweet.author.username}`, `@${tweet.author.username}`), content: content ? `\n\n${content}` : '' })}`,
+              content: `-# ${t(l, 'commands.tweet.posted_by', { verified: tweet.author.isVerified ? emoji('Verified') : '', author: tweet.author.name, username: hyperlink(`https://x.com/${tweet.author.username}`, `@${tweet.author.username}`) })}${content ? `\n\n${content}` : ''}`,
             },
             ...(tweet.media.length > 0
               ? ([

@@ -32,7 +32,7 @@
     "debug": {
       "browser": "Shard Browser\n-# Enter a server ID to view its shard information. Currently on shard **{shardId}/{shards}**",
       "shard": {
-        "title": "Shard",
+        "title": "Shard #{shardId}:",
         "latency": "Latency:",
         "uptime": "Uptime:",
         "memory": "Memory:"
@@ -109,9 +109,9 @@
       "missing_api_key": "The Tolgchu Twitter API key is not set.",
       "invalid_tweet": "Please provide a valid tweet URL or ID to view the tweet.",
       "missing_api_key_2": "The Microsoft Azure API key is not set.",
-      "quoting_tweet": "-# *Quoting {tweet}, posted by {author}*",
-      "replying_to_tweet": "-# *Replying to {tweet}, posted by {author}*",
-      "posted_by": "-# Posted by {verified}{author} ({username}){content}",
+      "quoting_tweet": "*Quoting {tweet}, posted by {author}*",
+      "replying_to_tweet": "*Replying to {tweet}, posted by {author}*",
+      "posted_by": "Posted by {verified} {author} ({username})",
       "translated": "Translated tweets may be inaccurate or may not reflect the original content",
       "button": {
         "view": "View Tweet"
