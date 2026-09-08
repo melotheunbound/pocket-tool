@@ -5,7 +5,7 @@ import { join } from 'path'
 
 const localesPath = join(process.cwd(), 'locales')
 const fallback = 'en'
-const supportedLanguages = ['en', 'pt'] as const
+const supportedLanguages = ['en', 'pt', 'es'] as const
 
 type SupportedLanguage = (typeof supportedLanguages)[number]
 type TranslationCatalog = Record<string, unknown>
@@ -13,6 +13,7 @@ type TranslationCatalog = Record<string, unknown>
 const catalogs: Record<SupportedLanguage, TranslationCatalog> = {
   en: loadLocale('en'),
   pt: loadLocale('pt'),
+  es: loadLocale('es'),
 }
 
 function loadLocale(locale: SupportedLanguage): TranslationCatalog {
