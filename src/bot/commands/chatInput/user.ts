@@ -24,8 +24,8 @@ createApplicationCommand({
   description: {
     global: 'View information about a user or yourself',
     'pt-BR': 'Veja informações sobre um usuário ou você mesmo',
-    'es-ES': 'Veja información sobre un usuario o usted mismo',
-    'es-419': 'Veja información sobre un usuario o usted mismo',
+    'es-ES': 'Vea información sobre un usuario o usted mismo',
+    'es-419': 'Vea información sobre un usuario o usted mismo',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
@@ -35,8 +35,8 @@ createApplicationCommand({
       name: {
         global: 'target',
         'pt-BR': 'alvo',
-        'es-ES': 'alvo',
-        'es-419': 'alvo',
+        'es-ES': 'objetivo',
+        'es-419': 'objetivo',
       },
       description: {
         global: 'The user to view',
@@ -51,14 +51,14 @@ createApplicationCommand({
       name: {
         global: 'scope',
         'pt-BR': 'escopo',
-        'es-ES': 'escopo',
-        'es-419': 'escopo',
+        'es-ES': 'ambito',
+        'es-419': 'ambito',
       },
       description: {
         global: 'The scope of the information to display',
         'pt-BR': 'O escopo da informação a ser exibida',
-        'es-ES': 'El escopo de la información a mostrar',
-        'es-419': 'El escopo de la información a mostrar',
+        'es-ES': 'El ámbito de la información a mostrar',
+        'es-419': 'El ámbito de la información a mostrar',
       },
       choices: [
         {

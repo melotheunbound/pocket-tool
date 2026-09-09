@@ -20,8 +20,8 @@ createApplicationCommand({
   description: {
     global: 'View the people who have contributed to Pocket Tool',
     'pt-BR': 'Veja as pessoas que contribuíram para o Pocket Tool',
-    "es-ES": 'Veja las personas que han contribuido a Pocket Tool',
-    "es-419": 'Veja las personas que han contribuido a Pocket Tool',
+    "es-ES": 'Vea las personas que han contribuido a Pocket Tool',
+    "es-419": 'Vea las personas que han contribuido a Pocket Tool',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
