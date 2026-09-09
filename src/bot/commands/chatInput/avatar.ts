@@ -18,14 +18,12 @@ createApplicationCommand({
   name: {
     global: 'avatar',
     'pt-BR': 'avatar',
-    "es-ES": 'avatar',
-    "es-419": 'avatar',
+    'es-ES': 'avatar',
   },
   description: {
     global: "View a user's avatar",
     'pt-BR': 'Veja o avatar de um usuário',
-    "es-ES": 'Vea el avatar de un usuario',
-    "es-419": 'Vea el avatar de un usuario',
+    'es-ES': 'Vea el avatar de un usuario',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
@@ -35,14 +33,12 @@ createApplicationCommand({
       name: {
         global: 'target',
         'pt-BR': 'alvo',
-        "es-ES": 'objetivo',
-        "es-419": 'objetivo',
+        'es-ES': 'objetivo',
       },
       description: {
         global: 'The user to view the avatar of',
         'pt-BR': 'O usuário para ver o avatar',
-        "es-ES": 'El usuario para ver el avatar',
-        "es-419": 'El usuario para ver el avatar',
+        'es-ES': 'El usuario para ver el avatar',
       },
       required: false,
     },
@@ -51,22 +47,19 @@ createApplicationCommand({
       name: {
         global: 'scope',
         'pt-BR': 'escopo',
-        "es-ES": 'ambito',
-        "es-419": 'ambito',
+        'es-ES': 'ambito',
       },
       description: {
         global: 'the scope of the avatar to view',
         'pt-BR': 'o escopo do avatar para ver',
-        "es-ES": 'el ámbito del avatar para ver',
-        "es-419": 'el ámbito del avatar para ver',
+        'es-ES': 'el ámbito del avatar para ver',
       },
       choices: [
         {
           name: {
             global: 'Global',
             'pt-BR': 'Global',
-            "es-ES": 'Global',
-            "es-419": 'Global',
+            'es-ES': 'Global',
           },
           value: 'global',
         },
@@ -74,8 +67,7 @@ createApplicationCommand({
           name: {
             global: 'Server',
             'pt-BR': 'Servidor',
-            "es-ES": 'Servidor',
-            "es-419": 'Servidor',
+            'es-ES': 'Servidor',
           },
           value: 'server',
         },

@@ -20,7 +20,6 @@ createApplicationCommand({
     global: 'Translate This Message',
     'pt-BR': 'Traduzir Esta Mensagem',
     'es-ES': 'Traducir Este Mensaje',
-    'es-419': 'Traducir Este Mensaje',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],

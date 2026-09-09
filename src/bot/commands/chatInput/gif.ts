@@ -18,14 +18,12 @@ createApplicationCommand({
   name: {
     global: 'gif',
     'pt-BR': 'gif',
-    "es-ES": 'gif',
-    "es-419": 'gif',
+    'es-ES': 'gif',
   },
   description: {
     global: 'Turn an image into a GIF',
     'pt-BR': 'Transforme uma imagem em um GIF',
-    "es-ES": 'Transformar una imagen en un GIF',
-    "es-419": 'Transformar una imagen en un GIF',
+    'es-ES': 'Transformar una imagen en un GIF',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
@@ -35,14 +33,12 @@ createApplicationCommand({
       name: {
         global: 'image',
         'pt-BR': 'imagem',
-        "es-ES": 'imagen',
-        "es-419": 'imagen',
+        'es-ES': 'imagen',
       },
       description: {
         global: 'The image to turn into a GIF',
         'pt-BR': 'A imagem para transformar em um GIF',
-        "es-ES": 'La imagen para transformar en un GIF',
-        "es-419": 'La imagen para transformar en un GIF',
+        'es-ES': 'La imagen para transformar en un GIF',
       },
       required: true,
     },

@@ -15,14 +15,12 @@ createApplicationCommand({
   name: {
     global: 'timezone',
     'pt-BR': 'fuso-horário',
-    "es-ES": 'zona-horaria',
-    "es-419": 'zona-horaria',
+    'es-ES': 'zona-horaria',
   },
   description: {
     global: 'View the current time for a specific timezone',
     'pt-BR': 'Veja o horário atual para um fuso horário específico',
-    "es-ES": 'Ver la hora actual para una zona horaria específica',
-    "es-419": 'Ver la hora actual para una zona horaria específica',
+    'es-ES': 'Ver la hora actual para una zona horaria específica',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
@@ -32,14 +30,12 @@ createApplicationCommand({
       name: {
         global: 'timezone',
         'pt-BR': 'fuso-horário',
-        "es-ES": 'zona-horaria',
-        "es-419": 'zona-horaria',
+        'es-ES': 'zona-horaria',
       },
       description: {
         global: 'The timezone to view the current time in',
         'pt-BR': 'O fuso horário para ver o horário atual',
-        "es-ES": 'La zona horaria para ver la hora actual',
-        "es-419": 'La zona horaria para ver la hora actual',
+        'es-ES': 'La zona horaria para ver la hora actual',
       },
       required: true,
       autocomplete: true,

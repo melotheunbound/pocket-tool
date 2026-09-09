@@ -18,7 +18,6 @@ createApplicationCommand({
     global: 'Turn Into GIF',
     'pt-BR': 'Transformar em GIF',
     'es-ES': 'Transformar en GIF',
-    'es-419': 'Transformar en GIF',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],

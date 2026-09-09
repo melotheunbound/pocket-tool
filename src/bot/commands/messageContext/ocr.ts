@@ -18,7 +18,6 @@ createApplicationCommand({
     global: 'OCR',
     'pt-BR': 'OCR',
     'es-ES': 'OCR',
-    'es-419': 'OCR',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],

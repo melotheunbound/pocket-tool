@@ -19,14 +19,12 @@ createApplicationCommand({
   name: {
     global: 'role',
     'pt-BR': 'cargo',
-    "es-ES": 'rol',
-    "es-419": 'rol',
+    'es-ES': 'objetivo',
   },
   description: {
     global: 'View information about a role',
     'pt-BR': 'Veja informações sobre um cargo',
-    "es-ES": 'Ver información sobre un rol',
-    "es-419": 'Ver información sobre un rol',
+    'es-ES': 'Ver información sobre un rol',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.Guild],
@@ -34,16 +32,14 @@ createApplicationCommand({
     {
       type: ApplicationCommandOptionType.Role,
       name: {
-        global: 'role',
-        'pt-BR': 'cargo',
-        "es-ES": 'rol',
-        "es-419": 'rol',
+        global: 'target',
+        'pt-BR': 'alvo',
+        'es-ES': 'rol',
       },
       description: {
         global: 'The role to view',
         'pt-BR': 'O cargo a ser visualizado',
-        "es-ES": 'El rol a ser visualizado',
-        "es-419": 'El rol a ser visualizado',
+        'es-ES': 'El rol a ser visualizado',
       },
       required: true,
     },
@@ -53,7 +49,7 @@ createApplicationCommand({
   async run(interaction, options, client) {
     const l = interaction.locale
 
-    const { role } = options
+    const { target: role } = options
 
     const permissions = formatPermissions(role.permissions)
 
