@@ -23,7 +23,6 @@ import type {
   Client,
 } from '@discordjs/core'
 import { EventEmitter } from 'events'
-import { getShardMemory } from '../utils/shard'
 
 export type Localization = (Partial<Record<keyof LocalizationMap, string>> & { global: string }) | string
 

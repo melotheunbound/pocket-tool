@@ -181,7 +181,7 @@ createApplicationCommand({
       to === 'auto'
         ? (findClosestMatch(
             interaction.locale,
-            AZURE_LANGUAGES.map(l => l.code),
+            AZURE_LANGUAGES.map(language => language.code),
           ) ?? 'en')
         : (to ?? 'en')
 
