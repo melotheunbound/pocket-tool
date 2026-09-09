@@ -154,7 +154,7 @@ createApplicationCommand({
 
         if ((i.user?.id ?? i.member?.user.id) !== (interaction.user?.id ?? interaction.member?.user.id)) {
           await client.api.interactions.reply(i.id, i.token, {
-            content: "You cannot interact with components from another user's command.",
+            content: t(l, 'commands.debug.filter'),
             flags: MessageFlags.Ephemeral,
           })
 

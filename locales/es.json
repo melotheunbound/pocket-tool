@@ -48,6 +48,7 @@
         "authorize": "Autorizar",
         "support": "Servidor de soporte"
       },
+      "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
       "modal": {
         "title": "Navegador de shards",
         "label": "Encuentra el shard de tu servidor mediante su ID",
@@ -60,6 +61,7 @@
       "browser": "Navegador de comandos\n-# Explora todos los comandos disponibles mediante paginación o busca un comando específico.",
       "browser_results": "Navegador de comandos\n-# Resultados de búsqueda para **${query}**",
       "page": "Página **{page}** de **{total}**",
+      "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
       "modal": {
         "title": "Navegador de comandos",
         "label": "Busca comandos por nombre",
@@ -138,6 +140,7 @@
       "forwarded": "Los mensajes reenviados no están soportados actualmente.",
       "no_text_or_sticker": "Selecciona un mensaje que contenga texto o un sticker para citarlo.",
       "editor": "Editor de citas\n-# Usa los menús siguientes para personalizar tu cita o generar una tarjeta aleatoria",
+      "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
       "selects": {
         "fonts": {
           "placeholder": "Elige una fuente"

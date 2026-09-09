@@ -48,6 +48,7 @@
         "authorize": "Autorizar",
         "support": "Servidor de Suporte"
       },
+      "filter": "Você não pode interagir com os componentes do comando de outro usuário.",
       "modal": {
         "title": "Navegador de Shards",
         "label": "Encontre o shard do seu servidor pelo ID",
@@ -60,6 +61,7 @@
       "browser": "Navegador de Comandos\n-# Navegue por todos os comandos disponíveis usando a paginação ou pesquise por um comando específico",
       "browser_results": "Navegador de Comandos\n-# Resultados da pesquisa por **${query}**",
       "page": "Página **{page}** de **{total}**",
+      "filter": "Você não pode interagir com os componentes do comando de outro usuário.",
       "modal": {
         "title": "Navegador de Comandos",
         "label": "Pesquise comandos pelo nome",
@@ -138,6 +140,7 @@
       "forwarded": "Mensagens encaminhadas não são compatíveis no momento.",
       "no_text_or_sticker": "Por favor, selecione uma mensagem contendo texto ou figurinhas para citar.",
       "editor": "Editor de Citações\n-# Use os menus abaixo para personalizar sua citação ou gerar um cartão aleatório",
+      "filter": "Você não pode interagir com os componentes do comando de outro usuário.",
       "selects": {
         "fonts": {
           "placeholder": "Escolha uma Fonte"
