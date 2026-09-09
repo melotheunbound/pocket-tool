@@ -23,8 +23,8 @@ createApplicationCommand({
   description: {
     global: "View a user's banner",
     'pt-BR': 'Veja o banner de um usuário',
-    "es-ES": 'Veja el banner de un usuario',
-    "es-419": 'Veja el banner de un usuario',
+    "es-ES": 'Vea el banner de un usuario',
+    "es-419": 'Vea el banner de un usuario',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
@@ -34,8 +34,8 @@ createApplicationCommand({
       name: {
         global: 'target',
         'pt-BR': 'alvo',
-        "es-ES": 'alvo',
-        "es-419": 'alvo',
+        "es-ES": 'objetivo',
+        "es-419": 'objetivo',
       },
       description: {
         global: 'The user to view the banner of',

@@ -30,8 +30,8 @@ createApplicationCommand({
   description: {
     global: 'Play around with image manipulation',
     'pt-BR': 'Brinque com manipulação de imagens',
-    "es-ES": 'Brinque con la manipulación de imágenes',
-    "es-419": 'Brinque con la manipulación de imágenes',
+    "es-ES": 'Juegue con la manipulación de imágenes',
+    "es-419": 'Juegue con la manipulación de imágenes',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
@@ -56,8 +56,8 @@ createApplicationCommand({
           name: {
             global: 'attachment',
             'pt-BR': 'anexo',
-            "es-ES": 'anexo',
-            "es-419": 'anexo',
+            "es-ES": 'adjunto',
+            "es-419": 'adjunto',
           },
           description: {
             global: 'The image to add a caption to',
@@ -105,8 +105,8 @@ createApplicationCommand({
           name: {
             global: 'attachment',
             'pt-BR': 'anexo',
-            "es-ES": 'anexo',
-            "es-419": 'anexo',
+            "es-ES": 'adjunto',
+            "es-419": 'adjunto',
           },
           description: {
             global: 'The image to convert to grayscale',
@@ -138,8 +138,8 @@ createApplicationCommand({
           name: {
             global: 'attachment',
             'pt-BR': 'anexo',
-            "es-ES": 'anexo',
-            "es-419": 'anexo',
+            "es-ES": 'adjunto',
+            "es-419": 'adjunto',
           },
           description: {
             global: 'The image to apply a blur effect to',
@@ -171,8 +171,8 @@ createApplicationCommand({
           name: {
             global: 'attachment',
             'pt-BR': 'anexo',
-            "es-ES": 'anexo',
-            "es-419": 'anexo',
+            "es-ES": 'adjunto',
+            "es-419": 'adjunto',
           },
           description: {
             global: 'The image to flip vertically',
@@ -204,8 +204,8 @@ createApplicationCommand({
           name: {
             global: 'attachment',
             'pt-BR': 'anexo',
-            "es-ES": 'anexo',
-            "es-419": 'anexo',
+            "es-ES": 'adjunto',
+            "es-419": 'adjunto',
           },
           description: {
             global: 'The image to flip horizontally',
@@ -222,14 +222,14 @@ createApplicationCommand({
       name: {
         global: 'speech-bubble',
         'pt-BR': 'balao-de-fala',
-        "es-ES": 'balao-de-fala',
-        "es-419": 'balao-de-fala',
+        "es-ES": 'globo-de-texto',
+        "es-419": 'globo-de-texto',
       },
       description: {
         global: 'Add a speech bubble to an image',
         'pt-BR': 'Adicionar um balão de fala a uma imagem',
-        "es-ES": 'Agregar un balón de habla a una imagen',
-        "es-419": 'Agregar un balón de habla a una imagen',
+        "es-ES": 'Agregar un globo de texto a una imagen',
+        "es-419": 'Agregar un globo de texto a una imagen',
       },
       options: [
         {
@@ -237,14 +237,14 @@ createApplicationCommand({
           name: {
             global: 'attachment',
             'pt-BR': 'anexo',
-            "es-ES": 'anexo',
-            "es-419": 'anexo',
+            "es-ES": 'adjunto',
+            "es-419": 'adjunto',
           },
           description: {
             global: 'The image to add a speech bubble to',
             'pt-BR': 'A imagem para adicionar um balão de fala',
-            "es-ES": 'La imagen para agregar un balón de habla',
-            "es-419": 'La imagen para agregar un balón de habla',
+            "es-ES": 'La imagen para agregar un globo de texto ',
+            "es-419": 'La imagen para agregar un globo de texto',
           },
           required: true,
         },
@@ -270,8 +270,8 @@ createApplicationCommand({
           name: {
             global: 'target',
             'pt-BR': 'alvo',
-            "es-ES": 'alvo',
-            "es-419": 'alvo',
+            "es-ES": 'objetivo',
+            "es-419": 'objetivo',
           },
           description: {
             global: 'The user whose avatar to add a petpet effect to',
@@ -286,14 +286,14 @@ createApplicationCommand({
           name: {
             global: 'scope',
             'pt-BR': 'escopo',
-            "es-ES": 'escopo',
-            "es-419": 'escopo',
+            "es-ES": 'ambito',
+            "es-419": 'ambito',
           },
           description: {
             global: 'the scope of the avatar to petpet',
             'pt-BR': 'o escopo do avatar a petpet',
-            "es-ES": 'el escopo del avatar a petpet',
-            "es-419": 'el escopo del avatar a petpet',
+            "es-ES": 'el ámbito del avatar a petpet',
+            "es-419": 'el ámbito del avatar a petpet',
           },
           choices: [
             {
