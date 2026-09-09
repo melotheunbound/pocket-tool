@@ -19,7 +19,7 @@ createApplicationCommand({
   name: {
     global: 'role',
     'pt-BR': 'cargo',
-    'es-ES': 'objetivo',
+    'es-ES': 'rol',
   },
   description: {
     global: 'View information about a role',
@@ -34,7 +34,7 @@ createApplicationCommand({
       name: {
         global: 'target',
         'pt-BR': 'alvo',
-        'es-ES': 'rol',
+        'es-ES': 'objetivo',
       },
       description: {
         global: 'The role to view',
