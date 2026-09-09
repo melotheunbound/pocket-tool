@@ -21,7 +21,7 @@ import { makeRequest } from '../../../utils/request'
 import { RequestMethod, ResponseType } from '../../../types/types'
 import { cdn, emoji } from '../../../utils/markdown'
 import { t } from '../../../utils/localization'
-import { sharp } from 'sharp'
+import sharp from 'sharp'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
