@@ -48,7 +48,7 @@ createGatewayEvent({
         break
       case InteractionType.MessageComponent:
       case InteractionType.ModalSubmit:
-        collectors.forEach(collector => collector.collect(interaction))
+        collectors.forEach(collector => void collector.collect(interaction))
         break
       default:
         console.log('Unknown interaction type', interaction.type)

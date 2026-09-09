@@ -281,15 +281,9 @@ export type RequestResponse = {
   [ResponseType.BUFFER]: Buffer
 }
 
-export interface Track {
-  buffer: Buffer
-  onFinish?: () => void
-  onError?: (error: Error) => void
-}
-
 export interface CollectorOptions<Type> {
   key: string
-  filter?: (item: Type) => boolean
+  filter?: (item: Type) => boolean | Promise<boolean>
   duration?: number
   max?: number
 }
@@ -300,7 +294,7 @@ export interface CollectorEvents<Type> {
 }
 
 export interface Collector<Type> extends EventEmitter<CollectorEvents<Type>> {
-  collect(item: Type): void
+  collect(item: Type): Promise<void>
   end(reason?: string): void
 }
 

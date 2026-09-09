@@ -140,9 +140,20 @@ createApplicationCommand({
       APIMessageComponentButtonInteraction | APIModalSubmitInteraction
     >({
       key: 'command-browser',
-      filter: i =>
-        i.message?.id === response.id &&
-        (i.user?.id ?? i.member?.user.id) === (interaction.user?.id ?? interaction.member?.user.id),
+      filter: async i => {
+        if (i.message?.id !== response.id) return false
+
+        if ((i.user?.id ?? i.member?.user.id) !== (interaction.user?.id ?? interaction.member?.user.id)) {
+          await client.api.interactions.reply(i.id, i.token, {
+            content: "You cannot interact with components from another user's command.",
+            flags: MessageFlags.Ephemeral,
+          })
+
+          return false
+        }
+
+        return true
+      },
       duration: 5 * 60 * 1000,
     })
 
