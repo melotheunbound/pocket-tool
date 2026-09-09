@@ -291,7 +291,7 @@ createApplicationCommand({
             {
               type: ComponentType.Button,
               custom_id: 'random',
-              label: t(l, 'commands.quote.selects.random_label'),
+              label: t(l, 'commands.quote.button.random_label'),
               emoji: toComponentEmoji('Spark'),
               style: ButtonStyle.Secondary,
             },
@@ -495,7 +495,7 @@ createApplicationCommand({
                   {
                     type: ComponentType.Button,
                     custom_id: 'random',
-                    label: t(l, 'commands.quote.selects.random_label'),
+                    label: t(l, 'commands.quote.button.random_label'),
                     emoji: toComponentEmoji('Spark'),
                     style: ButtonStyle.Secondary,
                   },
@@ -697,7 +697,7 @@ createApplicationCommand({
                     {
                       type: ComponentType.Button,
                       custom_id: 'random',
-                      label: t(l, 'commands.quote.selects.random_label'),
+                      label: t(l, 'commands.quote.button.random_label'),
                       emoji: toComponentEmoji('Spark'),
                       style: ButtonStyle.Secondary,
                     },
@@ -902,7 +902,7 @@ createApplicationCommand({
                     {
                       type: ComponentType.Button,
                       custom_id: 'random',
-                      label: t(l, 'commands.quote.selects.random_label'),
+                      label: t(l, 'commands.quote.button.random_label'),
                       emoji: toComponentEmoji('Spark'),
                       style: ButtonStyle.Secondary,
                     },
@@ -1086,7 +1086,7 @@ createApplicationCommand({
                   {
                     type: ComponentType.Button,
                     custom_id: 'random',
-                    label: t(l, 'commands.quote.selects.random_label'),
+                    label: t(l, 'commands.quote.button.random_label'),
                     emoji: toComponentEmoji('Spark'),
                     style: ButtonStyle.Secondary,
                   },
@@ -1265,7 +1265,7 @@ createApplicationCommand({
                   {
                     type: ComponentType.Button,
                     custom_id: 'random',
-                    label: t(l, 'commands.quote.selects.random_label'),
+                    label: t(l, 'commands.quote.button.random_label'),
                     emoji: toComponentEmoji('Spark'),
                     style: ButtonStyle.Secondary,
                   },
@@ -1474,7 +1474,7 @@ createApplicationCommand({
                   {
                     type: ComponentType.Button,
                     custom_id: 'random',
-                    label: t(l, 'commands.quote.selects.random_label'),
+                    label: t(l, 'commands.quote.button.random_label'),
                     emoji: toComponentEmoji('Spark'),
                     style: ButtonStyle.Secondary,
                   },
@@ -1680,7 +1680,7 @@ createApplicationCommand({
                   {
                     type: ComponentType.Button,
                     custom_id: 'random',
-                    label: t(l, 'commands.quote.selects.random_label'),
+                    label: t(l, 'commands.quote.button.random_label'),
                     emoji: toComponentEmoji('Spark'),
                     style: ButtonStyle.Secondary,
                   },
@@ -1832,7 +1832,7 @@ createApplicationCommand({
                 {
                   type: ComponentType.StringSelect,
                   custom_id: 'quote-effects',
-                  placeholder: t(l, 'commands.quote.selects.effects.placeholder'),
+                  placeholder: t(l, 'commands.quote.selects.effects_placeholder'),
                   min_values: 0,
                   max_values: Object.keys(CARD_EFFECTS).length,
                   options: Object.entries(CARD_EFFECTS).map(([value, item]) => ({
@@ -1852,7 +1852,7 @@ createApplicationCommand({
                 {
                   type: ComponentType.Button,
                   custom_id: 'random',
-                  label: t(l, 'commands.quote.selects.random.label'),
+                  label: t(l, 'commands.quote.button.random_label'),
                   emoji: toComponentEmoji('Spark'),
                   style: ButtonStyle.Secondary,
                   disabled: true,

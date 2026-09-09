@@ -159,7 +159,9 @@
           "custom_description": "Insira um código de cor (em hexadecimal)",
           "custom_selected_description": "Cor personalizada atualmente selecionada"
         },
-        "effects_placeholder": "Escolha Alguns Efeitos!",
+        "effects_placeholder": "Escolha Alguns Efeitos!"
+      },
+      "button": {
         "random_label": "Surpreenda-me!"
       },
       "modals": {

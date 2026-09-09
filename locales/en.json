@@ -159,7 +159,9 @@
           "custom_description": "Enter a color code (in hex)",
           "custom_selected_description": "Currently selected color"
         },
-        "effects_placeholder": "Choose Some Effects!",
+        "effects_placeholder": "Choose Some Effects!"
+      },
+      "button": {
         "random_label": "Surprise Me!"
       },
       "modals": {
