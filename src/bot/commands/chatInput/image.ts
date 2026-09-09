@@ -2,7 +2,9 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ApplicationIntegrationType,
+  ComponentType,
   InteractionContextType,
+  MessageFlags,
   type APIInteractionDataResolvedGuildMember,
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
@@ -17,7 +19,9 @@ import {
 } from '../../../utils/image'
 import { makeRequest } from '../../../utils/request'
 import { RequestMethod, ResponseType } from '../../../types/types'
-import { cdn } from '../../../utils/markdown'
+import { cdn, emoji } from '../../../utils/markdown'
+import { t } from '../../../utils/localization'
+import { sharp } from 'sharp'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -132,6 +136,22 @@ createApplicationCommand({
             'es-ES': 'La imagen para aplicar un efecto de desenfoque',
           },
           required: true,
+        },
+        {
+          type: ApplicationCommandOptionType.Integer,
+          name: {
+            global: 'strength',
+            'pt-BR': 'força',
+            'es-ES': 'fuerza',
+          },
+          description: {
+            global: 'The strength of the blur effect',
+            'pt-BR': 'A força do efeito de desfoque',
+            'es-ES': 'La fuerza del efecto de desenfoque',
+          },
+          minValue: 1,
+          maxValue: 20,
+          required: false,
         },
       ],
     },
@@ -283,11 +303,56 @@ createApplicationCommand({
         },
       ],
     },
+    {
+      type: ApplicationCommandOptionType.Subcommand,
+      name: {
+        global: 'gif',
+        'pt-BR': 'gif',
+        'es-ES': 'gif',
+      },
+      description: {
+        global: 'Turn an image into a GIF',
+        'pt-BR': 'Transforme uma imagem em um GIF',
+        'es-ES': 'Transformar una imagen en un GIF',
+      },
+      options: [
+        {
+          type: ApplicationCommandOptionType.Attachment,
+          name: {
+            global: 'attachment',
+            'pt-BR': 'anexo',
+            'es-ES': 'adjunto',
+          },
+          description: {
+            global: 'The image to turn into a GIF',
+            'pt-BR': 'A imagem para transformar em um GIF',
+            'es-ES': 'La imagen para transformar en un GIF',
+          },
+          required: true,
+        },
+        {
+          type: ApplicationCommandOptionType.String,
+          name: {
+            global: 'name',
+            'pt-BR': 'nome',
+            'es-ES': 'nombre',
+          },
+          description: {
+            global: 'The name of the GIF',
+            'pt-BR': 'O nome do GIF',
+            'es-ES': 'El nombre del GIF',
+          },
+          required: false,
+        },
+      ],
+    },
   ],
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
-    const { caption, grayscale, blur, flip, flop, 'speech-bubble': speechBubble, petpet } = options
+    const l = interaction.locale
+
+    const { caption, grayscale, blur, flip, flop, 'speech-bubble': speechBubble, petpet, gif } = options
 
     if (caption) {
       const { attachment, text } = caption
@@ -338,14 +403,14 @@ createApplicationCommand({
         ],
       })
     } else if (blur) {
-      const { attachment } = blur
+      const { attachment, strength } = blur
 
       const buffer = await makeRequest(attachment.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
       })
 
-      const blurred = await applyBlur(buffer)
+      const blurred = await applyBlur(buffer, strength)
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         attachments: [
@@ -479,6 +544,44 @@ createApplicationCommand({
           {
             name: 'petpeted.gif',
             data: petpeted,
+          },
+        ],
+      })
+    } else if (gif) {
+      const { attachment, name } = gif
+
+      if (!attachment || !attachment.content_type?.startsWith('image/')) {
+        await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+          components: [
+            {
+              type: ComponentType.Container,
+              components: [
+                {
+                  type: ComponentType.TextDisplay,
+                  content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.no_image')}`,
+                },
+              ],
+            },
+          ],
+          flags: MessageFlags.IsComponentsV2,
+        })
+
+        return
+      }
+
+      const buffer = await makeRequest(attachment.url, {
+        method: RequestMethod.GET,
+        response: ResponseType.BUFFER,
+      })
+
+      const gifed = await sharp(buffer).gif({ effort: 10 }).toBuffer()
+
+      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+        content: `-# ${emoji('GIF')} ${t(l, 'commands.image.gif.tip')}`,
+        files: [
+          {
+            name: `${name ?? 'gif'}.gif`,
+            data: gifed,
           },
         ],
       })

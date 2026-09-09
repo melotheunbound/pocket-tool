@@ -56,12 +56,6 @@
         "guild_not_found": "I couldn't find a server with that ID."
       }
     },
-    "gif": {
-      "forwarded": "Forwarded messages are currently unsupported.",
-      "no_image": "Please provide a valid image to turn into a GIF.",
-      "no_images": "Please select at least one image to turn into a GIF.",
-      "tip": "Hover over the GIF to add it to your favorites!"
-    },
     "help": {
       "browser": "Command Browser\n-# Browse all available commands using pagination, or search for a specific command",
       "browser_results": "Command Browser\n-# Search results for **${query}**",
@@ -71,6 +65,14 @@
         "label": "Search for commands by name",
         "placeholder": "Enter a command name here",
         "commands_not_found": "No commands found matching your search."
+      }
+    },
+    "image": {
+      "gif": {
+        "forwarded": "Forwarded messages are currently unsupported.",
+        "no_image": "Please provide a valid image to turn into a GIF.",
+        "no_images": "Please select at least one image to turn into a GIF.",
+        "tip": "Hover over the GIF to add it to your favorites!"
       }
     },
     "invite": {

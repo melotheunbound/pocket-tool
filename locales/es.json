@@ -56,12 +56,6 @@
         "guild_not_found": "No se encontró ningún servidor con ese ID."
       }
     },
-    "gif": {
-      "forwarded": "Los mensajes reenviados no están soportados actualmente.",
-      "no_image": "Por favor, proporciona una imagen válida para convertirla a GIF.",
-      "no_images": "Por favor, proporciona al menos una imagen para convertirla a GIF.",
-      "tip": "¡Pasa el cursor sobre el GIF para añadirlo a tus favoritos!"
-    },
     "help": {
       "browser": "Navegador de comandos\n-# Explora todos los comandos disponibles mediante paginación o busca un comando específico.",
       "browser_results": "Navegador de comandos\n-# Resultados de búsqueda para **${query}**",
@@ -71,6 +65,14 @@
         "label": "Busca comandos por nombre",
         "placeholder": "Introduce el nombre de un comando",
         "commands_not_found": "No se encontraron comandos para tu búsqueda."
+      }
+    },
+    "image": {
+      "gif": {
+        "forwarded": "Los mensajes reenviados no están soportados actualmente.",
+        "no_image": "Por favor, proporciona una imagen válida para convertirla a GIF.",
+        "no_images": "Por favor, proporciona al menos una imagen para convertirla a GIF.",
+        "tip": "¡Pasa el cursor sobre el GIF para añadirlo a tus favoritos!"
       }
     },
     "invite": {

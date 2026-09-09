@@ -36,7 +36,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} ${t(l, 'commands.gif.forwarded')}`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.forwarded')}`,
               },
             ],
           },
@@ -55,7 +55,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} ${t(l, 'commands.gif.no_image')}`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.no_image')}`,
               },
             ],
           },
@@ -78,7 +78,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} ${t(l, 'commands.gif.no_images')}`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.no_images')}`,
               },
             ],
           },
@@ -106,7 +106,7 @@ createApplicationCommand({
     )
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-      content: `-# ${emoji('GIF')} ${t(l, 'commands.gif.tip')}`,
+      content: `-# ${emoji('GIF')} ${t(l, 'commands.image.gif.tip')}`,
       files,
     })
   },
