@@ -122,20 +122,21 @@ if (env.get('register_commands')!.toBoolean() === true) {
           : [],
     )
 
-    const subcommandOptions =
-      subcommands.length > 0 ? subcommands.map(subcommand => (subcommand.options ??= [])) : [command.options]
+    const options = subcommands.length ? subcommands.map(subcommand => (subcommand.options ??= [])) : [command.options]
 
-    subcommandOptions.forEach(options => {
-      if (!options.some(o => o.name === 'ephemeral')) {
+    options.forEach(options => {
+      if (!options.some(option => (option.name as any).global || option.name === 'ephemeral')) {
         options.push({
           type: ApplicationCommandOptionType.Boolean,
           name: {
             global: 'ephemeral',
             'pt-BR': 'efêmero',
+            'es-ES': 'emifero',
           },
           description: {
             global: 'Whether the response should only be visible to you',
             'pt-BR': 'Se a resposta deve ser visível apenas para você',
+            'es-ES': 'Si la respuesta debe ser visible solo para ti',
           },
         } satisfies BooleanChatInputOption)
       }
