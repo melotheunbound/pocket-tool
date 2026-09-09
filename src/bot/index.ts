@@ -60,7 +60,7 @@ client.rest.ping = async () => {
 client.api.interactions.createCollector = createCollector
 
 client.on(GatewayDispatchEvents.Ready, async payload => {
-  console.log(`shard #${payload.shardId} is ready!`)
+  console.log(`Shard #${payload.shardId} is ready!`)
 
   await client
     .updatePresence(payload.shardId, {
