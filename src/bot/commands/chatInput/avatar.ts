@@ -24,8 +24,8 @@ createApplicationCommand({
   description: {
     global: "View a user's avatar",
     'pt-BR': 'Veja o avatar de um usuário',
-    "es-ES": 'Veja el avatar de un usuario',
-    "es-419": 'Veja el avatar de un usuario',
+    "es-ES": 'Vea el avatar de un usuario',
+    "es-419": 'Vea el avatar de un usuario',
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
@@ -35,8 +35,8 @@ createApplicationCommand({
       name: {
         global: 'target',
         'pt-BR': 'alvo',
-        "es-ES": 'alvo',
-        "es-419": 'alvo',
+        "es-ES": 'objetivo',
+        "es-419": 'objetivo',
       },
       description: {
         global: 'The user to view the avatar of',
@@ -51,14 +51,14 @@ createApplicationCommand({
       name: {
         global: 'scope',
         'pt-BR': 'escopo',
-        "es-ES": 'escopo',
-        "es-419": 'escopo',
+        "es-ES": 'ambito',
+        "es-419": 'ambito',
       },
       description: {
         global: 'the scope of the avatar to view',
         'pt-BR': 'o escopo do avatar para ver',
-        "es-ES": 'el escopo del avatar para ver',
-        "es-419": 'el escopo del avatar para ver',
+        "es-ES": 'el ámbito del avatar para ver',
+        "es-419": 'el ámbito del avatar para ver',
       },
       choices: [
         {
