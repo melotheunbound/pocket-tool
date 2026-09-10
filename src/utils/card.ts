@@ -2,9 +2,9 @@ import { createCanvas, GlobalFonts, loadImage, type SKRSContext2D } from '@napi-
 import { isHex, type Hexadecimal } from '@tolga1452/toolbox.js'
 import sharp from 'sharp'
 import emojiRegex from 'emoji-regex'
-import path from 'path'
 import { makeRequest } from './request'
 import { RequestMethod, ResponseType } from '../types/types'
+import { join } from 'path'
 
 const FONTS = [
   ['M PLUS Rounded 1c', 'MPLUSRounded1c-Regular.ttf'],
@@ -35,7 +35,7 @@ function loadFonts(font: FontKey): void {
     if (!requiredFamilies.has(family) || attemptedFonts.has(family)) continue
 
     try {
-      GlobalFonts.registerFromPath(path.join(process.cwd(), 'fonts', file), family)
+      GlobalFonts.registerFromPath(join(process.cwd(), 'fonts', file), family)
     } catch (error) {
       console.error(`Failed to load font ${family}:`, error)
     } finally {

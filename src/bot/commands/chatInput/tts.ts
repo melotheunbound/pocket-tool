@@ -13,35 +13,89 @@ import { emoji, timestamp, ellipsis } from '../../../utils/markdown'
 import { ELEVEN_LABS_LANGUAGES } from '../../constants'
 import { redis } from '../../../utils/redis'
 import { TimestampStyle } from '../../../types/types'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'tts',
-  description: 'Converts text to speech',
+  name: {
+    global: 'tts',
+    'pt-BR': 'tts',
+    'es-ES': 'tts',
+  },
+  description: {
+    global: 'Converts text to speech',
+    'pt-BR': 'Converte texto para fala',
+    'es-ES': 'Convierte texto a voz',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   options: [
     {
       type: ApplicationCommandOptionType.String,
-      name: 'text',
-      description: 'The text to convert to speech',
+      name: {
+        global: 'text',
+        'pt-BR': 'texto',
+        'es-ES': 'texto',
+      },
+      description: {
+        global: 'The text to convert to speech',
+        'pt-BR': 'O texto a ser convertido para fala',
+        'es-ES': 'El texto a convertir a voz',
+      },
       required: true,
     },
     {
       type: ApplicationCommandOptionType.String,
-      name: 'voice',
-      description: 'The voice to use for TTS',
+      name: {
+        global: 'voice',
+        'pt-BR': 'voz',
+        'es-ES': 'voz',
+      },
+      description: {
+        global: 'The voice to use for TTS',
+        'pt-BR': 'A voz a ser usada para TTS',
+        'es-ES': 'La voz a usar para TTS',
+      },
       required: false,
       choices: [
-        { name: 'Male', value: 'UgBBYS2sOqTuMpoF3BR0' },
-        { name: 'Female', value: 'nf4MCGNSdM0hxM95ZBQR' },
-        { name: 'Neutral', value: 'M563YhMmA0S8vEYwkgYa' },
+        {
+          name: {
+            global: 'Male',
+            'pt-BR': 'Masculino',
+            'es-ES': 'Masculino',
+          },
+          value: 'UgBBYS2sOqTuMpoF3BR0',
+        },
+        {
+          name: {
+            global: 'Female',
+            'pt-BR': 'Feminino',
+            'es-ES': 'Feminino',
+          },
+          value: 'nf4MCGNSdM0hxM95ZBQR',
+        },
+        {
+          name: {
+            global: 'Neutral',
+            'pt-BR': 'Neutro',
+            'es-ES': 'Neutro',
+          },
+          value: 'M563YhMmA0S8vEYwkgYa',
+        },
       ],
     },
     {
       type: ApplicationCommandOptionType.String,
-      name: 'language',
-      description: 'The language to use for TTS',
+      name: {
+        global: 'language',
+        'pt-BR': 'idioma',
+        'es-ES': 'idioma',
+      },
+      description: {
+        global: 'The language to use for TTS',
+        'pt-BR': 'O idioma a ser usado para TTS',
+        'es-ES': 'El idioma a usar para TTS',
+      },
       required: false,
       autocomplete: true,
     },
@@ -59,6 +113,10 @@ createApplicationCommand({
     const choices = [
       {
         name: 'Use My Locale',
+        nameLocalizations: {
+          'pt-BR': 'Use Meu Locale',
+          'es-ES': 'Use Meu Locale',
+        },
         value: 'auto',
       },
       ...languages.map(language => ({
@@ -70,6 +128,8 @@ createApplicationCommand({
     await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices })
   },
   async run(interaction, options, client) {
+    const l = interaction.locale
+
     const { text: rawText, voice, language } = options
 
     const elevenLabsApiKey = env.get('eleven_labs_api_key')?.toString()
@@ -82,7 +142,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Wrong')} The ElevenLabs API key is not set.`,
+                content: `${emoji('Wrong')} ${t(l, 'commands.tts.missing_api_key')}`,
               },
             ],
           },
@@ -111,7 +171,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} You have reached your daily TTS limit of ${limit} messages. Try again ${timestamp(resetAt.epochMilliseconds, TimestampStyle.RelativeTime)}.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.tts.limit', { limit, timestamp: timestamp(resetAt.epochMilliseconds, TimestampStyle.RelativeTime) })}`,
               },
             ],
           },
@@ -132,7 +192,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please provide some text to convert to speech.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.tts.no_text')}`,
               },
             ],
           },

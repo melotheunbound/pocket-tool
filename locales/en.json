@@ -1,0 +1,200 @@
+{
+  "commands": {
+    "avatar": {
+      "server": {
+        "no_avatar": "<@{userId}> doesn't have a server avatar."
+      },
+      "global": {
+        "no_avatar": "<@{userId}> doesn't have an avatar."
+      }
+    },
+    "banner": {
+      "no_banner": "<@{userId}> doesn't have a banner."
+    },
+    "credits": {
+      "development": {
+        "title": "Development:",
+        "lead_developer": "Lead Developer",
+        "website_developer": "Website Developer & Contributor"
+      },
+      "design": {
+        "title": "Design:",
+        "branding": "Responsible for the branding",
+        "emojis": "Created the emojis"
+      },
+      "additional": {
+        "title": "Additional:",
+        "hosting_provider": "Hosting Provider",
+        "translation_utils": "Provided translation code snippets"
+      },
+      "community_message": "This bot wouldn't exist without the support of our community! Thank you! ❤️"
+    },
+    "debug": {
+      "browser": "Shard Browser\n-# Enter a server ID to view its shard information. Currently on shard **{shardId}/{shards}**",
+      "shard": {
+        "title": "Shard #{shardId}:",
+        "latency": "Latency:",
+        "uptime": "Uptime:",
+        "memory": "Memory:"
+      },
+      "user_installs": "User Installs:",
+      "servers": "Servers:",
+      "today_command_usage": "Today's Command Usage:",
+      "today": "Today:",
+      "last_hour": "Last Hour:",
+      "last_minute": "Last Minute:",
+      "today_top_commands": "Today's Top Commands:",
+      "buttons": {
+        "authorize": "Authorize",
+        "support": "Support Server"
+      },
+      "filter": "You cannot interact with components from another user's command.",
+      "modal": {
+        "title": "Shard Browser",
+        "label": "Find your server's shard by ID",
+        "placeholder": "Enter your server's ID here",
+        "invalid_server_id": "Please provide a valid server ID.",
+        "guild_not_found": "I couldn't find a server with that ID."
+      }
+    },
+    "help": {
+      "browser": "Command Browser\n-# Browse all available commands using pagination, or search for a specific command",
+      "browser_results": "Command Browser\n-# Search results for **${query}**",
+      "page": "Page **{page}** of **{total}**",
+      "filter": "You cannot interact with components from another user's command.",
+      "modal": {
+        "title": "Command Browser",
+        "label": "Search for commands by name",
+        "placeholder": "Enter a command name here",
+        "commands_not_found": "No commands found matching your search."
+      }
+    },
+    "image": {
+      "gif": {
+        "forwarded": "Forwarded messages are currently unsupported.",
+        "no_image": "Please provide a valid image to turn into a GIF.",
+        "no_images": "Please select at least one image to turn into a GIF.",
+        "tip": "Hover over the GIF to add it to your favorites!"
+      }
+    },
+    "invite": {
+      "invalid_link": "Please provide an invite link to view information about.",
+      "created_at": "Created At:"
+    },
+    "role": {
+      "created_at": "Created At:",
+      "hoisted": "Hoisted:",
+      "mentionable": "Mentionable:",
+      "managed": "Managed:",
+      "position": "Position:",
+      "colors": "Colors:",
+      "permissions": "Permissions:",
+      "yes": "Yes",
+      "no": "No",
+      "none": "None"
+    },
+    "timestamp": {
+      "invalid_time": "Please provide a valid time to convert."
+    },
+    "translate": {
+      "missing_api_key": "The Microsoft Azure API key is not set.",
+      "forwarded": "Forwarded messages are currently unsupported.",
+      "no_text": "Please provide some text to translate.",
+      "translated": "Translated from **{sourceFlag} {sourceLanguage}** to **{targetFlag} {targetLanguage}**",
+      "auto_detected_target": "The target language was selected based on the user's locale"
+    },
+    "tts": {
+      "missing_api_key": "The ElevenLabs API key is not set.",
+      "forwarded": "Forwarded messages are currently unsupported.",
+      "limit": "You have reached your daily TTS limit of {limit} messages. Try again {timestamp}.",
+      "no_text": "Please provide some text to convert to speech."
+    },
+    "tweet": {
+      "missing_api_key": "The Tolgchu Twitter API key is not set.",
+      "invalid_tweet": "Please provide a valid tweet URL or ID to view the tweet.",
+      "missing_api_key_2": "The Microsoft Azure API key is not set.",
+      "quoting_tweet": "*Quoting {tweet}, posted by {author}*",
+      "replying_to_tweet": "*Replying to {tweet}, posted by {author}*",
+      "posted_by": "Posted by {verified} {author} ({username})",
+      "translated": "Translated tweets may be inaccurate or may not reflect the original content",
+      "button": {
+        "view": "View Tweet"
+      }
+    },
+    "user": {
+      "no_user": "Please select a valid user to view information for.",
+      "created_at": "Created At:",
+      "joined_at": "Joined At:",
+      "roles": "Roles:",
+      "footer": {
+        "text": "Due to Discord limitations, this profile can't be fully displayed. {profile}",
+        "profile": "Open it in Discord."
+      }
+    },
+    "ocr": {
+      "missing_api_key": "OCR API key is not set.",
+      "forwarded": "Forwarded messages are currently unsupported.",
+      "no_image": "Please select an image to extract text from."
+    },
+    "quote": {
+      "forwarded": "Forwarded messages are currently unsupported.",
+      "no_text_or_sticker": "Please select a message containing text or stickers to quote.",
+      "editor": "Quote Editor\n-# Use the menus below to customize your quote or generate a random card",
+      "filter": "You cannot interact with components from another user's command.",
+      "selects": {
+        "fonts": {
+          "placeholder": "Choose a Font"
+        },
+        "font_size": {
+          "placeholder": "Choose a Size",
+          "custom_label": "Custom Font Size",
+          "custom_selected_label": "Custom Text Size: {size}px",
+          "custom_description": "Enter a custom font size (in pixels)",
+          "custom_selected_description": "Currently selected custom size"
+        },
+        "color": {
+          "placeholder": "Choose a Color",
+          "custom_label": "Custom Text Color",
+          "custom_selected_label": "Custom Text Color: {color}",
+          "custom_description": "Enter a color code (in hex)",
+          "custom_selected_description": "Currently selected color"
+        },
+        "effects_placeholder": "Choose Some Effects!"
+      },
+      "button": {
+        "random_label": "Surprise Me!"
+      },
+      "modals": {
+        "custom_font_size": {
+          "title": "Custom Font Size",
+          "label": "Enter a custom font size (in pixels)",
+          "placeholder": "Use a whole number between 20px and 100px",
+          "invalid": "Please provide a font size between 20px and 100px."
+        },
+        "custom_color": {
+          "title": "Custom Text Color",
+          "label": "Enter a color code (in hex)",
+          "placeholder": "Use a hex color code (e.g. #FF0000)",
+          "invalid": "Please provide a valid hexadecimal color code (e.g. #FF0000)."
+        }
+      }
+    },
+    "stt": {
+      "missing_api_key": "The ElevenLabs API key is not set.",
+      "forwarded": "Forwarded messages are currently unsupported.",
+      "limit": "You have reached your daily STT limit of {limit} voice messages. Try again {timestamp}.",
+      "no_voice_message": "Please select a voice message to transcribe.",
+      "voice_message_length": "The voice message must be shorter than {max} minutes."
+    }
+  },
+  "events": {
+    "interaction_create": {
+      "cooldown": "Please wait! You're on cooldown for {command}. You can use this command again {timestamp}.",
+      "blocked": "{command} was blocked due to ${article}. Please try again with **ephemeral** enabled.",
+      "error": {
+        "text": "{error}\n-# If you believe this is a bug, please report it in our **{support}**.",
+        "support": "support server"
+      }
+    }
+  }
+}

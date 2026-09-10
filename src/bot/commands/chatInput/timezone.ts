@@ -12,15 +12,31 @@ import { emoji } from '../../../utils/markdown'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'timezone',
-  description: 'View the current time for a specific timezone',
+  name: {
+    global: 'timezone',
+    'pt-BR': 'fuso-horário',
+    'es-ES': 'zona-horaria',
+  },
+  description: {
+    global: 'View the current time for a specific timezone',
+    'pt-BR': 'Veja o horário atual para um fuso horário específico',
+    'es-ES': 'Ver la hora actual para una zona horaria específica',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   options: [
     {
       type: ApplicationCommandOptionType.String,
-      name: 'zone',
-      description: 'The timezone to view the current time in',
+      name: {
+        global: 'timezone',
+        'pt-BR': 'fuso-horário',
+        'es-ES': 'zona-horaria',
+      },
+      description: {
+        global: 'The timezone to view the current time in',
+        'pt-BR': 'O fuso horário para ver o horário atual',
+        'es-ES': 'La zona horaria para ver la hora actual',
+      },
       required: true,
       autocomplete: true,
     },
@@ -50,9 +66,9 @@ createApplicationCommand({
     await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices })
   },
   async run(interaction, options, client) {
-    const { zone } = options
+    const { timezone } = options
 
-    const time = Temporal.Now.zonedDateTimeISO(zone)
+    const time = Temporal.Now.zonedDateTimeISO(timezone)
 
     const formatted = `${time.toLocaleString('en-US', {
       weekday: 'long',
@@ -73,7 +89,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `${emoji('Clock')} **${zone}:** ${formatted}`,
+              content: `${emoji('Clock')} **${timezone}:** ${formatted}`,
             },
           ],
         },

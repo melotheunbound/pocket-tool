@@ -11,67 +11,136 @@ import { parse } from 'chrono-node'
 import { emoji, timestamp } from '../../../utils/markdown'
 import type { TimestampStyle } from '../../../types/types'
 import { getAutocompleteFocusedOption } from '../../../utils/utils'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'timestamp',
-  description: 'Generates a Discord-style timestamp for the given time',
+  name: {
+    global: 'timestamp',
+    'pt-BR': 'timestamp',
+    'es-ES': 'timestamp',
+  },
+  description: {
+    global: 'Generates a Discord-style timestamp for the given time',
+    'pt-BR': 'Gera um timestamp do Discord para o tempo dado',
+    'es-ES': 'Genera un timestamp de estilo Discord para el tiempo dado',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   options: [
     {
       type: ApplicationCommandOptionType.String,
-      name: 'time',
-      description: 'The time to convert to a timestamp',
+      name: {
+        global: 'time',
+        'pt-BR': 'tempo',
+        'es-ES': 'tiempo',
+      },
+      description: {
+        global: 'The time to convert to a timestamp',
+        'pt-BR': 'O tempo a ser convertido em timestamp',
+        'es-ES': 'El tiempo a ser convertido en timestamp',
+      },
       required: true,
     },
     {
       type: ApplicationCommandOptionType.String,
-      name: 'timezone',
-      description: 'The timezone to use for the timestamp',
+      name: {
+        global: 'timezone',
+        'pt-BR': 'fuso-horário',
+        'es-ES': 'zona-horaria',
+      },
+      description: {
+        global: 'The timezone to use for the timestamp',
+        'pt-BR': 'O fuso horário a ser usado para o timestamp',
+        'es-ES': 'La zona horaria a usar para el timestamp',
+      },
       required: false,
       autocomplete: true,
     },
     {
       type: ApplicationCommandOptionType.String,
-      name: 'style',
-      description: 'The timestamp style to use',
+      name: {
+        global: 'style',
+        'pt-BR': 'estilo',
+        'es-ES': 'estilo',
+      },
+      description: {
+        global: 'The timestamp style to use',
+        'pt-BR': 'O estilo do timestamp a ser usado',
+        'es-ES': 'El estilo del timestamp a usar',
+      },
       required: false,
       choices: [
         {
-          name: 'Short Time',
+          name: {
+            global: 'Short Time',
+            'pt-BR': 'Tempo curto',
+            'es-ES': 'Tiempo corto',
+          },
           value: 't',
         },
         {
-          name: 'Medium Time',
+          name: {
+            global: 'Medium Time',
+            'pt-BR': 'Tempo médio',
+            'es-ES': 'Tiempo medio',
+          },
           value: 'T',
         },
         {
-          name: 'Short Date',
+          name: {
+            global: 'Short Date',
+            'pt-BR': 'Data curta',
+            'es-ES': 'Fecha corta',
+          },
           value: 'd',
         },
         {
-          name: 'Long Date',
+          name: {
+            global: 'Long Date',
+            'pt-BR': 'Data longa',
+            'es-ES': 'Fecha larga',
+          },
           value: 'D',
         },
         {
-          name: 'Long Date and Short Time',
+          name: {
+            global: 'Long Date and Short Time',
+            'pt-BR': 'Data longa e tempo curto',
+            'es-ES': 'Fecha larga y tiempo corto',
+          },
           value: 'f',
         },
         {
-          name: 'Full Date and Short Time',
+          name: {
+            global: 'Full Date and Short Time',
+            'pt-BR': 'Data completa e tempo curto',
+            'es-ES': 'Fecha completa y tiempo corto',
+          },
           value: 'F',
         },
         {
-          name: 'Short Date and Short Time',
+          name: {
+            global: 'Short Date and Short Time',
+            'pt-BR': 'Data curta e tempo curto',
+            'es-ES': 'Fecha corta y tiempo corto',
+          },
           value: 's',
         },
         {
-          name: 'Short Date and Medium Time',
+          name: {
+            global: 'Short Date and Medium Time',
+            'pt-BR': 'Data curta e tempo médio',
+            'es-ES': 'Fecha corta y tiempo medio',
+          },
           value: 'S',
         },
         {
-          name: 'Relative Time',
+          name: {
+            global: 'Relative Time',
+            'pt-BR': 'Tempo relativo',
+            'es-ES': 'Tiempo relativo',
+          },
           value: 'R',
         },
       ],
@@ -102,6 +171,8 @@ createApplicationCommand({
     await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices })
   },
   async run(interaction, options, client) {
+    const l = interaction.locale
+
     const { time, timezone, style } = options
 
     const date = parseDate(time, timezone ?? 'UTC')
@@ -114,7 +185,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please provide a valid time to convert.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.timestamp.invalid_time')}`,
               },
             ],
           },

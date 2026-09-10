@@ -14,7 +14,7 @@ export default function createCollector<Type>(options: CollectorOptions<Type>): 
 
   // handles rejected end listeners after removeAllListeners() has been run
   emitter[captureRejectionSymbol] = (error: Error, event: string | symbol) => {
-    console.error(`collector ${options.key} failed during ${String(event)}:`, error)
+    console.error(`Collector ${options.key} failed during ${String(event)}:`, error)
   }
 
   const resetTimeout = () => {
@@ -28,15 +28,16 @@ export default function createCollector<Type>(options: CollectorOptions<Type>): 
   collectors.add(emitter)
   resetTimeout()
 
-  emitter.collect = (item: Type) => {
+  emitter.collect = async (item: Type) => {
     if (stopped) return
 
     if (max && collectedCount >= max) {
       emitter.end('max reached')
+
       return
     }
 
-    const pass = filter ? filter(item) : true
+    const pass = filter ? await filter(item) : true
 
     if (!pass) return
 

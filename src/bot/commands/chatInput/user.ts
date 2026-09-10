@@ -11,31 +11,64 @@ import createApplicationCommand from '../../../builders/command'
 import { cdn, emoji, highlight, hyperlink, timestamp } from '../../../utils/markdown'
 import { getTimestampFromSnowflake } from '../../../utils/utils'
 import { TimestampStyle } from '../../../types/types'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'user',
-  description: 'View information about a user or yourself',
+  name: {
+    global: 'user',
+    'pt-BR': 'usuário',
+    'es-ES': 'usuario',
+  },
+  description: {
+    global: 'View information about a user or yourself',
+    'pt-BR': 'Veja informações sobre um usuário ou você mesmo',
+    'es-ES': 'Vea información sobre un usuario o usted mismo',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   options: [
     {
       type: ApplicationCommandOptionType.User,
-      name: 'user',
-      description: 'The user to view',
+      name: {
+        global: 'target',
+        'pt-BR': 'alvo',
+        'es-ES': 'objetivo',
+      },
+      description: {
+        global: 'The user to view',
+        'pt-BR': 'O usuário a ser visualizado',
+        'es-ES': 'El usuario a visualizar',
+      },
       required: false,
     },
     {
       type: ApplicationCommandOptionType.String,
-      name: 'scope',
-      description: 'The scope of the information to display',
+      name: {
+        global: 'scope',
+        'pt-BR': 'escopo',
+        'es-ES': 'ambito',
+      },
+      description: {
+        global: 'The scope of the information to display',
+        'pt-BR': 'O escopo da informação a ser exibida',
+        'es-ES': 'El ámbito de la información a mostrar',
+      },
       choices: [
         {
-          name: 'Global',
+          name: {
+            global: 'Global',
+            'pt-BR': 'Global',
+            'es-ES': 'Global',
+          },
           value: 'global',
         },
         {
-          name: 'Server',
+          name: {
+            global: 'Server',
+            'pt-BR': 'Servidor',
+            'es-ES': 'Servidor',
+          },
           value: 'server',
         },
       ],
@@ -45,7 +78,9 @@ createApplicationCommand({
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
-    let { user: target, scope } = options
+    const l = interaction.locale
+
+    let { target, scope } = options
 
     if (!target) {
       target = {
@@ -93,14 +128,14 @@ createApplicationCommand({
               },
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Calendar')} **Created At:**\n${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})\n\n${emoji('Newbie')} **Joined At:**\n${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.RelativeTime)})${
+                content: `${emoji('Calendar')} **${t(l, 'commands.user.created_at')}**\n${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})\n\n${emoji('Newbie')} **${t(l, 'commands.user.joined_at')}**\n${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.RelativeTime)})${
                   member.roles.length > 0
-                    ? `\n\n${emoji('Role')} **Roles:**\n${member.roles
+                    ? `\n\n${emoji('Role')} **${t(l, 'commands.user.roles')}**\n${member.roles
                         .slice(0, 5)
                         .map(id => `<@&${id}>`)
                         .join(', ')}`
                     : ''
-                }${member.roles.length > 5 ? ` ${highlight(`+${(member.roles.length - 5).toLocaleString('en-US')}`)}` : ``}\n\n-# ${emoji('Exclamation')} Due to Discord limitations, this profile can't be fully displayed. ${hyperlink(`discord://-/users/${user.id}`, 'Open it in Discord.')}`,
+                }${member.roles.length > 5 ? ` ${highlight(`+${(member.roles.length - 5).toLocaleString('en-US')}`)}` : ``}\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.user.footer.text', { profile: hyperlink(`discord://-/users/${user.id}`, t(l, 'commands.user.footer.profile')) })}`,
               },
             ],
           },
@@ -135,7 +170,7 @@ createApplicationCommand({
               },
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Calendar')} **Created At:**\n${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})\n\n-# ${emoji('Exclamation')} Due to Discord limitations, this profile can't be fully displayed. ${hyperlink(`discord://-/users/${user.id}`, 'Open it in Discord.')}`,
+                content: `${emoji('Calendar')} **${t(l, 'commands.user.created_at')}**\n${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.user.footer.text', { profile: hyperlink(`discord://-/users/${user.id}`, t(l, 'commands.user.footer.profile')) })}`,
               },
             ],
           },

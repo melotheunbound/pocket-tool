@@ -11,31 +11,64 @@ import {
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
 import { cdn, emoji } from '../../../utils/markdown'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'avatar',
-  description: "View a user's avatar",
+  name: {
+    global: 'avatar',
+    'pt-BR': 'avatar',
+    'es-ES': 'avatar',
+  },
+  description: {
+    global: "View a user's avatar",
+    'pt-BR': 'Veja o avatar de um usuário',
+    'es-ES': 'Vea el avatar de un usuario',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   options: [
     {
       type: ApplicationCommandOptionType.User,
-      name: 'user',
-      description: 'The user to view the avatar of',
+      name: {
+        global: 'target',
+        'pt-BR': 'alvo',
+        'es-ES': 'objetivo',
+      },
+      description: {
+        global: 'The user to view the avatar of',
+        'pt-BR': 'O usuário para ver o avatar',
+        'es-ES': 'El usuario para ver el avatar',
+      },
       required: false,
     },
     {
       type: ApplicationCommandOptionType.String,
-      name: 'scope',
-      description: 'the scope of the avatar to view',
+      name: {
+        global: 'scope',
+        'pt-BR': 'escopo',
+        'es-ES': 'ambito',
+      },
+      description: {
+        global: 'the scope of the avatar to view',
+        'pt-BR': 'o escopo do avatar para ver',
+        'es-ES': 'el ámbito del avatar para ver',
+      },
       choices: [
         {
-          name: 'Global',
+          name: {
+            global: 'Global',
+            'pt-BR': 'Global',
+            'es-ES': 'Global',
+          },
           value: 'global',
         },
         {
-          name: 'Server',
+          name: {
+            global: 'Server',
+            'pt-BR': 'Servidor',
+            'es-ES': 'Servidor',
+          },
           value: 'server',
         },
       ],
@@ -45,7 +78,9 @@ createApplicationCommand({
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
-    let { user: target, scope } = options
+    const l = interaction.locale
+
+    let { target, scope } = options
 
     if (!target) {
       target = {
@@ -67,7 +102,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `${emoji('Exclamation')} <@${user.id}> doesn't have a server avatar.`,
+                  content: `${emoji('Exclamation')} ${t(l, 'commands.avatar.server.no_avatar', { userId: user.id })}`,
                 },
               ],
             },
@@ -152,7 +187,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `${emoji('Exclamation')} <@${user.id}> doesn't have an avatar.`,
+                  content: `${emoji('Exclamation')} ${t(l, 'commands.avatar.global.no_avatar', { userId: user.id })}`,
                 },
               ],
             },

@@ -1,0 +1,200 @@
+{
+  "commands": {
+    "avatar": {
+      "server": {
+        "no_avatar": "<@{userId}> no tiene un avatar de servidor."
+      },
+      "global": {
+        "no_avatar": "<@{userId}> no tiene un avatar."
+      }
+    },
+    "banner": {
+      "no_banner": "<@{userId}> no tiene un banner."
+    },
+    "credits": {
+      "development": {
+        "title": "Desarrollo:",
+        "lead_developer": "Desarrollador principal",
+        "website_developer": "Desarrollador del sitio web y colaborador"
+      },
+      "design": {
+        "title": "Diseño:",
+        "branding": "Responsable de la identidad visual",
+        "emojis": "Creador de los emojis"
+      },
+      "additional": {
+        "title": "Adicional:",
+        "hosting_provider": "Proveedor de alojamiento",
+        "translation_utils": "Proporcionaron fragmentos de código de traducción"
+      },
+      "community_message": "Este bot no existiría sin la ayuda de nuestra comunidad. ¡Gracias! ❤️"
+    },
+    "debug": {
+      "browser": "Navegador de shards\n-# Introduce el ID de un servidor para ver la información de su shard correspondiente. Actualmente estás en el shard **{shardId}/{shards}**",
+      "shard": {
+        "title": "Shard #{shardId}:",
+        "latency": "Latencia:",
+        "uptime": "Tiempo de actividad:",
+        "memory": "Memoria:"
+      },
+      "user_installs": "Instalaciones de usuario:",
+      "servers": "Servidores:",
+      "today_command_usage": "Uso de comandos hoy:",
+      "today": "Hoy:",
+      "last_hour": "Última hora:",
+      "last_minute": "Último minuto:",
+      "today_top_commands": "Comandos más usados de hoy:",
+      "buttons": {
+        "authorize": "Autorizar",
+        "support": "Servidor de soporte"
+      },
+      "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
+      "modal": {
+        "title": "Navegador de shards",
+        "label": "Encuentra el shard de tu servidor mediante su ID",
+        "placeholder": "Ingresa el ID de tu servidor aquí",
+        "invalid_server_id": "Por favor, proporciona un ID válido.",
+        "guild_not_found": "No se encontró ningún servidor con ese ID."
+      }
+    },
+    "help": {
+      "browser": "Navegador de comandos\n-# Explora todos los comandos disponibles mediante paginación o busca un comando específico.",
+      "browser_results": "Navegador de comandos\n-# Resultados de búsqueda para **${query}**",
+      "page": "Página **{page}** de **{total}**",
+      "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
+      "modal": {
+        "title": "Navegador de comandos",
+        "label": "Busca comandos por nombre",
+        "placeholder": "Introduce el nombre de un comando",
+        "commands_not_found": "No se encontraron comandos para tu búsqueda."
+      }
+    },
+    "image": {
+      "gif": {
+        "forwarded": "Los mensajes reenviados no están soportados actualmente.",
+        "no_image": "Por favor, proporciona una imagen válida para convertirla a GIF.",
+        "no_images": "Por favor, proporciona al menos una imagen para convertirla a GIF.",
+        "tip": "¡Pasa el cursor sobre el GIF para añadirlo a tus favoritos!"
+      }
+    },
+    "invite": {
+      "invalid_link": "Por favor, proporciona una invitación válida para ver la información.",
+      "created_at": "Creado el:"
+    },
+    "role": {
+      "created_at": "Creado el:",
+      "hoisted": "Visible por separado:",
+      "mentionable": "Mencionable:",
+      "managed": "Gestionado:",
+      "position": "Posición:",
+      "colors": "Colores:",
+      "permissions": "Permisos:",
+      "yes": "Sí",
+      "no": "No",
+      "none": "Ninguno"
+    },
+    "timestamp": {
+      "invalid_time": "Por favor, proporciona un tiempo válido para convertir."
+    },
+    "translate": {
+      "missing_api_key": "La clave de API de Microsoft Azure no está configurada.",
+      "forwarded": "Los mensajes reenviados no están soportados actualmente.",
+      "no_text": "Por favor, proporciona el texto para traducir.",
+      "translated": "Traducido de **{sourceFlag} {sourceLanguage}** a **{targetFlag} {targetLanguage}**",
+      "auto_detected_target": "El idioma de destino fue seleccionado según el idioma del usuario"
+    },
+    "tts": {
+      "missing_api_key": "La clave de API de ElevenLabs no está configurada.",
+      "forwarded": "Los mensajes reenviados no están soportados actualmente.",
+      "limit": "Has alcanzado el límite diario de {limit} mensajes TTS. Inténtalo de nuevo en {timestamp}.",
+      "no_text": "Por favor, proporciona un texto para convertirlo a voz."
+    },
+    "tweet": {
+      "missing_api_key": "La clave de API de Tolgchu Twitter no está configurada.",
+      "invalid_tweet": "Por favor, proporciona una URL o ID válidos para ver el tweet.",
+      "missing_api_key_2": "La clave de API de Microsoft Azure no está configurada.",
+      "quoting_tweet": "*Citando {tweet}, publicado por {author}*",
+      "replying_to_tweet": "*Respondiendo a {tweet}, publicado por {author}*",
+      "posted_by": "Publicado por {verified}{author} ({username}){content}",
+      "translated": "Los tweets traducidos pueden contener errores o no reflejar el contenido original.",
+      "button": {
+        "view": "Ver Tweet"
+      }
+    },
+    "user": {
+      "no_user": "Por favor, selecciona un usuario válido para ver la información.",
+      "created_at": "Creado el:",
+      "joined_at": "Se unió el:",
+      "roles": "Roles:",
+      "footer": {
+        "text": "Debido a las limitaciones de Discord, este perfil no puede ser mostrado completamente. {profile}",
+        "profile": "Abrir en Discord."
+      }
+    },
+    "ocr": {
+      "missing_api_key": "La clave de API de OCR no está configurada.",
+      "forwarded": "Los mensajes reenviados no están soportados actualmente.",
+      "no_image": "Por favor, selecciona una imagen para extraer el texto."
+    },
+    "quote": {
+      "forwarded": "Los mensajes reenviados no están soportados actualmente.",
+      "no_text_or_sticker": "Selecciona un mensaje que contenga texto o un sticker para citarlo.",
+      "editor": "Editor de citas\n-# Usa los menús siguientes para personalizar tu cita o generar una tarjeta aleatoria",
+      "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
+      "selects": {
+        "fonts": {
+          "placeholder": "Elige una fuente"
+        },
+        "font_size": {
+          "placeholder": "Elige un tamaño",
+          "custom_label": "Tamaño de fuente personalizado",
+          "custom_selected_label": "Tamaño de fuente: {size}px",
+          "custom_description": "Introduce un tamaño de fuente (en píxeles)",
+          "custom_selected_description": "Tamaño seleccionado actualmente"
+        },
+        "color": {
+          "placeholder": "Elige un color",
+          "custom_label": "Color de texto personalizado",
+          "custom_selected_label": "Color de texto personalizado: {color}",
+          "custom_description": "Introduce un código de color (hex)",
+          "custom_selected_description": "Color seleccionado actualmente"
+        },
+        "effects_placeholder": "¡Elige algunos efectos!"
+      },
+      "button": {
+        "random_label": "¡Sorpréndeme!"
+      },
+      "modals": {
+        "custom_font_size": {
+          "title": "Tamaño de fuente personalizado",
+          "label": "Introduce un tamaño de fuente (en píxeles)",
+          "placeholder": "Usa un número entero entre 20px y 100px",
+          "invalid": "Por favor, introduce un tamaño de fuente entre 20px y 100px."
+        },
+        "custom_color": {
+          "title": "Color de texto personalizado",
+          "label": "Introduce un código de color (en hex)",
+          "placeholder": "Código de color hex (e.g. #FF0000)",
+          "invalid": "Por favor, proporciona un código hexadecimal valido (e.g. #FF0000)."
+        }
+      }
+    },
+    "stt": {
+      "missing_api_key": "La clave de API de ElevenLabs no está configurada.",
+      "forwarded": "Los mensajes reenviados no están soportados actualmente.",
+      "limit": "Has alcanzado el límite diario de {limit} mensajes de voz. Inténtalo de nuevo en {timestamp}.",
+      "no_voice_message": "Por favor, proporciona un mensaje de voz para transcribirlo.",
+      "voice_message_length": "El mensaje de voz tiene que ser mas córto que {max} minutos."
+    }
+  },
+  "events": {
+    "interaction_create": {
+      "cooldown": "¡Espera! Estás en espera para el comando {command}. Puedes usar el comando de nuevo en {timestamp}.",
+      "blocked": "{command} ha sido bloqueado por ${article}. Inténtalo de nuevo con **ephemeral** habilitado.",
+      "error": {
+        "text": "{error}\n-# Si crees que esto es un error, repórtalo en nuestro **{support}**.",
+        "support": "servidor de soporte"
+      }
+    }
+  }
+}

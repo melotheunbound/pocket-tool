@@ -1,6 +1,6 @@
 import { Collection } from '@discordjs/collection'
-import fs from 'fs'
-import path from 'path'
+import { existsSync, readFileSync } from 'fs'
+import { resolve } from 'path'
 
 class EnvParser {
   constructor(
@@ -41,10 +41,10 @@ class Env {
   #cache = new Collection<string, string>()
 
   constructor() {
-    const envPath = path.resolve(process.cwd(), '.env')
+    const path = resolve(process.cwd(), '.env')
 
-    if (fs.existsSync(envPath)) {
-      fs.readFileSync(envPath, 'utf-8').replace(/^(.+?)=(.+?)$/gm, (_, key, name) => {
+    if (existsSync(path)) {
+      readFileSync(path, 'utf-8').replace(/^(.+?)=(.+?)$/gm, (_, key, name) => {
         this.#cache.set(key, name)
 
         return ''

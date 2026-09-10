@@ -30,12 +30,13 @@ import { redis } from '../../utils/redis'
 import { commands } from '../../builders/command'
 import { checkCooldown } from '../../utils/cooldown'
 import { collectors } from '../../builders/collector'
+import { t } from '../../utils/localization'
 
 createGatewayEvent({
   event: GatewayDispatchEvents.InteractionCreate,
   async run(interaction, client) {
     console.log(
-      `received interaction: ${interaction.id} (${InteractionType[interaction.type]}) from ${interaction.user?.username ?? interaction.member?.user.username} (${interaction.user?.id ?? interaction.member?.user.id})`,
+      `Received interaction: ${interaction.id} (${InteractionType[interaction.type]}) from ${interaction.user?.username ?? interaction.member?.user.username} (${interaction.user?.id ?? interaction.member?.user.id})`,
     )
 
     switch (interaction.type) {
@@ -47,16 +48,18 @@ createGatewayEvent({
         break
       case InteractionType.MessageComponent:
       case InteractionType.ModalSubmit:
-        collectors.forEach(collector => collector.collect(interaction))
+        collectors.forEach(collector => void collector.collect(interaction))
         break
       default:
-        console.log('unknown interaction type', interaction.type)
+        console.log('Unknown interaction type', interaction.type)
         break
     }
   },
 })
 
 async function handleApplicationCommand(interaction: APIApplicationCommandInteraction, client: Client) {
+  const l = interaction.locale
+
   const command = commands.get(interaction.data.name) as ApplicationCommand
 
   if (!command) return
@@ -98,7 +101,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `${emoji('Exclamation')} Please wait! You're on cooldown for </${interaction.data.name}:${interaction.data.id}>. You can use this command again ${timestamp(expiration, TimestampStyle.RelativeTime)}.`,
+                    content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
                   },
                 ],
               },
@@ -113,7 +116,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `${emoji('Exclamation')} Please wait! You're on cooldown for </${interaction.data.name}:${interaction.data.id}>. You can use this command again ${timestamp(expiration, TimestampStyle.RelativeTime)}.`,
+                    content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
                   },
                 ],
               },
@@ -140,7 +143,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
             await client.api.interactions.deleteReply(interaction.application_id, interaction.token)
 
           await client.api.interactions.followUp(interaction.application_id, interaction.token, {
-            content: `-# </${interaction.data.name}:${interaction.data.id}> was blocked due to ${hyperlink(blocked.article, blocked.reason)}. Please try again with **ephemeral** enabled.`,
+            content: `-# ${t(l, 'events.interaction_create.blocked', { command: `</${interaction.data.name}:${interaction.data.id}>`, article: hyperlink(blocked.article, blocked.reason) })}`,
             flags: MessageFlags.Ephemeral,
           })
 
@@ -157,7 +160,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `${emoji('Wrong')} ${error instanceof Error ? error.message : String(error)}\n-# If you believe this is a bug, please report it in our **${hyperlink(SUPPORT, 'support server', '', false)}**.`,
+                    content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
                   },
                 ],
               },
@@ -172,7 +175,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `${emoji('Wrong')} ${error instanceof Error ? error.message : String(error)}\n-# If you believe this is a bug, please report it in our **${hyperlink(SUPPORT, 'support server', '', false)}**.`,
+                    content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
                   },
                 ],
               },
@@ -212,7 +215,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `${emoji('Exclamation')} Please wait! You're on cooldown for </${interaction.data.name}:${interaction.data.id}>. You can use this command again ${timestamp(expiration, TimestampStyle.RelativeTime)}.`,
+                    content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
                   },
                 ],
               },
@@ -227,7 +230,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `${emoji('Exclamation')} Please wait! You're on cooldown for </${interaction.data.name}:${interaction.data.id}>. You can use this command again ${timestamp(expiration, TimestampStyle.RelativeTime)}.`,
+                    content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
                   },
                 ],
               },
@@ -250,7 +253,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
             await client.api.interactions.deleteReply(interaction.application_id, interaction.token)
 
           await client.api.interactions.followUp(interaction.application_id, interaction.token, {
-            content: `-# </${interaction.data.name}:${interaction.data.id}> was blocked due to ${hyperlink(blocked.article, blocked.reason)}.`,
+            content: `-# ${t(l, 'events.interaction_create.blocked', { command: `</${interaction.data.name}:${interaction.data.id}>`, article: hyperlink(blocked.article, blocked.reason) })}`,
             flags: MessageFlags.Ephemeral,
           })
 
@@ -267,7 +270,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `${emoji('Wrong')} ${error instanceof Error ? error.message : String(error)}\n-# If you believe this is a bug, please report it in our **${hyperlink(SUPPORT, 'support server', '', false)}**.`,
+                    content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
                   },
                 ],
               },
@@ -282,7 +285,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `${emoji('Wrong')} ${error instanceof Error ? error.message : String(error)}\n-# If you believe this is a bug, please report it in our **${hyperlink(SUPPORT, 'support server', '', false)}**.`,
+                    content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
                   },
                 ],
               },
@@ -322,7 +325,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `${emoji('Exclamation')} Please wait! You're on cooldown for </${interaction.data.name}:${interaction.data.id}>. You can use this command again ${timestamp(expiration, TimestampStyle.RelativeTime)}.`,
+                    content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
                   },
                 ],
               },
@@ -337,7 +340,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `${emoji('Exclamation')} Please wait! You're on cooldown for </${interaction.data.name}:${interaction.data.id}>. You can use this command again ${timestamp(expiration, TimestampStyle.RelativeTime)}.`,
+                    content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
                   },
                 ],
               },
@@ -360,7 +363,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
             await client.api.interactions.deleteReply(interaction.application_id, interaction.token)
 
           await client.api.interactions.followUp(interaction.application_id, interaction.token, {
-            content: `-# </${interaction.data.name}:${interaction.data.id}> was blocked due to ${hyperlink(blocked.article, blocked.reason)}.`,
+            content: `-# ${t(l, 'events.interaction_create.blocked', { command: `</${interaction.data.name}:${interaction.data.id}>`, article: hyperlink(blocked.article, blocked.reason) })}`,
             flags: MessageFlags.Ephemeral,
           })
 
@@ -377,7 +380,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `${emoji('Wrong')} ${error instanceof Error ? error.message : String(error)}\n-# If you believe this is a bug, please report it in our **${hyperlink(SUPPORT, 'support server', '', false)}**.`,
+                    content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
                   },
                 ],
               },
@@ -392,7 +395,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `${emoji('Wrong')} ${error instanceof Error ? error.message : String(error)}\n-# If you believe this is a bug, please report it in our **${hyperlink(SUPPORT, 'support server', '', false)}**.`,
+                    content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
                   },
                 ],
               },

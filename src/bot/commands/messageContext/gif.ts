@@ -10,15 +10,22 @@ import { emoji } from '../../../utils/markdown'
 import { makeRequest } from '../../../utils/request'
 import { RequestMethod, ResponseType } from '../../../types/types'
 import sharp from 'sharp'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.Message,
-  name: 'Turn Into GIF',
+  name: {
+    global: 'Turn Into GIF',
+    'pt-BR': 'Transformar em GIF',
+    'es-ES': 'Transformar en GIF',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   cooldown: 3,
   acknowledge: true,
   async run(interaction, client) {
+    const l = interaction.locale
+
     const message = interaction.data.resolved.messages[interaction.data.target_id]
 
     if (message?.message_snapshots && message.message_snapshots.length > 0) {
@@ -29,7 +36,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Forwarded messages are currently unsupported.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.forwarded')}`,
               },
             ],
           },
@@ -40,7 +47,7 @@ createApplicationCommand({
       return
     }
 
-    if (!message || message.attachments.length === 0) {
+    if (!message || !message.attachments.length) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
           {
@@ -48,7 +55,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please select an image to turn into a GIF.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.no_image')}`,
               },
             ],
           },
@@ -71,7 +78,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please select at least one image to turn into a GIF.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.no_images')}`,
               },
             ],
           },
@@ -99,7 +106,7 @@ createApplicationCommand({
     )
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-      content: `-# ${emoji('GIF')} Hover over the GIFs to add them to your favorites!`,
+      content: `-# ${emoji('GIF')} ${t(l, 'commands.image.gif.tip')}`,
       files,
     })
   },

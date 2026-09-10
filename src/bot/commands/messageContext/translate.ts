@@ -12,15 +12,22 @@ import { RequestMethod, ResponseType } from '../../../types/types'
 import { AZURE_LANGUAGES } from '../../constants'
 import env from '../../../utils/env'
 import { findClosestMatch } from '../../../utils/utils'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.Message,
-  name: 'Translate This Message',
+  name: {
+    global: 'Translate This Message',
+    'pt-BR': 'Traduzir Esta Mensagem',
+    'es-ES': 'Traducir Este Mensaje',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   cooldown: 5,
   acknowledge: true,
   async run(interaction, client) {
+    const l = interaction.locale
+
     const azureApiKey = env.get('azure_api_key')?.toString()
 
     if (!azureApiKey) {
@@ -31,7 +38,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Wrong')} The Microsoft Azure API key is not set.`,
+                content: `${emoji('Wrong')} ${t(l, 'commands.translate.missing_api_key')}`,
               },
             ],
           },
@@ -52,7 +59,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Forwarded messages are currently unsupported.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.translate.forwarded')}`,
               },
             ],
           },
@@ -71,7 +78,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please select a text message to translate.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.translate.no_text')}`,
               },
             ],
           },
@@ -125,14 +132,14 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `> ${emoji('Translate')} Translated from **${sourceLanguage.flag ? `${sourceLanguage.flag} ` : ''}${sourceLanguage.name}** to **${targetLanguage.flag ? `${targetLanguage.flag} ` : ''}${targetLanguage.name}**`,
+              content: `> ${emoji('Translate')} ${t(l, 'commands.translate.translated', { sourceFlag: sourceLanguage.flag ? sourceLanguage.flag : '', sourceLanguage: sourceLanguage.name, targetFlag: targetLanguage.flag ? targetLanguage.flag : '', targetLanguage: targetLanguage.name })}`,
             },
             {
               type: ComponentType.Separator,
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${translation[0].translations[0].text}\n\n-# ${emoji('Exclamation')} The target language was selected based on the user's locale`,
+              content: `${translation[0].translations[0].text}\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.translate.auto_detected_target')}`,
             },
           ],
         },

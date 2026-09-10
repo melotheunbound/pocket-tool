@@ -12,15 +12,22 @@ import { redis } from '../../../utils/redis'
 import { TimestampStyle } from '../../../types/types'
 import { findClosestMatch, hasPlus } from '../../../utils/utils'
 import { ELEVEN_LABS_LANGUAGES } from '../../constants'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.Message,
-  name: 'Text to Speech',
+  name: {
+    global: 'Text to Speech',
+    'pt-BR': 'Texto para Fala',
+    'es-ES': 'Texto para Fala',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   cooldown: 5,
   acknowledge: true,
   async run(interaction, client) {
+    const l = interaction.locale
+
     const elevenLabsApiKey = env.get('eleven_labs_api_key')?.toString()
 
     if (!elevenLabsApiKey) {
@@ -31,7 +38,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Wrong')} The ElevenLabs API key is not set.`,
+                content: `${emoji('Wrong')} ${t(l, 'commands.tts.missing_api_key')}`,
               },
             ],
           },
@@ -52,7 +59,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Forwarded messages are currently unsupported.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.tts.forwarded')}`,
               },
             ],
           },
@@ -81,7 +88,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} You have reached your daily TTS limit of ${limit} messages. Try again ${timestamp(resetAt.epochMilliseconds, TimestampStyle.RelativeTime)}.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.tts.limit', { limit, timestamp: timestamp(resetAt.epochMilliseconds, TimestampStyle.RelativeTime) })}`,
               },
             ],
           },
@@ -100,7 +107,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please select a text message to convert to speech.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.tts.no_text')}`,
               },
             ],
           },

@@ -12,21 +12,33 @@ import {
   type ModalSubmitLabelComponent,
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
-import { getShardIdForGuildId, msToReadableTime, readableSize, toComponentEmoji } from '../../../utils/utils'
+import { msToReadableTime, readableSize, toComponentEmoji } from '../../../utils/utils'
 import { emoji, timestamp } from '../../../utils/markdown'
 import { TimestampStyle } from '../../../types/types'
 import { INVITE, SUPPORT } from '../../constants'
 import { redis } from '../../../utils/redis'
+import { getShardIdForGuildId } from '../../../utils/shard'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'debug',
-  description: 'View stats about Pocket Tool',
+  name: {
+    global: 'debug',
+    'pt-BR': 'debug',
+    'es-ES': 'debug',
+  },
+  description: {
+    global: 'View stats about Pocket Tool',
+    'pt-BR': 'Veja as estatísticas do Pocket Tool',
+    'es-ES': 'Ver estadísticas de Pocket Tool',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
+    const l = interaction.locale
+
     const shards = client.gateway.shards.size
     let shardId = interaction.guild_id ? getShardIdForGuildId(interaction.guild_id, shards) : 0
     let shard = client.gateway.shards.get(shardId)!
@@ -60,11 +72,11 @@ createApplicationCommand({
       for (const key of keys) {
         const data = await redis.hGetAll(key)
 
-        if (!data.id || !data.path || !data.uses) continue
+        if (!data.id || !data.name || !data.uses) continue
 
         commandsUsage.push({
           id: data.id,
-          name: data.path,
+          name: data.name,
           uses: data.uses,
         })
       }
@@ -86,12 +98,12 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `### Shard Browser\n-# Enter a server ID to view its shard information. Currently on shard **${shardId}/${shards}**`,
+                  content: `### ${t(l, 'commands.debug.browser', { shardId, shards })}`,
                 },
               ],
               accessory: {
                 type: ComponentType.Button,
-                custom_id: 'shard-search',
+                custom_id: 'shard-borwser',
                 emoji: toComponentEmoji('Search'),
                 style: ButtonStyle.Secondary,
               },
@@ -103,7 +115,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `-# **Shard #${shardId}:**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> Worker heap: **${readableSize(memory.heapUsed)} used / ${readableSize(memory.heapTotal)} allocated**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
+              content: `-# **${t(l, 'commands.debug.shard.title', { shardId })}**\n> ${t(l, 'commands.debug.shard.latency')} **${shard.ping}ms**\n> ${t(l, 'commands.debug.shard.uptime')} **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> ${t(l, 'commands.debug.shard.memory')} **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> ${t(l, 'commands.debug.user_installs')} **${app.approximate_user_install_count}**\n> ${t(l, 'commands.debug.servers')} **${app.approximate_guild_count}**\n-# **${t(l, 'commands.debug.today_command_usage')}**\n> ${t(l, 'commands.debug.today')} **${today}**\n> ${t(l, 'commands.debug.last_hour')} **${lastHour}**\n> ${t(l, 'commands.debug.last_minute')} **${lastMinute}**\n-# **${t(l, 'commands.debug.today_top_commands')}**\n${topCommands}`,
             },
             {
               type: ComponentType.Separator,
@@ -113,14 +125,14 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.Button,
-                  label: 'Authorize',
+                  label: t(l, 'commands.debug.buttons.authorize'),
                   emoji: toComponentEmoji('Link'),
                   url: INVITE,
                   style: ButtonStyle.Link,
                 },
                 {
                   type: ComponentType.Button,
-                  label: 'Support Server',
+                  label: t(l, 'commands.debug.buttons.support'),
                   emoji: toComponentEmoji('Discord'),
                   url: SUPPORT,
                   style: ButtonStyle.Link,
@@ -137,26 +149,37 @@ createApplicationCommand({
       APIMessageComponentButtonInteraction | APIModalSubmitInteraction
     >({
       key: 'shard-browser',
-      filter: i =>
-        i.message?.id === response.id &&
-        (i.user?.id ?? i.member?.user.id) === (interaction.user?.id ?? interaction.member?.user.id),
+      filter: async i => {
+        if (i.message?.id !== response.id) return false
+
+        if ((i.user?.id ?? i.member?.user.id) !== (interaction.user?.id ?? interaction.member?.user.id)) {
+          await client.api.interactions.reply(i.id, i.token, {
+            content: t(l, 'commands.debug.filter'),
+            flags: MessageFlags.Ephemeral,
+          })
+
+          return false
+        }
+
+        return true
+      },
       duration: 5 * 60 * 1000,
     })
 
     collector.on('collect', async i => {
       switch (i.data.custom_id) {
-        case 'shard-search': {
+        case 'shard-browser': {
           await client.api.interactions.createModal(i.id, i.token, {
-            title: 'Shard Search',
-            custom_id: 'shard-search-modal',
+            title: t(l, 'commands.debug.shard.modal.title'),
+            custom_id: 'shard-browser-modal',
             components: [
               {
                 type: ComponentType.Label,
-                label: "Find your server's shard by ID",
+                label: t(l, 'commands.debug.shard.modal.label'),
                 component: {
                   type: ComponentType.TextInput,
-                  custom_id: 'commands-search-input',
-                  placeholder: "Enter your server's ID here",
+                  custom_id: 'shard-browser-input',
+                  placeholder: t(l, 'commands.debug.shard.modal.placeholder'),
                   style: TextInputStyle.Short,
                   required: true,
                 },
@@ -166,7 +189,7 @@ createApplicationCommand({
 
           break
         }
-        case 'shard-search-modal': {
+        case 'shard-browser-modal': {
           await client.api.interactions.deferMessageUpdate(i.id, i.token)
 
           const guildId =
@@ -187,7 +210,7 @@ createApplicationCommand({
                   components: [
                     {
                       type: ComponentType.TextDisplay,
-                      content: `${emoji('Exclamation')} Please provide a valid guild ID.`,
+                      content: `${emoji('Exclamation')} ${t(l, 'commands.debug.modal.invalid_server_id')}`,
                     },
                   ],
                 },
@@ -208,7 +231,7 @@ createApplicationCommand({
                   components: [
                     {
                       type: ComponentType.TextDisplay,
-                      content: `${emoji('Exclamation')} I couldn't find a guild with that ID.`,
+                      content: `${emoji('Exclamation')} ${t(l, 'commands.debug.modal.guild_not_found')}`,
                     },
                   ],
                 },
@@ -233,12 +256,12 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `### Shard Browser\n-# Enter a server ID to view its shard information. Currently on shard **${shardId}/${shards}**`,
+                        content: `### ${t(l, 'commands.debug.browser', { shardId, shards })}`,
                       },
                     ],
                     accessory: {
                       type: ComponentType.Button,
-                      custom_id: 'shard-search',
+                      custom_id: 'shard-browser',
                       emoji: toComponentEmoji('Search'),
                       style: ButtonStyle.Secondary,
                     },
@@ -250,7 +273,7 @@ createApplicationCommand({
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `-# **Shard #${shardId}**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> Worker heap: **${readableSize(memory.heapUsed)} used / ${readableSize(memory.heapTotal)} allocated**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
+                    content: `-# **${t(l, 'commands.debug.shard.title', { shardId })}**\n> ${t(l, 'commands.debug.shard.latency')} **${shard.ping}ms**\n> ${t(l, 'commands.debug.shard.uptime')} **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> ${t(l, 'commands.debug.shard.memory')} **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> ${t(l, 'commands.debug.user_installs')} **${app.approximate_user_install_count}**\n> ${t(l, 'commands.debug.servers')} **${app.approximate_guild_count}**\n-# **${t(l, 'commands.debug.today_command_usage')}**\n> ${t(l, 'commands.debug.today')} **${today}**\n> ${t(l, 'commands.debug.last_hour')} **${lastHour}**\n> ${t(l, 'commands.debug.last_minute')} **${lastMinute}**\n-# **${t(l, 'commands.debug.today_top_commands')}**\n${topCommands}`,
                   },
                   {
                     type: ComponentType.Separator,
@@ -260,14 +283,14 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.Button,
-                        label: 'Authorize',
+                        label: t(l, 'commands.debug.buttons.authorize'),
                         emoji: toComponentEmoji('Link'),
                         url: INVITE,
                         style: ButtonStyle.Link,
                       },
                       {
                         type: ComponentType.Button,
-                        label: 'Support Server',
+                        label: t(l, 'commands.debug.buttons.support'),
                         emoji: toComponentEmoji('Discord'),
                         url: SUPPORT,
                         style: ButtonStyle.Link,
@@ -297,14 +320,15 @@ createApplicationCommand({
                   components: [
                     {
                       type: ComponentType.TextDisplay,
-                      content: `### Shard Browser\n-# Enter a server ID to view its shard information. Currently on shard **${shardId}/${shards}**`,
+                      content: `### ${t(l, 'commands.debug.browser', { shardId, shards })}`,
                     },
                   ],
                   accessory: {
                     type: ComponentType.Button,
-                    custom_id: 'shard-search',
+                    custom_id: 'shard-browser',
                     emoji: toComponentEmoji('Search'),
                     style: ButtonStyle.Secondary,
+                    disabled: true,
                   },
                 },
               ],
@@ -314,7 +338,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `-# **Shard #${shardId}**\n> Latency: **${shard.ping}**\n> Uptime: **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> User Installs: **${app.approximate_user_install_count}**\n> Servers: **${app.approximate_guild_count}**\n-# **Today's Command Usage:**\n> Today: **${today}**\n> Last Hour: **${lastHour}**\n> Last Minute: **${lastMinute}**\n-# **Today's Top Commands:**\n${topCommands}`,
+                  content: `-# **${t(l, 'commands.debug.shard.title', { shardId })}**\n> ${t(l, 'commands.debug.shard.latency')} **${shard.ping}ms**\n> ${t(l, 'commands.debug.shard.uptime')} **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> ${t(l, 'commands.debug.shard.memory')} **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> ${t(l, 'commands.debug.user_installs')} **${app.approximate_user_install_count}**\n> ${t(l, 'commands.debug.servers')} **${app.approximate_guild_count}**\n-# **${t(l, 'commands.debug.today_command_usage')}**\n> ${t(l, 'commands.debug.today')} **${today}**\n> ${t(l, 'commands.debug.last_hour')} **${lastHour}**\n> ${t(l, 'commands.debug.last_minute')} **${lastMinute}**\n-# **${t(l, 'commands.debug.today_top_commands')}**\n${topCommands}`,
                 },
                 {
                   type: ComponentType.Separator,
@@ -324,14 +348,14 @@ createApplicationCommand({
                   components: [
                     {
                       type: ComponentType.Button,
-                      label: 'Authorize',
+                      label: t(l, 'commands.debug.buttons.authorize'),
                       emoji: toComponentEmoji('Link'),
                       url: INVITE,
                       style: ButtonStyle.Link,
                     },
                     {
                       type: ComponentType.Button,
-                      label: 'Support Server',
+                      label: t(l, 'commands.debug.buttons.support'),
                       emoji: toComponentEmoji('Discord'),
                       url: SUPPORT,
                       style: ButtonStyle.Link,

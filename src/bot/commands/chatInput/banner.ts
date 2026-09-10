@@ -10,25 +10,44 @@ import {
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
 import { cdn, emoji } from '../../../utils/markdown'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'banner',
-  description: "View a user's banner",
+  name: {
+    global: 'banner',
+    'pt-BR': 'banner',
+    'es-ES': 'banner',
+  },
+  description: {
+    global: "View a user's banner",
+    'pt-BR': 'Veja o banner de um usuário',
+    'es-ES': 'Vea el banner de un usuario',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   options: [
     {
       type: ApplicationCommandOptionType.User,
-      name: 'user',
-      description: 'The user to view the banner of',
+      name: {
+        global: 'target',
+        'pt-BR': 'alvo',
+        'es-ES': 'objetivo',
+      },
+      description: {
+        global: 'The user to view the banner of',
+        'pt-BR': 'O usuário para ver o banner',
+        'es-ES': 'El usuario para ver el banner',
+      },
       required: false,
     },
   ],
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
-    let { user: target } = options
+    const l = interaction.locale
+
+    let { target } = options
 
     if (!target) {
       target = {
@@ -36,9 +55,11 @@ createApplicationCommand({
       }
     }
 
-    const { user } = target
+    const { user: rawUser } = target
 
-    if (!user) {
+    const user = await client.api.users.get(rawUser.id)
+
+    if (!user.banner) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
           {
@@ -46,28 +67,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} Please provide a valid user to view their banner.`,
-              },
-            ],
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      })
-
-      return
-    }
-
-    const u = await client.api.users.get(user.id)
-
-    if (!u.banner) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.Container,
-            components: [
-              {
-                type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} <@${user.id}> doesn't have a banner.`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.banner.no_banner', { userId: user.id })}`,
               },
             ],
           },
@@ -88,7 +88,7 @@ createApplicationCommand({
               items: [
                 {
                   media: {
-                    url: cdn(`/banners/${user.id}/${u.banner}`, 4096, 'webp', true),
+                    url: cdn(`/banners/${user.id}/${user.banner}`, 4096, 'webp', true),
                   },
                 },
               ],
@@ -101,27 +101,27 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.Button,
-                  url: cdn(`/banners/${user.id}/${u.banner}`, 4096, 'png'),
+                  url: cdn(`/banners/${user.id}/${user.banner}`, 4096, 'png'),
                   label: 'PNG',
                   style: ButtonStyle.Link,
                 },
                 {
                   type: ComponentType.Button,
-                  url: cdn(`/banners/${user.id}/${u.banner}`, 4096, 'jpg'),
+                  url: cdn(`/banners/${user.id}/${user.banner}`, 4096, 'jpg'),
                   label: 'JPG',
                   style: ButtonStyle.Link,
                 },
                 {
                   type: ComponentType.Button,
-                  url: cdn(`/banners/${user.id}/${u.banner}`, 4096, 'webp', true),
+                  url: cdn(`/banners/${user.id}/${user.banner}`, 4096, 'webp', true),
                   label: 'WEBP',
                   style: ButtonStyle.Link,
                 },
-                ...(u.banner?.startsWith('a_')
+                ...(user.banner?.startsWith('a_')
                   ? ([
                       {
                         type: ComponentType.Button,
-                        url: cdn(`/banners/${user.id}/${u.banner}`, 4096, 'gif'),
+                        url: cdn(`/banners/${user.id}/${user.banner}`, 4096, 'gif'),
                         label: 'GIF',
                         style: ButtonStyle.Link,
                       },

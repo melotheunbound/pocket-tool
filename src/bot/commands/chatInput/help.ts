@@ -16,17 +16,30 @@ import createApplicationCommand from '../../../builders/command'
 import List from '../../../utils/list'
 import { getSubcommandPaths, toComponentEmoji } from '../../../utils/utils'
 import { emoji } from '../../../utils/markdown'
+import { t } from '../../../utils/localization'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
-  name: 'help',
-  description: 'View and search through all available commands',
+  name: {
+    global: 'help',
+    'pt-BR': 'ajuda',
+    'es-ES': 'ayuda',
+  },
+  description: {
+    global: 'View and search through all available commands',
+    'pt-BR': 'Visualize e pesquise por todos os comandos disponíveis',
+    'es-ES': 'Ver y buscar todos los comandos disponibles',
+  },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
-    const globalCommands = await client.api.applicationCommands.getGlobalCommands(interaction.application_id)
+    const l = interaction.locale
+
+    const globalCommands = await client.api.applicationCommands.getGlobalCommands(interaction.application_id, {
+      with_localizations: true,
+    })
 
     const commands = globalCommands.flatMap(command => {
       const paths = getSubcommandPaths(command.options)
@@ -56,7 +69,11 @@ createApplicationCommand({
     let result = (pages.current ?? [])
       .map(
         (command, index) =>
-          `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
+          `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${
+            command.description
+              ? `\n-# ${command.description_localizations?.[interaction.locale] ?? command.description}`
+              : ''
+          }`,
       )
       .join('\n\n')
 
@@ -70,13 +87,12 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content:
-                    '### Command Browser\n-# Browse all available commands using pagination, or search for a specific command',
+                  content: `### ${t(l, 'commands.help.browser')}`,
                 },
               ],
               accessory: {
                 type: ComponentType.Button,
-                custom_id: 'commands-search',
+                custom_id: 'commands-browser',
                 emoji: toComponentEmoji('Search'),
                 style: ButtonStyle.Secondary,
               },
@@ -95,7 +111,7 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `-# Page **${pages.pointer + 1}** of **${pages.length}**`,
+              content: `-# ${t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length })}`,
             },
             {
               type: ComponentType.ActionRow,
@@ -124,9 +140,20 @@ createApplicationCommand({
       APIMessageComponentButtonInteraction | APIModalSubmitInteraction
     >({
       key: 'command-browser',
-      filter: i =>
-        i.message?.id === response.id &&
-        (i.user?.id ?? i.member?.user.id) === (interaction.user?.id ?? interaction.member?.user.id),
+      filter: async i => {
+        if (i.message?.id !== response.id) return false
+
+        if ((i.user?.id ?? i.member?.user.id) !== (interaction.user?.id ?? interaction.member?.user.id)) {
+          await client.api.interactions.reply(i.id, i.token, {
+            content: t(l, 'commands.help.filter'),
+            flags: MessageFlags.Ephemeral,
+          })
+
+          return false
+        }
+
+        return true
+      },
       duration: 5 * 60 * 1000,
     })
 
@@ -140,7 +167,11 @@ createApplicationCommand({
           result = (pages.current ?? [])
             .map(
               (command, index) =>
-                `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
+                `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${
+                  command.description
+                    ? `\n-# ${command.description_localizations?.[interaction.locale] ?? command.description}`
+                    : ''
+                }`,
             )
             .join('\n\n')
 
@@ -154,15 +185,14 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content:
-                          query !== null
-                            ? `### Command Browser\n-# Search results for **${query}**`
-                            : '### Command Browser\n-# Browse all available commands using pagination, or search for a specific command',
+                        content: query
+                          ? `### ${t(l, 'commands.help.browser_results', { query })}`
+                          : `### ${t(l, 'commands.help.browser')}`,
                       },
                     ],
                     accessory: {
                       type: ComponentType.Button,
-                      custom_id: 'commands-search',
+                      custom_id: 'commands-browser',
                       emoji: toComponentEmoji('Search'),
                       style: ButtonStyle.Secondary,
                     },
@@ -181,7 +211,7 @@ createApplicationCommand({
                   },
                   {
                     type: ComponentType.TextDisplay,
-                    content: `-# Page **${pages.pointer + 1}** of **${pages.length}**`,
+                    content: `-# ${t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length })}`,
                   },
                   {
                     type: ComponentType.ActionRow,
@@ -226,7 +256,11 @@ createApplicationCommand({
           result = (pages.current ?? [])
             .map(
               (command, index) =>
-                `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
+                `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${
+                  command.description
+                    ? `\n-# ${command.description_localizations?.[interaction.locale] ?? command.description}`
+                    : ''
+                }`,
             )
             .join('\n\n')
 
@@ -240,15 +274,14 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content:
-                          query !== null
-                            ? `### Command Browser\n-# Search results for **${query}**`
-                            : '### Command Browser\n-# Browse all available commands using pagination, or search for a specific command',
+                        content: query
+                          ? `### ${t(l, 'commands.help.browser_results', { query })}`
+                          : `### ${t(l, 'commands.help.browser')}`,
                       },
                     ],
                     accessory: {
                       type: ComponentType.Button,
-                      custom_id: 'commands-search',
+                      custom_id: 'commands-browser',
                       emoji: toComponentEmoji('Search'),
                       style: ButtonStyle.Secondary,
                     },
@@ -267,7 +300,7 @@ createApplicationCommand({
                   },
                   {
                     type: ComponentType.TextDisplay,
-                    content: `-# Page **${pages.pointer + 1}** of **${pages.length}**`,
+                    content: `-# ${t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length })}`,
                   },
                   {
                     type: ComponentType.ActionRow,
@@ -278,7 +311,7 @@ createApplicationCommand({
                         emoji: toComponentEmoji('Previous'),
                         style: ButtonStyle.Secondary,
                       },
-                      ...(query !== null
+                      ...(query
                         ? ([
                             {
                               type: ComponentType.Button,
@@ -304,18 +337,18 @@ createApplicationCommand({
 
           break
         }
-        case 'commands-search': {
+        case 'commands-browser': {
           await client.api.interactions.createModal(i.id, i.token, {
-            title: 'Command Search',
-            custom_id: 'commands-search-modal',
+            title: t(l, 'commands.help.modal.title'),
+            custom_id: 'commands-browser-modal',
             components: [
               {
                 type: ComponentType.Label,
-                label: 'Search for commands by name',
+                label: t(l, 'commands.help.modal.label'),
                 component: {
                   type: ComponentType.TextInput,
-                  custom_id: 'commands-search-input',
-                  placeholder: 'Enter a command name',
+                  custom_id: 'commands-browser-input',
+                  placeholder: t(l, 'commands.help.modal.placeholder'),
                   style: TextInputStyle.Short,
                   required: true,
                 },
@@ -325,7 +358,7 @@ createApplicationCommand({
 
           break
         }
-        case 'commands-search-modal': {
+        case 'commands-browser-modal': {
           await client.api.interactions.deferMessageUpdate(i.id, i.token)
 
           const name =
@@ -336,9 +369,7 @@ createApplicationCommand({
                 ).value
               : undefined
 
-          if (!name || !name.trim().toLowerCase()) {
-            return
-          }
+          if (!name || !name.trim().toLowerCase()) return
 
           const search = name.trim().toLowerCase()
 
@@ -352,7 +383,7 @@ createApplicationCommand({
                   components: [
                     {
                       type: ComponentType.TextDisplay,
-                      content: `${emoji('Exclamation')} No commands found matching your search.`,
+                      content: `${emoji('Exclamation')} ${t(l, 'commands.help.modal.commands_not_found')}`,
                     },
                   ],
                 },
@@ -375,7 +406,11 @@ createApplicationCommand({
           result = (pages.current ?? [])
             .map(
               (command, index) =>
-                `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${command.description ? `\n-# ${command.description}` : ''}`,
+                `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${
+                  command.description
+                    ? `\n-# ${command.description_localizations?.[interaction.locale] ?? command.description}`
+                    : ''
+                }`,
             )
             .join('\n\n')
 
@@ -389,12 +424,12 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `### Command Browser\n-# Search results for **${query}**`,
+                        content: `### ${t(l, 'commands.help.browser_results', { query })}`,
                       },
                     ],
                     accessory: {
                       type: ComponentType.Button,
-                      custom_id: 'commands-search',
+                      custom_id: 'commands-browser',
                       emoji: toComponentEmoji('Search'),
                       style: ButtonStyle.Secondary,
                     },
@@ -413,7 +448,7 @@ createApplicationCommand({
                   },
                   {
                     type: ComponentType.TextDisplay,
-                    content: `-# Page **${pages.pointer + 1}** of **${pages.length}**`,
+                    content: `-# ${t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length })}`,
                   },
                   {
                     type: ComponentType.ActionRow,
@@ -454,8 +489,12 @@ createApplicationCommand({
 
           result = (pages.current ?? [])
             .map(
-              (c, index) =>
-                `**${pages.pointer * limit + index + 1}.** </${c.name}:${c.id}>${c.description ? `\n-# ${c.description}` : ''}`,
+              (command, index) =>
+                `**${pages.pointer * limit + index + 1}.** </${command.name}:${command.id}>${
+                  command.description
+                    ? `\n-# ${command.description_localizations?.[interaction.locale] ?? command.description}`
+                    : ''
+                }`,
             )
             .join('\n\n')
 
@@ -469,13 +508,12 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content:
-                          '### Command Browser\n-# Browse all available commands using pagination, or search for a specific command',
+                        content: `### ${t(l, 'commands.help.browser')}`,
                       },
                     ],
                     accessory: {
                       type: ComponentType.Button,
-                      custom_id: 'commands-search',
+                      custom_id: 'commands-browser',
                       emoji: toComponentEmoji('Search'),
                       style: ButtonStyle.Secondary,
                     },
@@ -494,7 +532,7 @@ createApplicationCommand({
                   },
                   {
                     type: ComponentType.TextDisplay,
-                    content: `-# Page **${pages.pointer + 1}** of **${pages.length}**`,
+                    content: `-# ${t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length })}`,
                   },
                   {
                     type: ComponentType.ActionRow,
@@ -536,15 +574,14 @@ createApplicationCommand({
                   components: [
                     {
                       type: ComponentType.TextDisplay,
-                      content:
-                        query !== null
-                          ? `### Command Browser\n-# Search results for **${query}**`
-                          : '### Command Browser\n-# Browse all available commands using pagination, or search for a specific command',
+                      content: query
+                        ? `### ${t(l, 'commands.help.browser_results', { query })}`
+                        : `### ${t(l, 'commands.help.browser')}`,
                     },
                   ],
                   accessory: {
                     type: ComponentType.Button,
-                    custom_id: 'commands-search',
+                    custom_id: 'commands-browser',
                     emoji: toComponentEmoji('Search'),
                     style: ButtonStyle.Secondary,
                     disabled: true,
@@ -564,7 +601,7 @@ createApplicationCommand({
                 },
                 {
                   type: ComponentType.TextDisplay,
-                  content: `-# Page **${pages.pointer + 1}** of **${pages.length}**`,
+                  content: `-# ${t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length })}`,
                 },
                 {
                   type: ComponentType.ActionRow,
@@ -576,7 +613,7 @@ createApplicationCommand({
                       style: ButtonStyle.Secondary,
                       disabled: true,
                     },
-                    ...(query !== null
+                    ...(query
                       ? ([
                           {
                             type: ComponentType.Button,
