@@ -574,26 +574,7 @@ createApplicationCommand({
         response: ResponseType.BUFFER,
       })
 
-      const gifed = await convertToGif(buffer).catch(() => null)
-
-      if (!gifed) {
-        await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-          components: [
-            {
-              type: ComponentType.Container,
-              components: [
-                {
-                  type: ComponentType.TextDisplay,
-                  content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.no_image')}`,
-                },
-              ],
-            },
-          ],
-          flags: MessageFlags.IsComponentsV2,
-        })
-
-        return
-      }
+      const gifed = await convertToGif(buffer)
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         content: `-# ${emoji('GIF')} ${t(l, 'commands.image.gif.tip')}`,

@@ -1,12 +1,14 @@
 import type { Collector, CollectorEvents, CollectorOptions } from '../types/types'
 import { captureRejectionSymbol, EventEmitter } from 'events'
+import { getTimestampFromSnowflake } from '../utils/utils'
 
 export const collectors = new Set<Collector<unknown>>()
-// Interaction webhook tokens expire after 15 minutes, so leave time for the final edit.
+
+// interaction webhook tokens expire after 15 minutes, so leave time for the final edit
 export const MAX_COLLECTOR_LIFETIME = 14 * 60 * 1000
 
 export function getInteractionCollectorDeadline(interactionId: string): number {
-  return Number(BigInt(interactionId) >> 22n) + 1420070400000 + MAX_COLLECTOR_LIFETIME
+  return getTimestampFromSnowflake(interactionId) + MAX_COLLECTOR_LIFETIME
 }
 
 export default function createCollector<Type>(options: CollectorOptions<Type>): Collector<Type> {
