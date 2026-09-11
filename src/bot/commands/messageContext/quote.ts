@@ -24,6 +24,7 @@ import { toComponentEmoji } from '../../../utils/utils'
 import { isHex, shuffle, type Hexadecimal } from '@tolga1452/toolbox.js'
 import sharp from 'sharp'
 import { t } from '../../../utils/localization'
+import { getInteractionCollectorDeadline } from '../../../builders/collector'
 
 type Session = {
   avatar: Buffer
@@ -326,6 +327,7 @@ createApplicationCommand({
         return true
       },
       duration: 5 * 60 * 1000,
+      hardDeadline: getInteractionCollectorDeadline(interaction.id),
     })
 
     collector.on('collect', async i => {

@@ -9,8 +9,8 @@ import createApplicationCommand from '../../../builders/command'
 import { emoji } from '../../../utils/markdown'
 import { makeRequest } from '../../../utils/request'
 import { RequestMethod, ResponseType } from '../../../types/types'
-import sharp from 'sharp'
 import { t } from '../../../utils/localization'
+import { convertToGif } from '../../../utils/image'
 
 createApplicationCommand({
   type: ApplicationCommandType.Message,
@@ -66,11 +66,31 @@ createApplicationCommand({
       return
     }
 
-    const attachments = Object.values(message.attachments)
-      .filter(attachment => attachment.content_type?.startsWith('image/'))
-      .slice(0, 10)
+    const attachments = Object.values(message.attachments).slice(0, 10)
 
-    if (!attachments.length) {
+    const files = await Promise.all(
+      attachments.map(async (attachment, index) => {
+        try {
+          const buffer = await makeRequest(attachment.url, {
+            method: RequestMethod.GET,
+            response: ResponseType.BUFFER,
+          })
+
+          const gif = await convertToGif(buffer)
+
+          return {
+            name: `gif-${index + 1}.gif`,
+            data: gif,
+          }
+        } catch {
+          return null
+        }
+      }),
+    )
+
+    const validFiles = files.filter(file => file !== null)
+
+    if (!validFiles.length) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
           {
@@ -89,25 +109,9 @@ createApplicationCommand({
       return
     }
 
-    const files = await Promise.all(
-      attachments.map(async (attachment, index) => {
-        const buffer = await makeRequest(attachment.url, {
-          method: RequestMethod.GET,
-          response: ResponseType.BUFFER,
-        })
-
-        const gif = await sharp(buffer).gif({ effort: 10 }).toBuffer()
-
-        return {
-          name: `gif-${index + 1}.gif`,
-          data: gif,
-        }
-      }),
-    )
-
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
       content: `-# ${emoji('GIF')} ${t(l, 'commands.image.gif.tip')}`,
-      files,
+      files: validFiles,
     })
   },
 })

@@ -15,13 +15,13 @@ import {
   applyFlop,
   applyGrayscale,
   applySpeechBubble,
+  convertToGif,
   createPetpetGif,
 } from '../../../utils/image'
 import { makeRequest } from '../../../utils/request'
 import { RequestMethod, ResponseType } from '../../../types/types'
 import { cdn, emoji } from '../../../utils/markdown'
 import { t } from '../../../utils/localization'
-import sharp from 'sharp'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -550,7 +550,7 @@ createApplicationCommand({
     } else if (gif) {
       const { attachment, name } = gif
 
-      if (!attachment || !attachment.content_type?.startsWith('image/')) {
+      if (!attachment) {
         await client.api.interactions.editReply(interaction.application_id, interaction.token, {
           components: [
             {
@@ -574,7 +574,26 @@ createApplicationCommand({
         response: ResponseType.BUFFER,
       })
 
-      const gifed = await sharp(buffer).gif({ effort: 10 }).toBuffer()
+      const gifed = await convertToGif(buffer).catch(() => null)
+
+      if (!gifed) {
+        await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+          components: [
+            {
+              type: ComponentType.Container,
+              components: [
+                {
+                  type: ComponentType.TextDisplay,
+                  content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.no_image')}`,
+                },
+              ],
+            },
+          ],
+          flags: MessageFlags.IsComponentsV2,
+        })
+
+        return
+      }
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         content: `-# ${emoji('GIF')} ${t(l, 'commands.image.gif.tip')}`,
