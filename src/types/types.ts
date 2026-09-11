@@ -285,6 +285,7 @@ export interface CollectorOptions<Type> {
   key: string
   filter?: (item: Type) => boolean | Promise<boolean>
   duration?: number
+  hardDeadline?: number
   max?: number
 }
 

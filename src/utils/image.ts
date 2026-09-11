@@ -26,6 +26,10 @@ export type PetpetOptions = {
   handFrames?: readonly Buffer[]
 }
 
+export async function convertToGif(input: Buffer | string): Promise<Buffer> {
+  return sharp(input, { animated: true }).gif({ effort: 10 }).toBuffer()
+}
+
 export async function applySpeechBubble(image: Buffer, options: SpeechBubbleOptions = {}): Promise<Buffer> {
   const source = await sharp(image, { animated: false }).rotate().png().toBuffer()
   const { width, height } = await sharp(source).metadata()

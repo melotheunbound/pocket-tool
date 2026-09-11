@@ -19,6 +19,7 @@ import { INVITE, SUPPORT } from '../../constants'
 import { redis } from '../../../utils/redis'
 import { getShardIdForGuildId } from '../../../utils/shard'
 import { t } from '../../../utils/localization'
+import { getInteractionCollectorDeadline } from '../../../builders/collector'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -164,6 +165,7 @@ createApplicationCommand({
         return true
       },
       duration: 5 * 60 * 1000,
+      hardDeadline: getInteractionCollectorDeadline(interaction.id),
     })
 
     collector.on('collect', async i => {

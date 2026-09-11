@@ -17,6 +17,7 @@ import List from '../../../utils/list'
 import { getSubcommandPaths, toComponentEmoji } from '../../../utils/utils'
 import { emoji } from '../../../utils/markdown'
 import { t } from '../../../utils/localization'
+import { getInteractionCollectorDeadline } from '../../../builders/collector'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -155,6 +156,7 @@ createApplicationCommand({
         return true
       },
       duration: 5 * 60 * 1000,
+      hardDeadline: getInteractionCollectorDeadline(interaction.id),
     })
 
     collector.on('collect', async i => {

@@ -2,13 +2,24 @@ import type { Collector, CollectorEvents, CollectorOptions } from '../types/type
 import { captureRejectionSymbol, EventEmitter } from 'events'
 
 export const collectors = new Set<Collector<unknown>>()
+// Interaction webhook tokens expire after 15 minutes, so leave time for the final edit.
+export const MAX_COLLECTOR_LIFETIME = 14 * 60 * 1000
+
+export function getInteractionCollectorDeadline(interactionId: string): number {
+  return Number(BigInt(interactionId) >> 22n) + 1420070400000 + MAX_COLLECTOR_LIFETIME
+}
 
 export default function createCollector<Type>(options: CollectorOptions<Type>): Collector<Type> {
   const { duration, max, filter } = options
+  const latestHardDeadline = Date.now() + MAX_COLLECTOR_LIFETIME
+  const hardDeadline = Number.isFinite(options.hardDeadline)
+    ? Math.min(options.hardDeadline!, latestHardDeadline)
+    : latestHardDeadline
 
   let collectedCount = 0
   let stopped = false
-  let timeout: NodeJS.Timeout | undefined
+  let idleTimeout: NodeJS.Timeout | undefined
+  let hardTimeout: NodeJS.Timeout | undefined
 
   const emitter = new EventEmitter<CollectorEvents<Type>>({ captureRejections: true }) as Collector<Type>
 
@@ -20,13 +31,14 @@ export default function createCollector<Type>(options: CollectorOptions<Type>): 
   const resetTimeout = () => {
     if (!duration) return
 
-    if (timeout) clearTimeout(timeout)
+    if (idleTimeout) clearTimeout(idleTimeout)
 
-    timeout = setTimeout(() => emitter.end('expired'), duration)
+    idleTimeout = setTimeout(() => emitter.end('expired'), duration)
   }
 
   collectors.add(emitter)
   resetTimeout()
+  hardTimeout = setTimeout(() => emitter.end('hard lifetime reached'), Math.max(0, hardDeadline - Date.now()))
 
   emitter.collect = async (item: Type) => {
     if (stopped) return
@@ -39,7 +51,7 @@ export default function createCollector<Type>(options: CollectorOptions<Type>): 
 
     const pass = filter ? await filter(item) : true
 
-    if (!pass) return
+    if (stopped || !pass) return
 
     collectedCount++
 
@@ -53,8 +65,10 @@ export default function createCollector<Type>(options: CollectorOptions<Type>): 
 
     stopped = true
 
-    if (timeout) clearTimeout(timeout)
-    timeout = undefined
+    if (idleTimeout) clearTimeout(idleTimeout)
+    if (hardTimeout) clearTimeout(hardTimeout)
+    idleTimeout = undefined
+    hardTimeout = undefined
 
     try {
       emitter.emit('end', reason ?? '')
