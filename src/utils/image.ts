@@ -30,9 +30,14 @@ export async function convertToGif(input: Buffer | string): Promise<Buffer> {
   return sharp(input, { animated: true }).gif({ effort: 10 }).toBuffer()
 }
 
-export async function applySpeechBubble(image: Buffer, options: SpeechBubbleOptions = {}): Promise<Buffer> {
-  const source = await sharp(image, { animated: false }).rotate().png().toBuffer()
-  const { width, height } = await sharp(source).metadata()
+export async function applySpeechBubble(
+  image: Buffer,
+  options: SpeechBubbleOptions = {},
+  gif = false,
+): Promise<Buffer> {
+  const source = sharp(image, { animated: true })
+
+  const { width, height } = await source.metadata()
 
   if (!width || !height) throw new Error('Unable to determine the image dimensions')
 
@@ -40,7 +45,9 @@ export async function applySpeechBubble(image: Buffer, options: SpeechBubbleOpti
   const bubbleHeight = Math.round(
     Math.min(height * 0.7, Math.max(1, requestedHeight <= 1 ? height * requestedHeight : requestedHeight)),
   )
+
   const tailPosition = Math.min(0.82, Math.max(0.18, options.tailPosition ?? 0.58))
+
   const fill = escapeSvgAttribute(options.fill ?? '#ffffff')
   const bodyY = bubbleHeight * 0.72
   const edgeY = bubbleHeight * 0.9
@@ -49,7 +56,12 @@ export async function applySpeechBubble(image: Buffer, options: SpeechBubbleOpti
   const tailTipY = Math.min(height, bubbleHeight * 1.52)
 
   const bubble = Buffer.from(`
-    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="${width}"
+      height="${height}"
+      viewBox="0 0 ${width} ${height}"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path fill="${fill}" d="
         M 0 0 H ${width} V ${bodyY}
         C ${width * 0.87} ${edgeY}, ${width * 0.73} ${edgeY}, ${tailX + tailHalfWidth} ${bodyY}
@@ -61,10 +73,15 @@ export async function applySpeechBubble(image: Buffer, options: SpeechBubbleOpti
     </svg>
   `)
 
-  return sharp(source)
-    .composite([{ input: bubble, left: 0, top: 0 }])
-    .png()
-    .toBuffer()
+  const buffer = await source.toBuffer()
+
+  const result = sharp(buffer, { animated: true }).composite([{ input: bubble, left: 0, top: 0 }])
+
+  if (gif) {
+    return result.gif({ effort: 10 }).toBuffer()
+  }
+
+  return result.png({ effort: 10 }).toBuffer()
 }
 
 export async function createPetpetGif(avatar: Buffer, options: PetpetOptions = {}): Promise<Buffer> {
@@ -74,7 +91,7 @@ export async function createPetpetGif(avatar: Buffer, options: PetpetOptions = {
 
   if (!handFrames.length) throw new Error('At least one petpet hand frame is required')
 
-  const avatarSource = await sharp(avatar, { animated: false }).rotate().png().toBuffer()
+  const avatarSource = await sharp(avatar).rotate().png({ effort: 10 }).toBuffer()
   const frameCount = handFrames.length
   const overlays: OverlayOptions[] = []
 
@@ -155,10 +172,20 @@ function escapeSvgAttribute(value: string): string {
   })
 }
 
-export async function applyCaption(input: Buffer | string, caption: string): Promise<Buffer> {
-  const image = sharp(input)
+export async function applyCaption(input: Buffer | string, caption: string, gif = false): Promise<Buffer> {
+  const image = sharp(input, {
+    animated: true,
+    limitInputPixels: false,
+  })
 
-  const { width = 800 } = await image.metadata()
+  const metadata = await image.metadata()
+
+  const width = metadata.width ?? 800
+  const height = metadata.height ?? 0
+  const pages = metadata.pages ?? 1
+  const pageHeight = metadata.pageHeight ?? height
+
+  if (!height) throw new Error('Unable to determine the image dimensions')
 
   const fontSize = Math.max(24, Math.round(width * 0.045))
   const horizontalPadding = Math.round(width * 0.04)
@@ -184,13 +211,17 @@ export async function applyCaption(input: Buffer | string, caption: string): Pro
   for (const word of words) {
     const testLine = currentLine ? `${currentLine} ${word}` : word
 
-    if (testLine.length <= charsPerLine) currentLine = testLine
-    else if (currentLine) lines.push(currentLine)
-
-    if (testLine.length > charsPerLine) currentLine = word
+    if (testLine.length <= charsPerLine) {
+      currentLine = testLine
+    } else {
+      if (currentLine) lines.push(currentLine)
+      currentLine = word
+    }
   }
 
-  if (currentLine) lines.push(currentLine)
+  if (currentLine) {
+    lines.push(currentLine)
+  }
 
   const captionHeight = lines.length * lineHeight + verticalPadding * 2
 
@@ -214,7 +245,7 @@ export async function applyCaption(input: Buffer | string, caption: string): Pro
     )
     .join('')
 
-  const svg = `
+  const svg = Buffer.from(`
     <svg
       width="${width}"
       height="${captionHeight}"
@@ -228,61 +259,149 @@ export async function applyCaption(input: Buffer | string, caption: string): Pro
 
       ${text}
     </svg>
-  `
+  `)
 
-  return image
-    .extend({
-      top: captionHeight,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      background: '#fff',
+  if (pages <= 1) {
+    return sharp(input, {
+      limitInputPixels: false,
     })
-    .composite([
-      {
-        input: Buffer.from(svg),
+      .extend({
+        top: captionHeight,
+        bottom: 0,
         left: 0,
-        top: 0,
-      },
-    ])
-    .png({
+        right: 0,
+        background: '#fff',
+      })
+      .composite([
+        {
+          input: svg,
+          left: 0,
+          top: 0,
+        },
+      ])
+      .png({
+        effort: 10,
+      })
+      .toBuffer()
+  }
+
+  if (!gif) {
+    const firstFrame = await sharp(input, {
+      animated: true,
+      pages: 1,
+      limitInputPixels: false,
+    })
+      .png({
+        effort: 10,
+      })
+      .toBuffer()
+
+    return sharp(firstFrame, {
+      limitInputPixels: false,
+    })
+      .extend({
+        top: captionHeight,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: '#fff',
+      })
+      .composite([
+        {
+          input: svg,
+          left: 0,
+          top: 0,
+        },
+      ])
+      .png({
+        effort: 10,
+      })
+      .toBuffer()
+  }
+
+  const frames = await Promise.all(
+    Array.from({ length: pages }, async (_, page) => {
+      const frame = await sharp(input, {
+        animated: true,
+        page,
+        limitInputPixels: false,
+      })
+        .png({
+          effort: 10,
+        })
+        .toBuffer()
+
+      return sharp(frame, {
+        limitInputPixels: false,
+      })
+        .extend({
+          top: captionHeight,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          background: '#fff',
+        })
+        .composite([
+          {
+            input: svg,
+            left: 0,
+            top: 0,
+          },
+        ])
+        .png({
+          effort: 10,
+        })
+        .toBuffer()
+    }),
+  )
+
+  const frameHeight = pageHeight + captionHeight
+
+  return sharp({
+    create: {
+      width,
+      height: frameHeight * frames.length,
+      pageHeight: frameHeight,
+      channels: 4,
+      background: '#fff',
+    },
+    limitInputPixels: false,
+  })
+    .composite(
+      frames.map((frame: Buffer, index: number) => ({
+        input: frame,
+        left: 0,
+        top: index * frameHeight,
+      })),
+    )
+    .gif({
       effort: 10,
+      loop: metadata.loop ?? 0,
+      delay: metadata.delay ? Array.from(metadata.delay) : undefined,
     })
     .toBuffer()
 }
 
-export async function applyGrayscale(input: Buffer | string): Promise<Buffer> {
-  return sharp(input)
-    .grayscale()
-    .png({
-      effort: 10,
-    })
-    .toBuffer()
+export async function applyGrayscale(input: Buffer | string, gif = false): Promise<Buffer> {
+  const image = sharp(input, { animated: gif }).grayscale()
+
+  return gif ? image.gif({ effort: 10 }).toBuffer() : image.png({ effort: 10 }).toBuffer()
 }
 
-export async function applyBlur(input: Buffer | string, sigma = 5): Promise<Buffer> {
-  return sharp(input)
-    .blur(sigma)
-    .png({
-      effort: 10,
-    })
-    .toBuffer()
+export async function applyBlur(input: Buffer | string, sigma = 5, gif = false): Promise<Buffer> {
+  const image = sharp(input, { animated: gif }).blur(sigma)
+
+  return gif ? image.gif({ effort: 10 }).toBuffer() : image.png({ effort: 10 }).toBuffer()
 }
 
-export async function applyFlip(input: Buffer | string): Promise<Buffer> {
-  return sharp(input)
-    .flip()
-    .png({
-      effort: 10,
-    })
-    .toBuffer()
+export async function applyFlip(input: Buffer | string, gif = false): Promise<Buffer> {
+  const image = sharp(input, { animated: gif }).flip()
+
+  return gif ? image.gif({ effort: 10 }).toBuffer() : image.png({ effort: 10 }).toBuffer()
 }
 
-export async function applyFlop(input: Buffer | string): Promise<Buffer> {
-  return sharp(input)
-    .flop()
-    .png({
-      effort: 10,
-    })
-    .toBuffer()
+export async function applyFlop(input: Buffer | string, gif = false): Promise<Buffer> {
+  const image = sharp(input, { animated: gif }).flop()
+
+  return gif ? image.gif({ effort: 10 }).toBuffer() : image.png({ effort: 10 }).toBuffer()
 }

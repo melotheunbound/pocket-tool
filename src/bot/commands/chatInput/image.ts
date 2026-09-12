@@ -79,6 +79,38 @@ createApplicationCommand({
           },
           required: true,
         },
+        {
+          type: ApplicationCommandOptionType.String,
+          name: {
+            global: 'format',
+            'pt-BR': 'formato',
+            'es-ES': 'formato',
+          },
+          description: {
+            global: 'The format to send the image in',
+            'pt-BR': 'O formato para enviar a imagem',
+            'es-ES': 'El formato para enviar la imagen',
+          },
+          choices: [
+            {
+              name: {
+                global: 'Image',
+                'pt-BR': 'Imagem',
+                'es-ES': 'Imagen',
+              },
+              value: 'png',
+            },
+            {
+              name: {
+                global: 'GIF',
+                'pt-BR': 'GIF',
+                'es-ES': 'GIF',
+              },
+              value: 'gif',
+            },
+          ],
+          required: false,
+        },
       ],
     },
     {
@@ -107,6 +139,38 @@ createApplicationCommand({
             'es-ES': 'La imagen para convertir a escala de grises',
           },
           required: true,
+        },
+        {
+          type: ApplicationCommandOptionType.String,
+          name: {
+            global: 'format',
+            'pt-BR': 'formato',
+            'es-ES': 'formato',
+          },
+          description: {
+            global: 'The format to send the image in',
+            'pt-BR': 'O formato para enviar a imagem',
+            'es-ES': 'El formato para enviar la imagen',
+          },
+          choices: [
+            {
+              name: {
+                global: 'Image',
+                'pt-BR': 'Imagem',
+                'es-ES': 'Imagen',
+              },
+              value: 'png',
+            },
+            {
+              name: {
+                global: 'GIF',
+                'pt-BR': 'GIF',
+                'es-ES': 'GIF',
+              },
+              value: 'gif',
+            },
+          ],
+          required: false,
         },
       ],
     },
@@ -153,6 +217,38 @@ createApplicationCommand({
           maxValue: 20,
           required: false,
         },
+        {
+          type: ApplicationCommandOptionType.String,
+          name: {
+            global: 'format',
+            'pt-BR': 'formato',
+            'es-ES': 'formato',
+          },
+          description: {
+            global: 'The format to send the image in',
+            'pt-BR': 'O formato para enviar a imagem',
+            'es-ES': 'El formato para enviar la imagen',
+          },
+          choices: [
+            {
+              name: {
+                global: 'Image',
+                'pt-BR': 'Imagem',
+                'es-ES': 'Imagen',
+              },
+              value: 'png',
+            },
+            {
+              name: {
+                global: 'GIF',
+                'pt-BR': 'GIF',
+                'es-ES': 'GIF',
+              },
+              value: 'gif',
+            },
+          ],
+          required: false,
+        },
       ],
     },
     {
@@ -181,6 +277,38 @@ createApplicationCommand({
             'es-ES': 'La imagen para voltear verticalmente',
           },
           required: true,
+        },
+        {
+          type: ApplicationCommandOptionType.String,
+          name: {
+            global: 'format',
+            'pt-BR': 'formato',
+            'es-ES': 'formato',
+          },
+          description: {
+            global: 'The format to send the image in',
+            'pt-BR': 'O formato para enviar a imagem',
+            'es-ES': 'El formato para enviar la imagen',
+          },
+          choices: [
+            {
+              name: {
+                global: 'Image',
+                'pt-BR': 'Imagem',
+                'es-ES': 'Imagen',
+              },
+              value: 'png',
+            },
+            {
+              name: {
+                global: 'Image',
+                'pt-BR': 'Imagem',
+                'es-ES': 'Imagen',
+              },
+              value: 'gif',
+            },
+          ],
+          required: false,
         },
       ],
     },
@@ -211,6 +339,38 @@ createApplicationCommand({
           },
           required: true,
         },
+        {
+          type: ApplicationCommandOptionType.String,
+          name: {
+            global: 'format',
+            'pt-BR': 'formato',
+            'es-ES': 'formato',
+          },
+          description: {
+            global: 'The format to send the image in',
+            'pt-BR': 'O formato para enviar a imagem',
+            'es-ES': 'El formato para enviar la imagen',
+          },
+          choices: [
+            {
+              name: {
+                global: 'Image',
+                'pt-BR': 'Imagem',
+                'es-ES': 'Imagen',
+              },
+              value: 'png',
+            },
+            {
+              name: {
+                global: 'GIF',
+                'pt-BR': 'GIF',
+                'es-ES': 'GIF',
+              },
+              value: 'gif',
+            },
+          ],
+          required: false,
+        },
       ],
     },
     {
@@ -239,6 +399,38 @@ createApplicationCommand({
             'es-ES': 'La imagen para agregar un globo de texto ',
           },
           required: true,
+        },
+        {
+          type: ApplicationCommandOptionType.String,
+          name: {
+            global: 'format',
+            'pt-BR': 'formato',
+            'es-ES': 'formato',
+          },
+          description: {
+            global: 'The format to send the image in',
+            'pt-BR': 'O formato para enviar a imagem',
+            'es-ES': 'El formato para enviar la imagen',
+          },
+          choices: [
+            {
+              name: {
+                global: 'Image',
+                'pt-BR': 'Imagem',
+                'es-ES': 'Imagen',
+              },
+              value: 'png',
+            },
+            {
+              name: {
+                global: 'GIF',
+                'pt-BR': 'GIF',
+                'es-ES': 'GIF',
+              },
+              value: 'gif',
+            },
+          ],
+          required: false,
         },
       ],
     },
@@ -355,145 +547,145 @@ createApplicationCommand({
     const { caption, grayscale, blur, flip, flop, 'speech-bubble': speechBubble, petpet, gif } = options
 
     if (caption) {
-      const { attachment, text } = caption
+      const { attachment, text, format } = caption
 
       const buffer = await makeRequest(attachment.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
       })
 
-      const captioned = await applyCaption(buffer, text)
+      const captioned = await applyCaption(buffer, text, format === 'gif')
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         attachments: [
           {
             id: 0,
-            filename: 'captioned.png',
+            filename: `captioned.${format}`,
           },
         ],
         files: [
           {
-            name: 'captioned.png',
+            name: `captioned.${format}`,
             data: captioned,
           },
         ],
       })
     } else if (grayscale) {
-      const { attachment } = grayscale
+      const { attachment, format } = grayscale
 
       const buffer = await makeRequest(attachment.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
       })
 
-      const grayscaled = await applyGrayscale(buffer)
+      const grayscaled = await applyGrayscale(buffer, format === 'gif')
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         attachments: [
           {
             id: 0,
-            filename: 'grayscaled.png',
+            filename: `grayscaled.${format}`,
           },
         ],
         files: [
           {
-            name: 'grayscaled.png',
+            name: `grayscaled.${format}`,
             data: grayscaled,
           },
         ],
       })
     } else if (blur) {
-      const { attachment, strength } = blur
+      const { attachment, strength, format } = blur
 
       const buffer = await makeRequest(attachment.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
       })
 
-      const blurred = await applyBlur(buffer, strength)
+      const blurred = await applyBlur(buffer, strength, format === 'gif')
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         attachments: [
           {
             id: 0,
-            filename: 'blurred.png',
+            filename: `blurred.${format}`,
           },
         ],
         files: [
           {
-            name: 'blurred.png',
+            name: `blurred.${format}`,
             data: blurred,
           },
         ],
       })
     } else if (flip) {
-      const { attachment } = flip
+      const { attachment, format } = flip
 
       const buffer = await makeRequest(attachment.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
       })
 
-      const flipped = await applyFlip(buffer)
+      const flipped = await applyFlip(buffer, format === 'gif')
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         attachments: [
           {
             id: 0,
-            filename: 'flipped.png',
+            filename: `flipped.${format}`,
           },
         ],
         files: [
           {
-            name: 'flipped.png',
+            name: `flipped.${format}`,
             data: flipped,
           },
         ],
       })
     } else if (flop) {
-      const { attachment } = flop
+      const { attachment, format } = flop
 
       const buffer = await makeRequest(attachment.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
       })
 
-      const flopped = await applyFlop(buffer)
+      const flopped = await applyFlop(buffer, format === 'gif')
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         attachments: [
           {
             id: 0,
-            filename: 'flopped.png',
+            filename: `flopped.${format}`,
           },
         ],
         files: [
           {
-            name: 'flopped.png',
+            name: `flopped.${format}`,
             data: flopped,
           },
         ],
       })
     } else if (speechBubble) {
-      const { attachment } = speechBubble
+      const { attachment, format } = speechBubble
 
       const buffer = await makeRequest(attachment.url, {
         method: RequestMethod.GET,
         response: ResponseType.BUFFER,
       })
 
-      const speechBubbled = await applySpeechBubble(buffer)
+      const speechBubbled = await applySpeechBubble(buffer, undefined, format === 'gif')
 
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         attachments: [
           {
             id: 0,
-            filename: 'speechBubbled.png',
+            filename: 'speechBubbled.gif',
           },
         ],
         files: [
           {
-            name: 'speechBubbled.png',
+            name: 'speechBubbled.gif',
             data: speechBubbled,
           },
         ],
