@@ -99,7 +99,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `### ${t(l, 'commands.debug.browser', { shardId, shards })}`,
+                  content: `### ${t(l, 'commands.debug.browser', { shardId })}`,
                 },
               ],
               accessory: {
@@ -258,7 +258,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `### ${t(l, 'commands.debug.browser', { shardId, shards })}`,
+                        content: `### ${t(l, 'commands.debug.browser', { shardId })}`,
                       },
                     ],
                     accessory: {
@@ -322,7 +322,7 @@ createApplicationCommand({
                   components: [
                     {
                       type: ComponentType.TextDisplay,
-                      content: `### ${t(l, 'commands.debug.browser', { shardId, shards })}`,
+                      content: `### ${t(l, 'commands.debug.browser', { shardId })}`,
                     },
                   ],
                   accessory: {

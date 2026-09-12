@@ -30,7 +30,7 @@
       "community_message": "Este bot não existiria sem o apoio da nossa comunidade! Obrigado! ❤️"
     },
     "debug": {
-      "browser": "Navegador de Shards\n-# Insira o ID de um servidor para visualizar as informações do shard. Atualmente no shard **{shardId}/{shards}**",
+      "browser": "Navegador de Shards\n-# Insira o ID de um servidor para visualizar as informações do shard. Atualmente no shard **#{shardId}**",
       "shard": {
         "title": "Shard #{shardId}:",
         "latency": "Latência:",
