@@ -139,7 +139,7 @@
     "quote": {
       "forwarded": "Forwarded messages are currently unsupported.",
       "no_text_or_sticker": "Please select a message containing text or stickers to quote.",
-      "editor": "Quote Editor\n-# Use the menus below to customize your quote or generate a random card",
+      "editor": "### Quote Editor\n-# Use the menus below to customize your quote or generate a random card",
       "filter": "You cannot interact with components from another user's command.",
       "selects": {
         "fonts": {

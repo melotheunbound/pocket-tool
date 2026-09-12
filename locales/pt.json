@@ -139,7 +139,7 @@
     "quote": {
       "forwarded": "Mensagens encaminhadas não são compatíveis no momento.",
       "no_text_or_sticker": "Por favor, selecione uma mensagem contendo texto ou figurinhas para citar.",
-      "editor": "Editor de Citações\n-# Use os menus abaixo para personalizar sua citação ou gerar um cartão aleatório",
+      "editor": "### Editor de Citações\n-# Use os menus abaixo para personalizar sua citação ou gerar um cartão aleatório",
       "filter": "Você não pode interagir com os componentes do comando de outro usuário.",
       "selects": {
         "fonts": {
