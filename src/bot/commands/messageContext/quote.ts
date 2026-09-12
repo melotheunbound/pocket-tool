@@ -1931,9 +1931,9 @@ async function resolveQuoteContent(message: APIMessage) {
 
           animation.seekFrame(0)
           animation.render(canvas.getContext('2d'), { x: 0, y: 0, width: 320, height: 320 })
-          data = await sharp(canvas.toBuffer('image/png')).png({ effort: 10 }).toBuffer()
+          data = await sharp(canvas.toBuffer('image/png')).png().toBuffer()
         } else if (sticker.format_type === StickerFormatType.GIF) {
-          data = await sharp(data, { animated: false }).png({ effort: 10 }).toBuffer()
+          data = await sharp(data, { animated: false }).png().toBuffer()
         }
 
         return { data }

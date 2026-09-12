@@ -280,6 +280,13 @@ export const CARD_EFFECTS = {
     effect: 'flip',
     emoji: 'Flip',
   },
+  flop: {
+    label: 'Flop Image',
+    description: 'Mirror the avatar vertically',
+    layout: 'split',
+    effect: 'flop',
+    emoji: 'Flop',
+  },
   grayscale: {
     label: 'Grayscale',
     description: 'Convert avatar to black and white',
@@ -402,14 +409,9 @@ export async function renderQuoteCard(options: RenderQuoteCardOptions): Promise<
 
   const image = sharp(frame).resize(WIDTH, HEIGHT)
 
-  if (effects.has('gif')) return image.gif({ effort: 10 }).toBuffer()
+  if (effects.has('gif')) return image.gif().toBuffer()
 
-  return image
-    .png({
-      compressionLevel: 9,
-      effort: 10,
-    })
-    .toBuffer()
+  return image.png().toBuffer()
 }
 
 function drawLayout(ctx: SKRSContext2D, layout: Layout, effects: ReadonlySet<Effect>, avatar?: LoadedImage): TextArea {
@@ -516,9 +518,16 @@ function drawImageCover(
 
   const overscan = effects.has('blur') ? 20 : 0
 
-  if (effects.has('flip')) {
-    ctx.translate(x * 2 + width, 0)
-    ctx.scale(-1, 1)
+  const flip = effects.has('flip')
+  const flop = effects.has('flop')
+
+  if (flip || flop) {
+    const centerX = x + width / 2
+    const centerY = y + height / 2
+
+    ctx.translate(centerX, centerY)
+    ctx.scale(flip ? -1 : 1, flop ? -1 : 1)
+    ctx.translate(-centerX, -centerY)
   }
 
   ctx.drawImage(

@@ -26,6 +26,8 @@ export enum Emoji {
   CustomFontSize = '<:custom_font_size:1543070826881089737>',
   CustomColor = '<:custom_color:1543070858380054548>',
   Auto = '<:auto:1543217554674155571>',
+  Topgg = '<:topgg:1545150926694649978>',
+  Trash = '<:trash:1548282081640054934>',
   // pagination
   Previous = '<:previous:1535622582454194228>',
   Next = '<:next:1535622608429654037>',
@@ -71,6 +73,7 @@ export enum Emoji {
   GIF2 = '<:GIF:1543070706021965895>',
   Flip = '<:flip:1543214106209681469>',
   Pixelate = '<:pixelate:1543214158731022357>',
+  Flop = '<:flop:1548286809589415956>',
 }
 
 export const MESSAGE_BLOCK_REASONS = {
