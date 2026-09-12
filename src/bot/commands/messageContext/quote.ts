@@ -169,8 +169,20 @@ createApplicationCommand({
           type: ComponentType.Container,
           components: [
             {
-              type: ComponentType.TextDisplay,
-              content: t(l, 'commands.quote.editor'),
+              type: ComponentType.Section,
+              components: [
+                {
+                  type: ComponentType.TextDisplay,
+                  content: t(l, 'commands.quote.editor'),
+                },
+              ],
+              accessory: {
+                type: ComponentType.Button,
+                custom_id: 'random',
+                label: t(l, 'commands.quote.button.random_label'),
+                emoji: toComponentEmoji('Spark'),
+                style: ButtonStyle.Secondary,
+              },
             },
           ],
         },
@@ -286,18 +298,6 @@ createApplicationCommand({
             },
           ],
         },
-        {
-          type: ComponentType.ActionRow,
-          components: [
-            {
-              type: ComponentType.Button,
-              custom_id: 'random',
-              label: t(l, 'commands.quote.button.random_label'),
-              emoji: toComponentEmoji('Spark'),
-              style: ButtonStyle.Secondary,
-            },
-          ],
-        },
       ],
       files: [
         {
@@ -358,7 +358,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${i.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
+                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
               },
               {
                 type: ComponentType.MediaGallery,
@@ -374,8 +374,20 @@ createApplicationCommand({
                 type: ComponentType.Container,
                 components: [
                   {
-                    type: ComponentType.TextDisplay,
-                    content: t(l, 'commands.quote.editor'),
+                    type: ComponentType.Section,
+                    components: [
+                      {
+                        type: ComponentType.TextDisplay,
+                        content: t(l, 'commands.quote.editor'),
+                      },
+                    ],
+                    accessory: {
+                      type: ComponentType.Button,
+                      custom_id: 'random',
+                      label: t(l, 'commands.quote.button.random_label'),
+                      emoji: toComponentEmoji('Spark'),
+                      style: ButtonStyle.Secondary,
+                    },
                   },
                 ],
               },
@@ -491,18 +503,6 @@ createApplicationCommand({
                   },
                 ],
               },
-              {
-                type: ComponentType.ActionRow,
-                components: [
-                  {
-                    type: ComponentType.Button,
-                    custom_id: 'random',
-                    label: t(l, 'commands.quote.button.random_label'),
-                    emoji: toComponentEmoji('Spark'),
-                    style: ButtonStyle.Secondary,
-                  },
-                ],
-              },
             ],
             files: [
               {
@@ -560,7 +560,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${i.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
+                  content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
                 },
                 {
                   type: ComponentType.MediaGallery,
@@ -576,8 +576,20 @@ createApplicationCommand({
                   type: ComponentType.Container,
                   components: [
                     {
-                      type: ComponentType.TextDisplay,
-                      content: t(l, 'commands.quote.editor'),
+                      type: ComponentType.Section,
+                      components: [
+                        {
+                          type: ComponentType.TextDisplay,
+                          content: t(l, 'commands.quote.editor'),
+                        },
+                      ],
+                      accessory: {
+                        type: ComponentType.Button,
+                        custom_id: 'random',
+                        label: t(l, 'commands.quote.button.random_label'),
+                        emoji: toComponentEmoji('Spark'),
+                        style: ButtonStyle.Secondary,
+                      },
                     },
                   ],
                 },
@@ -690,18 +702,6 @@ createApplicationCommand({
                         value,
                         default: session.effects.includes(value as EffectKey),
                       })),
-                    },
-                  ],
-                },
-                {
-                  type: ComponentType.ActionRow,
-                  components: [
-                    {
-                      type: ComponentType.Button,
-                      custom_id: 'random',
-                      label: t(l, 'commands.quote.button.random_label'),
-                      emoji: toComponentEmoji('Spark'),
-                      style: ButtonStyle.Secondary,
                     },
                   ],
                 },
@@ -765,7 +765,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${i.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
+                  content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
                 },
                 {
                   type: ComponentType.MediaGallery,
@@ -781,8 +781,20 @@ createApplicationCommand({
                   type: ComponentType.Container,
                   components: [
                     {
-                      type: ComponentType.TextDisplay,
-                      content: t(l, 'commands.quote.editor'),
+                      type: ComponentType.Section,
+                      components: [
+                        {
+                          type: ComponentType.TextDisplay,
+                          content: t(l, 'commands.quote.editor'),
+                        },
+                      ],
+                      accessory: {
+                        type: ComponentType.Button,
+                        custom_id: 'random',
+                        label: t(l, 'commands.quote.button.random_label'),
+                        emoji: toComponentEmoji('Spark'),
+                        style: ButtonStyle.Secondary,
+                      },
                     },
                   ],
                 },
@@ -898,18 +910,6 @@ createApplicationCommand({
                     },
                   ],
                 },
-                {
-                  type: ComponentType.ActionRow,
-                  components: [
-                    {
-                      type: ComponentType.Button,
-                      custom_id: 'random',
-                      label: t(l, 'commands.quote.button.random_label'),
-                      emoji: toComponentEmoji('Spark'),
-                      style: ButtonStyle.Secondary,
-                    },
-                  ],
-                },
               ],
               files: [
                 {
@@ -949,7 +949,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${i.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
+                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
               },
               {
                 type: ComponentType.MediaGallery,
@@ -965,8 +965,20 @@ createApplicationCommand({
                 type: ComponentType.Container,
                 components: [
                   {
-                    type: ComponentType.TextDisplay,
-                    content: t(l, 'commands.quote.editor'),
+                    type: ComponentType.Section,
+                    components: [
+                      {
+                        type: ComponentType.TextDisplay,
+                        content: t(l, 'commands.quote.editor'),
+                      },
+                    ],
+                    accessory: {
+                      type: ComponentType.Button,
+                      custom_id: 'random',
+                      label: t(l, 'commands.quote.button.random_label'),
+                      emoji: toComponentEmoji('Spark'),
+                      style: ButtonStyle.Secondary,
+                    },
                   },
                 ],
               },
@@ -1079,18 +1091,6 @@ createApplicationCommand({
                       value,
                       default: session.effects.includes(value as EffectKey),
                     })),
-                  },
-                ],
-              },
-              {
-                type: ComponentType.ActionRow,
-                components: [
-                  {
-                    type: ComponentType.Button,
-                    custom_id: 'random',
-                    label: t(l, 'commands.quote.button.random_label'),
-                    emoji: toComponentEmoji('Spark'),
-                    style: ButtonStyle.Secondary,
                   },
                 ],
               },
@@ -1128,7 +1128,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${i.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
+                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
               },
               {
                 type: ComponentType.MediaGallery,
@@ -1144,8 +1144,20 @@ createApplicationCommand({
                 type: ComponentType.Container,
                 components: [
                   {
-                    type: ComponentType.TextDisplay,
-                    content: t(l, 'commands.quote.editor'),
+                    type: ComponentType.Section,
+                    components: [
+                      {
+                        type: ComponentType.TextDisplay,
+                        content: t(l, 'commands.quote.editor'),
+                      },
+                    ],
+                    accessory: {
+                      type: ComponentType.Button,
+                      custom_id: 'random',
+                      label: t(l, 'commands.quote.button.random_label'),
+                      emoji: toComponentEmoji('Spark'),
+                      style: ButtonStyle.Secondary,
+                    },
                   },
                 ],
               },
@@ -1258,18 +1270,6 @@ createApplicationCommand({
                       value,
                       default: session.effects.includes(value as EffectKey),
                     })),
-                  },
-                ],
-              },
-              {
-                type: ComponentType.ActionRow,
-                components: [
-                  {
-                    type: ComponentType.Button,
-                    custom_id: 'random',
-                    label: t(l, 'commands.quote.button.random_label'),
-                    emoji: toComponentEmoji('Spark'),
-                    style: ButtonStyle.Secondary,
                   },
                 ],
               },
@@ -1337,7 +1337,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${i.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
+                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
               },
               {
                 type: ComponentType.MediaGallery,
@@ -1353,8 +1353,20 @@ createApplicationCommand({
                 type: ComponentType.Container,
                 components: [
                   {
-                    type: ComponentType.TextDisplay,
-                    content: t(l, 'commands.quote.editor'),
+                    type: ComponentType.Section,
+                    components: [
+                      {
+                        type: ComponentType.TextDisplay,
+                        content: t(l, 'commands.quote.editor'),
+                      },
+                    ],
+                    accessory: {
+                      type: ComponentType.Button,
+                      custom_id: 'random',
+                      label: t(l, 'commands.quote.button.random_label'),
+                      emoji: toComponentEmoji('Spark'),
+                      style: ButtonStyle.Secondary,
+                    },
                   },
                 ],
               },
@@ -1467,18 +1479,6 @@ createApplicationCommand({
                       value,
                       default: session.effects.includes(value as EffectKey),
                     })),
-                  },
-                ],
-              },
-              {
-                type: ComponentType.ActionRow,
-                components: [
-                  {
-                    type: ComponentType.Button,
-                    custom_id: 'random',
-                    label: t(l, 'commands.quote.button.random_label'),
-                    emoji: toComponentEmoji('Spark'),
-                    style: ButtonStyle.Secondary,
                   },
                 ],
               },
@@ -1543,7 +1543,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${i.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
+                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
               },
               {
                 type: ComponentType.MediaGallery,
@@ -1559,8 +1559,20 @@ createApplicationCommand({
                 type: ComponentType.Container,
                 components: [
                   {
-                    type: ComponentType.TextDisplay,
-                    content: t(l, 'commands.quote.editor'),
+                    type: ComponentType.Section,
+                    components: [
+                      {
+                        type: ComponentType.TextDisplay,
+                        content: t(l, 'commands.quote.editor'),
+                      },
+                    ],
+                    accessory: {
+                      type: ComponentType.Button,
+                      custom_id: 'random',
+                      label: t(l, 'commands.quote.button.random_label'),
+                      emoji: toComponentEmoji('Spark'),
+                      style: ButtonStyle.Secondary,
+                    },
                   },
                 ],
               },
@@ -1676,18 +1688,6 @@ createApplicationCommand({
                   },
                 ],
               },
-              {
-                type: ComponentType.ActionRow,
-                components: [
-                  {
-                    type: ComponentType.Button,
-                    custom_id: 'random',
-                    label: t(l, 'commands.quote.button.random_label'),
-                    emoji: toComponentEmoji('Spark'),
-                    style: ButtonStyle.Secondary,
-                  },
-                ],
-              },
             ],
             files: [
               {
@@ -1727,8 +1727,21 @@ createApplicationCommand({
               type: ComponentType.Container,
               components: [
                 {
-                  type: ComponentType.TextDisplay,
-                  content: `### ${t(l, 'commands.quote.editor')}`,
+                  type: ComponentType.Section,
+                  components: [
+                    {
+                      type: ComponentType.TextDisplay,
+                      content: t(l, 'commands.quote.editor'),
+                    },
+                  ],
+                  accessory: {
+                    type: ComponentType.Button,
+                    custom_id: 'random',
+                    label: t(l, 'commands.quote.button.random_label'),
+                    emoji: toComponentEmoji('Spark'),
+                    style: ButtonStyle.Secondary,
+                    disabled: true,
+                  },
                 },
               ],
             },
@@ -1738,7 +1751,7 @@ createApplicationCommand({
                 {
                   type: ComponentType.StringSelect,
                   custom_id: 'quote-font',
-                  placeholder: t(l, 'commands.quote.selects.fonts.placeholder'),
+                  placeholder: t(l, 'commands.quote.selects.font.placeholder'),
                   options: Object.entries(CARD_FONTS).map(([value, item]) => ({
                     emoji: toComponentEmoji(item.emoji),
                     label: item.label,
@@ -1767,18 +1780,18 @@ createApplicationCommand({
                     })),
                     {
                       emoji: toComponentEmoji('CustomFontSize'),
-                      label: t(l, 'commands.quote.selects.fonts.custom_label'),
-                      description: t(l, 'commands.quote.selects.fonts.custom_description'),
+                      label: t(l, 'commands.quote.selects.font_size.custom_label'),
+                      description: t(l, 'commands.quote.selects.font_size.custom_description'),
                       value: 'custom',
                     },
                     ...(!(session.fontSize in FONT_SIZES)
                       ? [
                           {
                             emoji: toComponentEmoji('Selected'),
-                            label: t(l, 'commands.quote.selects.fonts.custom_selected_label', {
+                            label: t(l, 'commands.quote.selects.font_size.custom_selected_label', {
                               size: session.fontSize,
                             }),
-                            description: t(l, 'commands.quote.selects.fonts.custom_selected_description'),
+                            description: t(l, 'commands.quote.selects.font_size.custom_selected_description'),
                             value: String(session.fontSize),
                             default: true,
                           },
@@ -1795,7 +1808,7 @@ createApplicationCommand({
                 {
                   type: ComponentType.StringSelect,
                   custom_id: 'quote-color',
-                  placeholder: t(l, 'commands.quote.selects.colors.placeholder'),
+                  placeholder: t(l, 'commands.quote.selects.color.placeholder'),
                   options: [
                     ...Object.entries(CARD_COLORS).map(([value, item]) => ({
                       emoji: toComponentEmoji(item.emoji),
@@ -1806,18 +1819,18 @@ createApplicationCommand({
                     })),
                     {
                       emoji: toComponentEmoji('CustomColor'),
-                      label: t(l, 'commands.quote.selects.colors.custom_label'),
-                      description: t(l, 'commands.quote.selects.colors.custom_description'),
+                      label: t(l, 'commands.quote.selects.custom_color_label'),
+                      description: t(l, 'commands.quote.selects.color.custom_selected_description'),
                       value: 'custom',
                     },
                     ...(!(session.color in CARD_COLORS)
                       ? [
                           {
                             emoji: toComponentEmoji('Selected'),
-                            label: t(l, 'commands.quote.selects.colors.custom_selected_label', {
+                            label: t(l, 'commands.quote.selects.color.custom_selected_label', {
                               color: session.color,
                             }),
-                            description: t(l, 'commands.quote.selects.colors.custom_selected_description'),
+                            description: t(l, 'commands.quote.selects.color.custom_selected_description'),
                             value: session.color,
                             default: true,
                           },
@@ -1844,19 +1857,6 @@ createApplicationCommand({
                     value,
                     default: session.effects.includes(value as EffectKey),
                   })),
-                  disabled: true,
-                },
-              ],
-            },
-            {
-              type: ComponentType.ActionRow,
-              components: [
-                {
-                  type: ComponentType.Button,
-                  custom_id: 'random',
-                  label: t(l, 'commands.quote.button.random_label'),
-                  emoji: toComponentEmoji('Spark'),
-                  style: ButtonStyle.Secondary,
                   disabled: true,
                 },
               ],
