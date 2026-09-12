@@ -139,6 +139,7 @@
     "quote": {
       "forwarded": "Forwarded messages are currently unsupported.",
       "no_text_or_sticker": "Please select a message containing text or stickers to quote.",
+      "original": "Jump to original message!",
       "editor": "### Quote Editor\n-# Use the menus below to customize your quote or generate a random card",
       "filter": "You cannot interact with components from another user's command.",
       "selects": {
@@ -192,8 +193,8 @@
       "cooldown": "Please wait! You're on cooldown for {command}. You can use this command again {timestamp}.",
       "blocked": "{command} was blocked due to ${article}. Please try again with **ephemeral** enabled.",
       "error": {
-        "text": "{error}\n-# If you believe this is a bug, please report it in our **{support}**.",
-        "support": "support server"
+        "text": "{error}\n-# If you believe this is a bug, please report it in our **{support}**",
+        "support": "support server."
       }
     }
   }

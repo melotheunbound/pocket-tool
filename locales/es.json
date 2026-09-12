@@ -139,6 +139,7 @@
     "quote": {
       "forwarded": "Los mensajes reenviados no están soportados actualmente.",
       "no_text_or_sticker": "Selecciona un mensaje que contenga texto o un sticker para citarlo.",
+      "original": "Ir al mensaje original!",
       "editor": "### Editor de citas\n-# Usa los menús siguientes para personalizar tu cita o generar una tarjeta aleatoria",
       "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
       "selects": {
@@ -192,8 +193,8 @@
       "cooldown": "¡Espera! Estás en espera para el comando {command}. Puedes usar el comando de nuevo en {timestamp}.",
       "blocked": "{command} ha sido bloqueado por ${article}. Inténtalo de nuevo con **ephemeral** habilitado.",
       "error": {
-        "text": "{error}\n-# Si crees que esto es un error, repórtalo en nuestro **{support}**.",
-        "support": "servidor de soporte"
+        "text": "{error}\n-# Si crees que esto es un error, repórtalo en nuestro **{support}**",
+        "support": "servidor de soporte."
       }
     }
   }

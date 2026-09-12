@@ -139,6 +139,7 @@
     "quote": {
       "forwarded": "Mensagens encaminhadas não são compatíveis no momento.",
       "no_text_or_sticker": "Por favor, selecione uma mensagem contendo texto ou figurinhas para citar.",
+      "original": "Ir para a mensagem original!",
       "editor": "### Editor de Citações\n-# Use os menus abaixo para personalizar sua citação ou gerar um cartão aleatório",
       "filter": "Você não pode interagir com os componentes do comando de outro usuário.",
       "selects": {
@@ -192,8 +193,8 @@
       "cooldown": "Aguarde! Você está em tempo de espera para {command}. Você poderá usar este comando novamente {timestamp}.",
       "blocked": "{command} foi bloqueado devido a ${article}. Tente novamente com a opção **efêmero** ativada.",
       "error": {
-        "text": "{error}\n-# Se você acredita que isso é um bug, informe em nosso **{support}**.",
-        "support": "servidor de suporte"
+        "text": "{error}\n-# Se você acredita que isso é um bug, informe em nosso **{support}**",
+        "support": "servidor de suporte."
       }
     }
   }
