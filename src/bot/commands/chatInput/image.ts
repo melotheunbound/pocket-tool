@@ -560,12 +560,12 @@ createApplicationCommand({
         attachments: [
           {
             id: 0,
-            filename: `captioned.${format}`,
+            filename: `captioned.${format ?? 'png'}`,
           },
         ],
         files: [
           {
-            name: `captioned.${format}`,
+            name: `captioned.${format ?? 'png'}`,
             data: captioned,
           },
         ],
@@ -584,12 +584,12 @@ createApplicationCommand({
         attachments: [
           {
             id: 0,
-            filename: `grayscaled.${format}`,
+            filename: `grayscaled.${format ?? 'png'}`,
           },
         ],
         files: [
           {
-            name: `grayscaled.${format}`,
+            name: `grayscaled.${format ?? 'png'}`,
             data: grayscaled,
           },
         ],
@@ -608,12 +608,12 @@ createApplicationCommand({
         attachments: [
           {
             id: 0,
-            filename: `blurred.${format}`,
+            filename: `blurred.${format ?? 'png'}`,
           },
         ],
         files: [
           {
-            name: `blurred.${format}`,
+            name: `blurred.${format ?? 'png'}`,
             data: blurred,
           },
         ],
@@ -632,12 +632,12 @@ createApplicationCommand({
         attachments: [
           {
             id: 0,
-            filename: `flipped.${format}`,
+            filename: `flipped.${format ?? 'png'}`,
           },
         ],
         files: [
           {
-            name: `flipped.${format}`,
+            name: `flipped.${format ?? 'png'}`,
             data: flipped,
           },
         ],
@@ -656,12 +656,12 @@ createApplicationCommand({
         attachments: [
           {
             id: 0,
-            filename: `flopped.${format}`,
+            filename: `flopped.${format ?? 'png'}`,
           },
         ],
         files: [
           {
-            name: `flopped.${format}`,
+            name: `flopped.${format ?? 'png'}`,
             data: flopped,
           },
         ],
