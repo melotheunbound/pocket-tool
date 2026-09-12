@@ -125,7 +125,7 @@ if (env.get('register_commands')!.toBoolean() === true) {
     const options = subcommands.length ? subcommands.map(subcommand => (subcommand.options ??= [])) : [command.options]
 
     options.forEach(options => {
-      if (!options.some(option => (option.name as any).global || option.name === 'ephemeral')) {
+      if (!options.some(option => ((option.name as any).global || option.name) === 'ephemeral')) {
         options.push({
           type: ApplicationCommandOptionType.Boolean,
           name: {
