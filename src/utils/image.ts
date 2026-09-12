@@ -27,7 +27,7 @@ export type PetpetOptions = {
 }
 
 export async function convertToGif(input: Buffer | string): Promise<Buffer> {
-  return sharp(input, { animated: true }).gif({ effort: 10 }).toBuffer()
+  return sharp(input, { animated: true }).gif().toBuffer()
 }
 
 export async function applySpeechBubble(
@@ -78,10 +78,10 @@ export async function applySpeechBubble(
   const result = sharp(buffer, { animated: true }).composite([{ input: bubble, left: 0, top: 0 }])
 
   if (gif) {
-    return result.gif({ effort: 10 }).toBuffer()
+    return result.gif().toBuffer()
   }
 
-  return result.png({ effort: 10 }).toBuffer()
+  return result.png().toBuffer()
 }
 
 export async function createPetpetGif(avatar: Buffer, options: PetpetOptions = {}): Promise<Buffer> {
@@ -91,7 +91,7 @@ export async function createPetpetGif(avatar: Buffer, options: PetpetOptions = {
 
   if (!handFrames.length) throw new Error('At least one petpet hand frame is required')
 
-  const avatarSource = await sharp(avatar).rotate().png({ effort: 10 }).toBuffer()
+  const avatarSource = await sharp(avatar).rotate().png().toBuffer()
   const frameCount = handFrames.length
   const overlays: OverlayOptions[] = []
 
@@ -385,23 +385,23 @@ export async function applyCaption(input: Buffer | string, caption: string, gif 
 export async function applyGrayscale(input: Buffer | string, gif = false): Promise<Buffer> {
   const image = sharp(input, { animated: gif }).grayscale()
 
-  return gif ? image.gif({ effort: 10 }).toBuffer() : image.png({ effort: 10 }).toBuffer()
+  return gif ? image.gif().toBuffer() : image.png().toBuffer()
 }
 
 export async function applyBlur(input: Buffer | string, sigma = 5, gif = false): Promise<Buffer> {
   const image = sharp(input, { animated: gif }).blur(sigma)
 
-  return gif ? image.gif({ effort: 10 }).toBuffer() : image.png({ effort: 10 }).toBuffer()
+  return gif ? image.gif().toBuffer() : image.png().toBuffer()
 }
 
 export async function applyFlip(input: Buffer | string, gif = false): Promise<Buffer> {
   const image = sharp(input, { animated: gif }).flip()
 
-  return gif ? image.gif({ effort: 10 }).toBuffer() : image.png({ effort: 10 }).toBuffer()
+  return gif ? image.gif().toBuffer() : image.png().toBuffer()
 }
 
 export async function applyFlop(input: Buffer | string, gif = false): Promise<Buffer> {
   const image = sharp(input, { animated: gif }).flop()
 
-  return gif ? image.gif({ effort: 10 }).toBuffer() : image.png({ effort: 10 }).toBuffer()
+  return gif ? image.gif().toBuffer() : image.png().toBuffer()
 }
