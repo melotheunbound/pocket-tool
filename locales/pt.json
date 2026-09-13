@@ -86,7 +86,7 @@
       "no_track": "Nenhuma música está sendo reproduzida no momento.",
       "spotify": {
         "missing_credentials": "As credenciais do Spotify não estão configuradas.",
-        "no_track_found": "Não consegui encontrar a música que você está ouvindo."
+        "track_not_found": "Não consegui encontrar a música que você está ouvindo."
       },
       "listening": "**{username}** está ouvindo **{track}** por **{artist}**"
     },

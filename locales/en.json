@@ -86,7 +86,7 @@
       "no_track": "No track is currently being played.",
       "spotify": {
         "missing_credentials": "The Spotify credentials are not set.",
-        "no_track_found": "I couldn't find the track you're listening to."
+        "track_not_found": "I couldn't find the track you're listening to."
       },
       "listening": "**{username}** is listening to **{track} **by **{artist} **"
     },
