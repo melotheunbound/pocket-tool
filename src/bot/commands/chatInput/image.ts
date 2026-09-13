@@ -2,9 +2,7 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ApplicationIntegrationType,
-  ComponentType,
   InteractionContextType,
-  MessageFlags,
   type APIInteractionDataResolvedGuildMember,
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
@@ -817,25 +815,6 @@ createApplicationCommand({
       })
     } else if (gif) {
       const { attachment, name } = gif
-
-      if (!attachment) {
-        await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-          components: [
-            {
-              type: ComponentType.Container,
-              components: [
-                {
-                  type: ComponentType.TextDisplay,
-                  content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.no_image')}`,
-                },
-              ],
-            },
-          ],
-          flags: MessageFlags.IsComponentsV2,
-        })
-
-        return
-      }
 
       const buffer = await makeRequest(attachment.url, {
         method: RequestMethod.GET,

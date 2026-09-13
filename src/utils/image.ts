@@ -26,18 +26,18 @@ export type PetpetOptions = {
   handFrames?: readonly Buffer[]
 }
 
-export async function convertToGif(input: Buffer | string): Promise<Buffer> {
+export async function convertToGif(input: Buffer): Promise<Buffer> {
   return sharp(input, { animated: true }).gif().toBuffer()
 }
 
 export async function applySpeechBubble(
-  image: Buffer,
+  input: Buffer,
   options: SpeechBubbleOptions = {},
   gif = false,
 ): Promise<Buffer> {
-  const source = sharp(image, { animated: true })
+  const image = sharp(input, { animated: gif })
 
-  const { width, height } = await source.metadata()
+  const { width, height } = await image.metadata()
 
   if (!width || !height) throw new Error('Unable to determine the image dimensions')
 
@@ -73,25 +73,19 @@ export async function applySpeechBubble(
     </svg>
   `)
 
-  const buffer = await source.toBuffer()
+  const result = image.composite([{ input: bubble, left: 0, top: 0 }])
 
-  const result = sharp(buffer, { animated: true }).composite([{ input: bubble, left: 0, top: 0 }])
-
-  if (gif) {
-    return result.gif().toBuffer()
-  }
-
-  return result.png().toBuffer()
+  return gif ? result.gif().toBuffer() : result.png().toBuffer()
 }
 
-export async function createPetpetGif(avatar: Buffer, options: PetpetOptions = {}): Promise<Buffer> {
+export async function createPetpetGif(input: Buffer, options: PetpetOptions = {}): Promise<Buffer> {
   const resolution = clampInteger(options.resolution ?? DEFAULT_PETPET_RESOLUTION, 32, 1024, 'resolution')
   const delay = clampInteger(options.delay ?? DEFAULT_PETPET_DELAY, 20, 65_535, 'delay')
   const handFrames = options.handFrames ? [...options.handFrames] : await loadDefaultPetpetHandFrames()
 
   if (!handFrames.length) throw new Error('At least one petpet hand frame is required')
 
-  const avatarSource = await sharp(avatar).rotate().png().toBuffer()
+  const avatar = await sharp(input).rotate().png().toBuffer()
   const frameCount = handFrames.length
   const overlays: OverlayOptions[] = []
 
@@ -104,7 +98,7 @@ export async function createPetpetGif(avatar: Buffer, options: PetpetOptions = {
     const pageTop = index * resolution
 
     const [avatarFrame, handFrame] = await Promise.all([
-      sharp(avatarSource).resize(avatarWidth, avatarHeight, { fit: 'fill' }).png().toBuffer(),
+      sharp(avatar).resize(avatarWidth, avatarHeight, { fit: 'fill' }).png().toBuffer(),
       sharp(handFrames[index]!).resize(resolution, resolution, { fit: 'fill' }).png().toBuffer(),
     ])
 
@@ -172,9 +166,9 @@ function escapeSvgAttribute(value: string): string {
   })
 }
 
-export async function applyCaption(input: Buffer | string, caption: string, gif = false): Promise<Buffer> {
+export async function applyCaption(input: Buffer, caption: string, gif = false): Promise<Buffer> {
   const image = sharp(input, {
-    animated: true,
+    animated: gif,
     limitInputPixels: false,
   })
 
@@ -219,9 +213,7 @@ export async function applyCaption(input: Buffer | string, caption: string, gif 
     }
   }
 
-  if (currentLine) {
-    lines.push(currentLine)
-  }
+  if (currentLine) lines.push(currentLine)
 
   const captionHeight = lines.length * lineHeight + verticalPadding * 2
 
@@ -287,7 +279,6 @@ export async function applyCaption(input: Buffer | string, caption: string, gif 
 
   if (!gif) {
     const firstFrame = await sharp(input, {
-      animated: true,
       pages: 1,
       limitInputPixels: false,
     })
@@ -382,46 +373,104 @@ export async function applyCaption(input: Buffer | string, caption: string, gif 
     .toBuffer()
 }
 
-export async function applyGrayscale(input: Buffer | string, gif = false): Promise<Buffer> {
+export async function applyGrayscale(input: Buffer, gif = false): Promise<Buffer> {
   const image = sharp(input, { animated: gif }).grayscale()
 
   return gif ? image.gif().toBuffer() : image.png().toBuffer()
 }
 
-export async function applyBlur(input: Buffer | string, sigma = 5, gif = false): Promise<Buffer> {
+export async function applyBlur(input: Buffer, sigma = 5, gif = false): Promise<Buffer> {
   const image = sharp(input, { animated: gif }).blur(sigma)
 
   return gif ? image.gif().toBuffer() : image.png().toBuffer()
 }
 
-export async function applyFlip(input: Buffer | string, gif = false): Promise<Buffer> {
+export async function applyFlip(input: Buffer, gif = false): Promise<Buffer> {
   const image = sharp(input, { animated: gif }).flip()
 
   return gif ? image.gif().toBuffer() : image.png().toBuffer()
 }
 
-export async function applyFlop(input: Buffer | string, gif = false): Promise<Buffer> {
+export async function applyFlop(input: Buffer, gif = false): Promise<Buffer> {
   const image = sharp(input, { animated: gif }).flop()
 
   return gif ? image.gif().toBuffer() : image.png().toBuffer()
 }
 
-export async function applyPixelate(input: Buffer | string, scale = 16, gif = false): Promise<Buffer> {
-  const image = sharp(input, { animated: gif })
+export async function applyPixelate(input: Buffer, scale = 16, gif = false): Promise<Buffer> {
+  const image = sharp(input, {
+    animated: gif,
+    limitInputPixels: false,
+  })
+
   const metadata = await image.metadata()
 
-  if (!metadata.width || !metadata.height) throw new Error('Could not determine image dimensions')
+  const width = metadata.width
+  const height = metadata.pageHeight ?? metadata.height
 
-  const width = Math.max(1, Math.floor(metadata.width / scale))
-  const height = Math.max(1, Math.floor(metadata.height / scale))
+  if (!width || !height) throw new Error('Unable to determine the image dimensions')
 
-  const result = image
-    .resize(width, height, {
-      kernel: sharp.kernel.nearest,
+  const pages = metadata.pages ?? 1
+
+  if (scale < 1) scale = 1
+
+  const pixelWidth = Math.max(1, Math.round(width / scale))
+  const pixelHeight = Math.max(1, Math.round(height / scale))
+
+  if (!gif || pages <= 1) {
+    const small = await sharp(input, { limitInputPixels: false })
+      .resize(pixelWidth, pixelHeight, { kernel: 'nearest', fit: 'fill' })
+      .png()
+      .toBuffer()
+
+    return sharp(small).resize(width, height, { kernel: 'nearest', fit: 'fill' }).png().toBuffer()
+  }
+
+  const frames: Buffer[] = []
+
+  for (let page = 0; page < pages; page++) {
+    const small = await sharp(input, {
+      page,
+      limitInputPixels: false,
     })
-    .resize(metadata.width, metadata.height, {
-      kernel: sharp.kernel.nearest,
-    })
+      .resize(pixelWidth, pixelHeight, { kernel: 'nearest', fit: 'fill' })
+      .png()
+      .toBuffer()
 
-  return gif ? result.gif().toBuffer() : result.png().toBuffer()
+    const frame = await sharp(small).resize(width, height, { kernel: 'nearest', fit: 'fill' }).png().toBuffer()
+
+    frames.push(frame)
+  }
+
+  return sharp({
+    create: {
+      width,
+      height: height * frames.length,
+      pageHeight: height,
+      channels: 4,
+      background: {
+        r: 0,
+        g: 0,
+        b: 0,
+        alpha: 0,
+      },
+    },
+    limitInputPixels: false,
+  })
+    .composite(
+      frames.map((frame, index) => ({
+        input: frame,
+        left: 0,
+        top: index * height,
+      })),
+    )
+    .gif({
+      loop: metadata.loop ?? 0,
+      delay: metadata.delay ? Array.from(metadata.delay) : undefined,
+      effort: 10,
+      colours: 256,
+      dither: 1,
+      keepDuplicateFrames: true,
+    })
+    .toBuffer()
 }
