@@ -23,13 +23,15 @@ export async function makeRequest<Type extends ResponseType>(
     const res = await fetch(parsedUrl.toString(), {
       method: options.method,
       signal: controller.signal,
-      ...(options.headers !== undefined && {
-        headers: options.headers,
-      }),
-      ...(options.body !== undefined &&
-        options.method !== RequestMethod.GET && {
-          body: options.body instanceof FormData ? options.body : JSON.stringify(options.body),
-        }),
+      ...(options.headers ? { headers: options.headers } : {}),
+      ...(options.body && options.method !== RequestMethod.GET
+        ? {
+            body:
+              options.body instanceof FormData || typeof options.body === 'string'
+                ? options.body
+                : JSON.stringify(options.body),
+          }
+        : {}),
     })
 
     if (!res.ok) throw new Error(`Request failed (${res.status}): ${await res.text()}`)

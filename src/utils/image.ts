@@ -405,3 +405,23 @@ export async function applyFlop(input: Buffer | string, gif = false): Promise<Bu
 
   return gif ? image.gif().toBuffer() : image.png().toBuffer()
 }
+
+export async function applyPixelate(input: Buffer | string, scale = 16, gif = false): Promise<Buffer> {
+  const image = sharp(input, { animated: gif })
+  const metadata = await image.metadata()
+
+  if (!metadata.width || !metadata.height) throw new Error('Could not determine image dimensions')
+
+  const width = Math.max(1, Math.floor(metadata.width / scale))
+  const height = Math.max(1, Math.floor(metadata.height / scale))
+
+  const result = image
+    .resize(width, height, {
+      kernel: sharp.kernel.nearest,
+    })
+    .resize(metadata.width, metadata.height, {
+      kernel: sharp.kernel.nearest,
+    })
+
+  return gif ? result.gif().toBuffer() : result.png().toBuffer()
+}

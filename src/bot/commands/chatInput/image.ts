@@ -14,6 +14,7 @@ import {
   applyFlip,
   applyFlop,
   applyGrayscale,
+  applyPixelate,
   applySpeechBubble,
   convertToGif,
   createPetpetGif,
@@ -538,13 +539,88 @@ createApplicationCommand({
         },
       ],
     },
+    {
+      type: ApplicationCommandOptionType.Subcommand,
+      name: {
+        global: 'pixelate',
+        'pt-BR': 'pixelar',
+        'es-ES': 'pixelar',
+      },
+      description: {
+        global: 'Pixelates the image',
+        'pt-BR': 'Pixeliza a imagem',
+        'es-ES': 'Pixeliza la imagen',
+      },
+      options: [
+        {
+          type: ApplicationCommandOptionType.Attachment,
+          name: {
+            global: 'attachment',
+            'pt-BR': 'anexo',
+            'es-ES': 'adjunto',
+          },
+          description: {
+            global: 'The image to pixelate',
+            'pt-BR': 'A imagem a ser pixelizada',
+            'es-ES': 'La imagen a ser pixelizada',
+          },
+          required: true,
+        },
+        {
+          type: ApplicationCommandOptionType.Number,
+          name: {
+            global: 'scale',
+            'pt-BR': 'escala',
+            'es-ES': 'escala',
+          },
+          description: {
+            global: 'The scale of the pixelation',
+            'pt-BR': 'A escala da pixelização',
+            'es-ES': 'La escala de la pixelización',
+          },
+          required: false,
+        },
+        {
+          type: ApplicationCommandOptionType.String,
+          name: {
+            global: 'format',
+            'pt-BR': 'formato',
+            'es-ES': 'formato',
+          },
+          description: {
+            global: 'The format to send the image in',
+            'pt-BR': 'O formato para enviar a imagem',
+            'es-ES': 'El formato para enviar la imagen',
+          },
+          choices: [
+            {
+              name: {
+                global: 'Image',
+                'pt-BR': 'Imagem',
+                'es-ES': 'Imagen',
+              },
+              value: 'png',
+            },
+            {
+              name: {
+                global: 'GIF',
+                'pt-BR': 'GIF',
+                'es-ES': 'GIF',
+              },
+              value: 'gif',
+            },
+          ],
+          required: false,
+        },
+      ],
+    },
   ],
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
     const l = interaction.locale
 
-    const { caption, grayscale, blur, flip, flop, 'speech-bubble': speechBubble, petpet, gif } = options
+    const { caption, grayscale, blur, flip, flop, 'speech-bubble': speechBubble, petpet, gif, pixelate } = options
 
     if (caption) {
       const { attachment, text, format } = caption
@@ -774,6 +850,30 @@ createApplicationCommand({
           {
             name: `${name ?? 'gif'}.gif`,
             data: gifed,
+          },
+        ],
+      })
+    } else if (pixelate) {
+      const { attachment, scale, format } = pixelate
+
+      const buffer = await makeRequest(attachment.url, {
+        method: RequestMethod.GET,
+        response: ResponseType.BUFFER,
+      })
+
+      const pixelated = await applyPixelate(buffer, scale, format === 'gif')
+
+      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+        attachments: [
+          {
+            id: 0,
+            filename: `pixelated.${format ?? 'png'}`,
+          },
+        ],
+        files: [
+          {
+            name: `pixelated.${format ?? 'png'}`,
+            data: pixelated,
           },
         ],
       })

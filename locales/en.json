@@ -81,6 +81,15 @@
       "invalid_link": "Please provide an invite link to view information about.",
       "created_at": "Created At:"
     },
+    "lastfm": {
+      "missing_api_key": "The Last.fm API key is not set.",
+      "no_track": "No track is currently being played.",
+      "spotify": {
+        "missing_credentials": "The Spotify credentials are not set.",
+        "no_track_found": "I couldn't find the track you're listening to."
+      },
+      "listening": "**{username}** is listening to **{track} **by **{artist} **"
+    },
     "role": {
       "created_at": "Created At:",
       "hoisted": "Hoisted:",

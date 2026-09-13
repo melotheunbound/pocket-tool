@@ -81,6 +81,15 @@
       "invalid_link": "Por favor, forneça um link de convite válido para visualizar as informações.",
       "created_at": "Criado em:"
     },
+    "lastfm": {
+      "missing_api_key": "A chave da API do Last.fm não está configurada.",
+      "no_track": "Nenhuma música está sendo reproduzida no momento.",
+      "spotify": {
+        "missing_credentials": "As credenciais do Spotify não estão configuradas.",
+        "no_track_found": "Não consegui encontrar a música que você está ouvindo."
+      },
+      "listening": "**{username}** está ouvindo **{track}** por **{artist}**"
+    },
     "role": {
       "created_at": "Criado em:",
       "hoisted": "Destacado:",
