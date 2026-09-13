@@ -1,6 +1,7 @@
 import { ApplicationCommandType, ApplicationIntegrationType, InteractionContextType } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
 import { getShardIdForGuildId } from '../../../utils/shard'
+import { getTimestampFromSnowflake } from '../../../utils/utils'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -25,8 +26,14 @@ createApplicationCommand({
     // rest
     const restPing = await client.rest.ping()
 
+    // roundtrip
+    const roundtrip = Temporal.Now.instant()
+      .since(Temporal.Instant.fromEpochMilliseconds(getTimestampFromSnowflake(interaction.id)))
+      .total({ unit: 'milliseconds' })
+      .toFixed(0)
+
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-      content: `Pong!\n-# Gateway (Shard #${shardId}): **${wsPing}ms** • REST: **${restPing}ms**`,
+      content: `Pong!\n-# Gateway (Shard #${shardId}): **${wsPing}ms** • REST: **${restPing}ms** • Roundtrip: **${roundtrip}ms**`,
     })
   },
 })
