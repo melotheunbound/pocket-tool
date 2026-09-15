@@ -128,7 +128,14 @@ createApplicationCommand({
                         : ''
                     }${member.roles.length > 5 ? ` ${highlight(`+${(member.roles.length - 5).toLocaleString('en-US')}`)}` : ``}`
                   : ''
-              }\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.user.footer.text', { profile: hyperlink(`discord://-/users/${user.id}`, t(l, 'commands.user.footer.profile')) })}`,
+              }`,
+            },
+            {
+              type: ComponentType.Separator,
+            },
+            {
+              type: ComponentType.TextDisplay,
+              content: `-# ${emoji('Exclamation')} ${t(l, 'commands.user.footer.text', { profile: hyperlink(`discord://-/users/${user.id}`, t(l, 'commands.user.footer.profile')) })}`,
             },
           ],
         },
