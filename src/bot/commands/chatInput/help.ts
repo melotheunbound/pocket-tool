@@ -140,7 +140,7 @@ createApplicationCommand({
     const collector = client.api.interactions.createCollector<
       APIMessageComponentButtonInteraction | APIModalSubmitInteraction
     >({
-      key: 'command-browser',
+      key: 'help',
       filter: async i => {
         if (i.message?.id !== response.id) return false
 

@@ -104,7 +104,7 @@ createApplicationCommand({
               ],
               accessory: {
                 type: ComponentType.Button,
-                custom_id: 'shard-borwser',
+                custom_id: 'shard-browser',
                 emoji: toComponentEmoji('Search'),
                 style: ButtonStyle.Secondary,
               },
@@ -149,7 +149,7 @@ createApplicationCommand({
     const collector = client.api.interactions.createCollector<
       APIMessageComponentButtonInteraction | APIModalSubmitInteraction
     >({
-      key: 'shard-browser',
+      key: 'debug',
       filter: async i => {
         if (i.message?.id !== response.id) return false
 
@@ -172,16 +172,16 @@ createApplicationCommand({
       switch (i.data.custom_id) {
         case 'shard-browser': {
           await client.api.interactions.createModal(i.id, i.token, {
-            title: t(l, 'commands.debug.shard.modal.title'),
+            title: t(l, 'commands.debug.modal.title'),
             custom_id: 'shard-browser-modal',
             components: [
               {
                 type: ComponentType.Label,
-                label: t(l, 'commands.debug.shard.modal.label'),
+                label: t(l, 'commands.debug.modal.label'),
                 component: {
                   type: ComponentType.TextInput,
                   custom_id: 'shard-browser-input',
-                  placeholder: t(l, 'commands.debug.shard.modal.placeholder'),
+                  placeholder: t(l, 'commands.debug.modal.placeholder'),
                   style: TextInputStyle.Short,
                   required: true,
                 },
