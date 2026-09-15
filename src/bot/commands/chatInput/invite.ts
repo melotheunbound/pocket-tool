@@ -114,7 +114,7 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${emoji('Calendar')} **${t(l, 'invite.created_at')}**\n${timestamp(getTimestampFromSnowflake(invite.guild.id), TimestampStyle.LongDate)}\n\n${emoji('People')} ${highlight(invite.approximate_member_count?.toLocaleString('en-US'), HighlightStyle.Bold)}   ${emoji('Boost')} ${highlight(invite.guild.premium_subscription_count?.toLocaleString('en-US'))}`,
+              content: `${emoji('Calendar')} **${t(l, 'invite.created')}**\n${timestamp(getTimestampFromSnowflake(invite.guild.id), TimestampStyle.LongDate)}\n\n${emoji('People')} ${highlight(invite.approximate_member_count?.toLocaleString('en-US'), HighlightStyle.Bold)}   ${emoji('Boost')} ${highlight(invite.guild.premium_subscription_count?.toLocaleString('en-US'))}`,
             },
           ],
         },

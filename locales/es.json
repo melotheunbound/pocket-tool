@@ -27,33 +27,33 @@
       },
       "additional": {
         "title": "Adicional:",
-        "hosting_provider": "Proveedor de alojamiento",
+        "hosting_provider": "Proveedor de Alojamiento",
         "translation_utils": "Proporcionaron fragmentos de código de traducción"
       },
       "community_message": "Este bot no existiría sin la ayuda de nuestra comunidad. ¡Gracias! ❤️"
     },
     "debug": {
-      "browser": "Navegador de shards\n-# Introduce el ID de un servidor para ver la información de su shard correspondiente. Actualmente estás en el shard **#{shardId}**",
+      "browser": "Navegador de Shards\n-# Introduce el ID de un servidor para ver la información de su shard correspondiente. Actualmente estás en el shard **#{shardId}**",
       "shard": {
         "title": "Shard #{shardId}:",
         "latency": "Latencia:",
-        "uptime": "Tiempo de actividad:",
+        "uptime": "Tiempo de Actividad:",
         "memory": "Memoria:"
       },
-      "user_installs": "Instalaciones de usuario:",
+      "user_installs": "Instalaciones de Usuario:",
       "servers": "Servidores:",
-      "today_command_usage": "Uso de comandos hoy:",
+      "today_command_usage": "Uso de Comandos hoy:",
       "today": "Hoy:",
-      "last_hour": "Última hora:",
-      "last_minute": "Último minuto:",
-      "today_top_commands": "Comandos más usados de hoy:",
+      "last_hour": "Última Hora:",
+      "last_minute": "Último Minuto:",
+      "today_top_commands": "Comandos Más Usados de Hoy:",
       "buttons": {
         "authorize": "Autorizar",
-        "support": "Servidor de soporte"
+        "support": "Servidor de Soporte"
       },
       "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
       "modal": {
-        "title": "Navegador de shards",
+        "title": "Navegador de Shards",
         "label": "Encuentra el shard de tu servidor mediante su ID",
         "placeholder": "Ingresa el ID de tu servidor aquí",
         "invalid_server_id": "Por favor, proporciona un ID válido.",
@@ -61,12 +61,12 @@
       }
     },
     "help": {
-      "browser": "Navegador de comandos\n-# Explora todos los comandos disponibles mediante paginación o busca un comando específico.",
-      "browser_results": "Navegador de comandos\n-# Resultados de búsqueda para **${query}**",
+      "browser": "Navegador de Comandos\n-# Explora todos los comandos disponibles mediante paginación o busca un comando específico.",
+      "browser_results": "Navegador de Comandos\n-# Resultados de búsqueda para **${query}**",
       "page": "Página **{page}** de **{total}**",
       "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
       "modal": {
-        "title": "Navegador de comandos",
+        "title": "Navegador de Comandos",
         "label": "Busca comandos por nombre",
         "placeholder": "Introduce el nombre de un comando",
         "commands_not_found": "No se encontraron comandos para tu búsqueda."
@@ -82,7 +82,7 @@
     },
     "invite": {
       "invalid_link": "Por favor, proporciona una invitación válida para ver la información.",
-      "created_at": "Creado el:"
+      "created": "Creado El:"
     },
     "lastfm": {
       "missing_api_key": "La clave de API de Last.fm no está configurada.",
@@ -94,8 +94,8 @@
       "listening": "**{username}** esta escuchando **{track} **por **{artist} **"
     },
     "role": {
-      "created_at": "Creado el:",
-      "hoisted": "Visible por separado:",
+      "created": "Creado El:",
+      "hoisted": "Visible Por Separado:",
       "mentionable": "Mencionable:",
       "managed": "Gestionado:",
       "position": "Posición:",
@@ -135,8 +135,9 @@
     },
     "user": {
       "no_user": "Por favor, selecciona un usuario válido para ver la información.",
-      "created_at": "Creado el:",
-      "joined_at": "Se unió el:",
+      "created": "Creado El:",
+      "joined": "Se Unió El:",
+      "boosting": "En Mejora Desde:",
       "roles": "Roles:",
       "footer": {
         "text": "Debido a las limitaciones de Discord, este perfil no puede ser mostrado completamente. {profile}",
@@ -152,40 +153,40 @@
       "forwarded": "Los mensajes reenviados no están soportados actualmente.",
       "no_text_or_sticker": "Selecciona un mensaje que contenga texto o un sticker para citarlo.",
       "original": "Ir al mensaje original!",
-      "editor": "### Editor de citas\n-# Usa los menús siguientes para personalizar tu cita o generar una tarjeta aleatoria",
+      "editor": "### Editor de Citas\n-# Usa los menús siguientes para personalizar tu cita o generar una tarjeta aleatoria",
       "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
       "selects": {
         "fonts": {
-          "placeholder": "Elige una fuente"
+          "placeholder": "Elige una Fuente"
         },
         "font_size": {
-          "placeholder": "Elige un tamaño",
-          "custom_label": "Tamaño de fuente personalizado",
-          "custom_selected_label": "Tamaño de fuente: {size}px",
+          "placeholder": "Elige un Tamaño",
+          "custom_label": "Tamaño de Fuente Personalizado",
+          "custom_selected_label": "Tamaño de Fuente: {size}px",
           "custom_description": "Introduce un tamaño de fuente (en píxeles)",
           "custom_selected_description": "Tamaño seleccionado actualmente"
         },
         "color": {
-          "placeholder": "Elige un color",
-          "custom_label": "Color de texto personalizado",
-          "custom_selected_label": "Color de texto personalizado: {color}",
+          "placeholder": "Elige un Color",
+          "custom_label": "Color de Texto Personalizado",
+          "custom_selected_label": "Color de Texto Personalizado: {color}",
           "custom_description": "Introduce un código de color (hex)",
           "custom_selected_description": "Color seleccionado actualmente"
         },
-        "effects_placeholder": "¡Elige algunos efectos!"
+        "effects_placeholder": "¡Elige Algunos Efectos!"
       },
       "button": {
         "random_label": "¡Sorpréndeme!"
       },
       "modals": {
         "custom_font_size": {
-          "title": "Tamaño de fuente personalizado",
+          "title": "Tamaño de Fuente Personalizado",
           "label": "Introduce un tamaño de fuente (en píxeles)",
           "placeholder": "Usa un número entero entre 20px y 100px",
           "invalid": "Por favor, introduce un tamaño de fuente entre 20px y 100px."
         },
         "custom_color": {
-          "title": "Color de texto personalizado",
+          "title": "Color de Texto Personalizado",
           "label": "Introduce un código de color (en hex)",
           "placeholder": "Código de color hex (e.g. #FF0000)",
           "invalid": "Por favor, proporciona un código hexadecimal valido (e.g. #FF0000)."

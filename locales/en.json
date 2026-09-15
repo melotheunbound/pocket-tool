@@ -82,7 +82,7 @@
     },
     "invite": {
       "invalid_link": "Please provide an invite link to view information about.",
-      "created_at": "Created At:"
+      "created": "Created At:"
     },
     "lastfm": {
       "missing_api_key": "The Last.fm API key is not set.",
@@ -94,7 +94,7 @@
       "listening": "**{username}** is listening to **{track} **by **{artist} **"
     },
     "role": {
-      "created_at": "Created At:",
+      "created": "Created At:",
       "hoisted": "Hoisted:",
       "mentionable": "Mentionable:",
       "managed": "Managed:",
@@ -135,8 +135,9 @@
     },
     "user": {
       "no_user": "Please select a valid user to view information for.",
-      "created_at": "Created At:",
-      "joined_at": "Joined At:",
+      "created": "Created At:",
+      "joined": "Joined At:",
+      "boosting": "Boosting Since:",
       "roles": "Roles:",
       "footer": {
         "text": "Due to Discord limitations, this profile can't be fully displayed. {profile}",
