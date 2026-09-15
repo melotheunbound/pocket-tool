@@ -99,7 +99,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `### ${t(l, 'commands.debug.browser', { shardId })}`,
+                  content: t(l, 'commands.debug.browser', { shardId }),
                 },
               ],
               accessory: {
@@ -116,7 +116,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `-# **${t(l, 'commands.debug.shard.title', { shardId })}**\n> ${t(l, 'commands.debug.shard.latency')} **${shard.ping}ms**\n> ${t(l, 'commands.debug.shard.uptime')} **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> ${t(l, 'commands.debug.shard.memory')} **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> ${t(l, 'commands.debug.user_installs')} **${app.approximate_user_install_count}**\n> ${t(l, 'commands.debug.servers')} **${app.approximate_guild_count}**\n-# **${t(l, 'commands.debug.today_command_usage')}**\n> ${t(l, 'commands.debug.today')} **${today}**\n> ${t(l, 'commands.debug.last_hour')} **${lastHour}**\n> ${t(l, 'commands.debug.last_minute')} **${lastMinute}**\n-# **${t(l, 'commands.debug.today_top_commands')}**\n${topCommands}`,
+              content: `${t(l, 'commands.debug.shard.title', { shardId })}\n ${t(l, 'commands.debug.shard.latency')} **${shard.ping}ms**\n ${t(l, 'commands.debug.shard.uptime')} **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n ${t(l, 'commands.debug.shard.memory')} **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n ${t(l, 'commands.debug.user_installs')} **${app.approximate_user_install_count}**\n ${t(l, 'commands.debug.servers')} **${app.approximate_guild_count}**\n${t(l, 'commands.debug.today_command_usage')}**\n ${t(l, 'commands.debug.today')} **${today}**\n ${t(l, 'commands.debug.last_hour')} **${lastHour}**\n ${t(l, 'commands.debug.last_minute')} **${lastMinute}**\n${t(l, 'commands.debug.today_top_commands')}\n${topCommands}`,
             },
             {
               type: ComponentType.Separator,
@@ -258,7 +258,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `### ${t(l, 'commands.debug.browser', { shardId })}`,
+                        content: t(l, 'commands.debug.browser', { shardId }),
                       },
                     ],
                     accessory: {
@@ -275,7 +275,7 @@ createApplicationCommand({
                 components: [
                   {
                     type: ComponentType.TextDisplay,
-                    content: `-# **${t(l, 'commands.debug.shard.title', { shardId })}**\n> ${t(l, 'commands.debug.shard.latency')} **${shard.ping}ms**\n> ${t(l, 'commands.debug.shard.uptime')} **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> ${t(l, 'commands.debug.shard.memory')} **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> ${t(l, 'commands.debug.user_installs')} **${app.approximate_user_install_count}**\n> ${t(l, 'commands.debug.servers')} **${app.approximate_guild_count}**\n-# **${t(l, 'commands.debug.today_command_usage')}**\n> ${t(l, 'commands.debug.today')} **${today}**\n> ${t(l, 'commands.debug.last_hour')} **${lastHour}**\n> ${t(l, 'commands.debug.last_minute')} **${lastMinute}**\n-# **${t(l, 'commands.debug.today_top_commands')}**\n${topCommands}`,
+                    content: `${t(l, 'commands.debug.shard.title', { shardId })}\n ${t(l, 'commands.debug.shard.latency')} **${shard.ping}ms**\n ${t(l, 'commands.debug.shard.uptime')} **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n ${t(l, 'commands.debug.shard.memory')} **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n ${t(l, 'commands.debug.user_installs')} **${app.approximate_user_install_count}**\n ${t(l, 'commands.debug.servers')} **${app.approximate_guild_count}**\n${t(l, 'commands.debug.today_command_usage')}**\n ${t(l, 'commands.debug.today')} **${today}**\n ${t(l, 'commands.debug.last_hour')} **${lastHour}**\n ${t(l, 'commands.debug.last_minute')} **${lastMinute}**\n${t(l, 'commands.debug.today_top_commands')}\n${topCommands}`,
                   },
                   {
                     type: ComponentType.Separator,
@@ -322,7 +322,7 @@ createApplicationCommand({
                   components: [
                     {
                       type: ComponentType.TextDisplay,
-                      content: `### ${t(l, 'commands.debug.browser', { shardId })}`,
+                      content: t(l, 'commands.debug.browser', { shardId }),
                     },
                   ],
                   accessory: {
@@ -340,7 +340,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `-# **${t(l, 'commands.debug.shard.title', { shardId })}**\n> ${t(l, 'commands.debug.shard.latency')} **${shard.ping}ms**\n> ${t(l, 'commands.debug.shard.uptime')} **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n> ${t(l, 'commands.debug.shard.memory')} **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n> ${t(l, 'commands.debug.user_installs')} **${app.approximate_user_install_count}**\n> ${t(l, 'commands.debug.servers')} **${app.approximate_guild_count}**\n-# **${t(l, 'commands.debug.today_command_usage')}**\n> ${t(l, 'commands.debug.today')} **${today}**\n> ${t(l, 'commands.debug.last_hour')} **${lastHour}**\n> ${t(l, 'commands.debug.last_minute')} **${lastMinute}**\n-# **${t(l, 'commands.debug.today_top_commands')}**\n${topCommands}`,
+                  content: `${t(l, 'commands.debug.shard.title', { shardId })}\n ${t(l, 'commands.debug.shard.latency')} **${shard.ping}ms**\n ${t(l, 'commands.debug.shard.uptime')} **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n ${t(l, 'commands.debug.shard.memory')} **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n ${t(l, 'commands.debug.user_installs')} **${app.approximate_user_install_count}**\n ${t(l, 'commands.debug.servers')} **${app.approximate_guild_count}**\n${t(l, 'commands.debug.today_command_usage')}**\n ${t(l, 'commands.debug.today')} **${today}**\n ${t(l, 'commands.debug.last_hour')} **${lastHour}**\n ${t(l, 'commands.debug.last_minute')} **${lastMinute}**\n${t(l, 'commands.debug.today_top_commands')}\n${topCommands}`,
                 },
                 {
                   type: ComponentType.Separator,

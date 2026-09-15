@@ -16,37 +16,37 @@
     },
     "credits": {
       "development": {
-        "title": "Development:",
+        "title": "-# **Development:**",
         "lead_developer": "Lead Developer",
         "website_developer": "Website Developer & Contributor"
       },
       "design": {
-        "title": "Design:",
+        "title": "-# **Design:**",
         "branding": "Responsible for the branding",
         "emojis": "Created the emojis"
       },
       "additional": {
-        "title": "Additional:",
+        "title": "-# **Additional:**",
         "hosting_provider": "Hosting Provider",
         "translation_utils": "Provided translation code snippets"
       },
-      "community_message": "This bot wouldn't exist without the support of our community! Thank you! ❤️"
+      "community_message": "-# This bot wouldn't exist without the support of our community! Thank you! ❤️"
     },
     "debug": {
-      "browser": "Shard Browser\n-# Enter a server ID to view its shard information. Currently on shard **#{shardId}**",
+      "browser": "### Shard Browser\n-# Enter a server ID to view its shard information. Currently on shard **#{shardId}**",
       "shard": {
-        "title": "Shard #{shardId}:",
-        "latency": "Latency:",
-        "uptime": "Uptime:",
-        "memory": "Memory:"
+        "title": "-# **Shard #{shardId}:**",
+        "latency": "> Latency:",
+        "uptime": "> Uptime:",
+        "memory": "> Memory:"
       },
-      "user_installs": "User Installs:",
-      "servers": "Servers:",
-      "today_command_usage": "Today's Command Usage:",
-      "today": "Today:",
-      "last_hour": "Last Hour:",
-      "last_minute": "Last Minute:",
-      "today_top_commands": "Today's Top Commands:",
+      "user_installs": "> User Installs:",
+      "servers": "> Servers:",
+      "today_command_usage": "-# **Today's Command Usage:**",
+      "today": "> Today:",
+      "last_hour": "> Last Hour:",
+      "last_minute": "> Last Minute:",
+      "today_top_commands": "-# **Today's Top Commands:**",
       "buttons": {
         "authorize": "Authorize",
         "support": "Support Server"
@@ -61,9 +61,9 @@
       }
     },
     "help": {
-      "browser": "Command Browser\n-# Browse all available commands using pagination, or search for a specific command",
-      "browser_results": "Command Browser\n-# Search results for **${query}**",
-      "page": "Page **{page}** of **{total}**",
+      "browser": "### Command Browser\n-# Browse all available commands using pagination, or search for a specific command",
+      "browser_results": "### Command Browser\n-# Search results for **${query}**",
+      "page": "-# Page **{page}** of **{total}**",
       "filter": "You cannot interact with components from another user's command.",
       "modal": {
         "title": "Command Browser",
@@ -82,7 +82,7 @@
     },
     "invite": {
       "invalid_link": "Please provide an invite link to view information about.",
-      "created": "Created At:"
+      "created": "**Created At:**"
     },
     "lastfm": {
       "missing_api_key": "The Last.fm API key is not set.",
@@ -94,16 +94,16 @@
       "listening": "**{username}** is listening to **{track} **by **{artist} **"
     },
     "role": {
-      "created": "Created At:",
+      "created": "**Created At:**",
       "hoisted": "Hoisted:",
       "mentionable": "Mentionable:",
       "managed": "Managed:",
       "position": "Position:",
       "colors": "Colors:",
       "permissions": "Permissions:",
-      "yes": "Yes",
-      "no": "No",
-      "none": "None"
+      "yes": "**Yes**",
+      "no": "**No**",
+      "none": "**None**"
     },
     "timestamp": {
       "invalid_time": "Please provide a valid time to convert."
@@ -125,20 +125,21 @@
       "missing_api_key": "The Tolgchu Twitter API key is not set.",
       "invalid_tweet": "Please provide a valid tweet URL or ID to view the tweet.",
       "missing_api_key_2": "The Microsoft Azure API key is not set.",
-      "quoting_tweet": "*Quoting {tweet}, posted by {author}*",
-      "replying_to_tweet": "*Replying to {tweet}, posted by {author}*",
-      "posted_by": "Posted by {verified} {author} ({username})",
-      "translated": "Translated tweets may be inaccurate or may not reflect the original content",
+      "quoting_tweet": "-# *Quoting {tweet}, posted by {author}*",
+      "replying_to_tweet": "-# *Replying to {tweet}, posted by {author}*",
+      "posted_by": "-# Posted by {verified} {author} ({username})",
+      "translated": "-# Translated tweets may be inaccurate or may not reflect the original content",
+      "tweeted": "-# Tweeted At:",
       "button": {
         "view": "View Tweet"
       }
     },
     "user": {
       "no_user": "Please select a valid user to view information for.",
-      "created": "Created At:",
-      "joined": "Joined At:",
-      "boosting": "Boosting Since:",
-      "roles": "Roles:",
+      "created": "**Created At:**",
+      "joined": "**Joined At:**",
+      "boosting": "**Boosting Since:**",
+      "roles": "**Roles:**",
       "footer": {
         "text": "Due to Discord limitations, this profile can't be fully displayed. {profile}",
         "profile": "Open it in Discord."

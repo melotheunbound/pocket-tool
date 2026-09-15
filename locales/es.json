@@ -16,37 +16,37 @@
     },
     "credits": {
       "development": {
-        "title": "Desarrollo:",
+        "title": "-# **Desarrollo:**",
         "lead_developer": "Desarrollador principal",
         "website_developer": "Desarrollador del sitio web y colaborador"
       },
       "design": {
-        "title": "Diseño:",
+        "title": "-# **Diseño:**",
         "branding": "Responsable de la identidad visual",
         "emojis": "Creador de los emojis"
       },
       "additional": {
-        "title": "Adicional:",
+        "title": "-# **Adicional:**",
         "hosting_provider": "Proveedor de Alojamiento",
         "translation_utils": "Proporcionaron fragmentos de código de traducción"
       },
-      "community_message": "Este bot no existiría sin la ayuda de nuestra comunidad. ¡Gracias! ❤️"
+      "community_message": "-# Este bot no existiría sin la ayuda de nuestra comunidad. ¡Gracias! ❤️"
     },
     "debug": {
-      "browser": "Navegador de Shards\n-# Introduce el ID de un servidor para ver la información de su shard correspondiente. Actualmente estás en el shard **#{shardId}**",
+      "browser": "### Navegador de Shards\n-# Introduce el ID de un servidor para ver la información de su shard correspondiente. Actualmente estás en el shard **#{shardId}**",
       "shard": {
-        "title": "Shard #{shardId}:",
-        "latency": "Latencia:",
-        "uptime": "Tiempo de Actividad:",
-        "memory": "Memoria:"
+        "title": "-# **Shard #{shardId}:**",
+        "latency": "> Latencia:",
+        "uptime": "> Tiempo de Actividad:",
+        "memory": "> Memoria:"
       },
-      "user_installs": "Instalaciones de Usuario:",
-      "servers": "Servidores:",
-      "today_command_usage": "Uso de Comandos hoy:",
-      "today": "Hoy:",
-      "last_hour": "Última Hora:",
-      "last_minute": "Último Minuto:",
-      "today_top_commands": "Comandos Más Usados de Hoy:",
+      "user_installs": "> Instalaciones de Usuario:",
+      "servers": "> Servidores:",
+      "today_command_usage": "-# **Uso de Comandos hoy:**",
+      "today": "> Hoy:",
+      "last_hour": "> Última Hora:",
+      "last_minute": "> Último Minuto:",
+      "today_top_commands": "-# **Comandos Más Usados de Hoy:**",
       "buttons": {
         "authorize": "Autorizar",
         "support": "Servidor de Soporte"
@@ -61,9 +61,9 @@
       }
     },
     "help": {
-      "browser": "Navegador de Comandos\n-# Explora todos los comandos disponibles mediante paginación o busca un comando específico.",
-      "browser_results": "Navegador de Comandos\n-# Resultados de búsqueda para **${query}**",
-      "page": "Página **{page}** de **{total}**",
+      "browser": "### Navegador de Comandos\n-# Explora todos los comandos disponibles mediante paginación o busca un comando específico.",
+      "browser_results": "### Navegador de Comandos\n-# Resultados de búsqueda para **${query}**",
+      "page": "-# Página **{page}** de **{total}**",
       "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
       "modal": {
         "title": "Navegador de Comandos",
@@ -82,7 +82,7 @@
     },
     "invite": {
       "invalid_link": "Por favor, proporciona una invitación válida para ver la información.",
-      "created": "Creado El:"
+      "created": "**Creado El:**"
     },
     "lastfm": {
       "missing_api_key": "La clave de API de Last.fm no está configurada.",
@@ -94,16 +94,16 @@
       "listening": "**{username}** esta escuchando **{track} **por **{artist} **"
     },
     "role": {
-      "created": "Creado El:",
+      "created": "**Creado El:**",
       "hoisted": "Visible Por Separado:",
       "mentionable": "Mencionable:",
       "managed": "Gestionado:",
       "position": "Posición:",
       "colors": "Colores:",
       "permissions": "Permisos:",
-      "yes": "Sí",
-      "no": "No",
-      "none": "Ninguno"
+      "yes": "**Sí**",
+      "no": "**No**",
+      "none": "**Ninguno**"
     },
     "timestamp": {
       "invalid_time": "Por favor, proporciona un tiempo válido para convertir."
@@ -125,20 +125,21 @@
       "missing_api_key": "La clave de API de Tolgchu Twitter no está configurada.",
       "invalid_tweet": "Por favor, proporciona una URL o ID válidos para ver el tweet.",
       "missing_api_key_2": "La clave de API de Microsoft Azure no está configurada.",
-      "quoting_tweet": "*Citando {tweet}, publicado por {author}*",
-      "replying_to_tweet": "*Respondiendo a {tweet}, publicado por {author}*",
-      "posted_by": "Publicado por {verified}{author} ({username}){content}",
-      "translated": "Los tweets traducidos pueden contener errores o no reflejar el contenido original.",
+      "quoting_tweet": "-# *Citando {tweet}, publicado por {author}*",
+      "replying_to_tweet": "-# *Respondiendo a {tweet}, publicado por {author}*",
+      "posted_by": "-# Publicado por {verified}{author} ({username})",
+      "translated": "-# Los tweets traducidos pueden contener errores o no reflejar el contenido original.",
+      "tweeted": "-# Tweeteado El:",
       "button": {
         "view": "Ver Tweet"
       }
     },
     "user": {
       "no_user": "Por favor, selecciona un usuario válido para ver la información.",
-      "created": "Creado El:",
-      "joined": "Se Unió El:",
-      "boosting": "En Mejora Desde:",
-      "roles": "Roles:",
+      "created": "**Creado El:**",
+      "joined": "**Se Unió El:**",
+      "boosting": "**En Mejora Desde:**",
+      "roles": "**Roles:**",
       "footer": {
         "text": "Debido a las limitaciones de Discord, este perfil no puede ser mostrado completamente. {profile}",
         "profile": "Abrir en Discord."

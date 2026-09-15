@@ -35,14 +35,14 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `-# **${t(l, 'commands.credits.development.title')}**\n> ${hyperlink('https://discord.com/users/782946852278501407', '@melotheunbound')} - ${t(l, 'commands.credits.development.lead_developer')}\n> ${hyperlink('https://discord.com/users/775273108671430677', '@h0gtt')} - ${t(l, 'commands.credits.development.website_developer')}\n-# **${t(l, 'commands.credits.design.title')}**\n> ${hyperlink('https://merpix.de/', 'Merpix')} - ${t(l, 'commands.credits.design.branding')}\n> ${hyperlink('https://discord.com/users/808606684837576714', '@mineturtle2.')} - ${t(l, 'commands.credits.design.emojis')}\n-# **${t(l, 'commands.credits.additional.title')}**\n> ${hyperlink('https://wispbyte.com', 'David Dobos')} - ${t(l, 'commands.credits.additional.hosting_provider')}\n> ${hyperlink('https://discord.com/users/565852514033860629', '@mwyeow')} - ${t(l, 'commands.credits.additional.translation_utils')}`,
+              content: `${t(l, 'commands.credits.development.title')}\n> ${hyperlink('https://discord.com/users/782946852278501407', '@melotheunbound')} - ${t(l, 'commands.credits.development.lead_developer')}\n> ${hyperlink('https://discord.com/users/775273108671430677', '@h0gtt')} - ${t(l, 'commands.credits.development.website_developer')}\n${t(l, 'commands.credits.design.title')}\n> ${hyperlink('https://merpix.de/', 'Merpix')} - ${t(l, 'commands.credits.design.branding')}\n> ${hyperlink('https://discord.com/users/808606684837576714', '@mineturtle2.')} - ${t(l, 'commands.credits.design.emojis')}\n${t(l, 'commands.credits.additional.title')}\n> ${hyperlink('https://wispbyte.com', 'David Dobos')} - ${t(l, 'commands.credits.additional.hosting_provider')}\n> ${hyperlink('https://discord.com/users/565852514033860629', '@mwyeow')} - ${t(l, 'commands.credits.additional.translation_utils')}`,
             },
             {
               type: ComponentType.Separator,
             },
             {
               type: ComponentType.TextDisplay,
-              content: `-# ${t(l, 'commands.credits.community_message')}`,
+              content: t(l, 'commands.credits.community_message'),
             },
           ],
         },

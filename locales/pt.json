@@ -16,37 +16,37 @@
     },
     "credits": {
       "development": {
-        "title": "Desenvolvimento:",
+        "title": "-# **Desenvolvimento:**",
         "lead_developer": "Desenvolvedor Principal",
         "website_developer": "Desenvolvedor do Site & Colaborador"
       },
       "design": {
-        "title": "Design:",
+        "title": "-# **Design:**",
         "branding": "Responsável pela identidade visual",
         "emojis": "Criou os emojis"
       },
       "additional": {
-        "title": "Adicional:",
+        "title": "-# **Adicional:**",
         "hosting_provider": "Provedor de Hospedagem",
         "translation_utils": "Forneceu trechos de código para de tradução"
       },
-      "community_message": "Este bot não existiria sem o apoio da nossa comunidade! Obrigado! ❤️"
+      "community_message": "-# Este bot não existiria sem o apoio da nossa comunidade! Obrigado! ❤️"
     },
     "debug": {
-      "browser": "Navegador de Shards\n-# Insira o ID de um servidor para visualizar as informações do shard. Atualmente no shard **#{shardId}**",
+      "browser": "### Navegador de Shards\n-# Insira o ID de um servidor para visualizar as informações do shard. Atualmente no shard **#{shardId}**",
       "shard": {
-        "title": "Shard #{shardId}:",
-        "latency": "Latência:",
-        "uptime": "Tempo de Atividade:",
-        "memory": "Memória:"
+        "title": "-# **Shard #{shardId}:**",
+        "latency": "> Latência:",
+        "uptime": "> Tempo de Atividade:",
+        "memory": "> Memória:"
       },
-      "user_installs": "Instalações de Usuários:",
-      "servers": "Servidores:",
-      "today_command_usage": "Uso de Comandos Hoje:",
-      "today": "Hoje:",
-      "last_hour": "Última Hora:",
-      "last_minute": "Último Minuto:",
-      "today_top_commands": "Comandos Mais Usados Hoje:",
+      "user_installs": "> Instalações de Usuários:",
+      "servers": "> Servidores:",
+      "today_command_usage": "-# **Uso de Comandos Hoje:**",
+      "today": "> Hoje:",
+      "last_hour": "> Última Hora:",
+      "last_minute": "> Último Minuto:",
+      "today_top_commands": "-# **Comandos Mais Usados Hoje:**",
       "buttons": {
         "authorize": "Autorizar",
         "support": "Servidor de Suporte"
@@ -61,9 +61,9 @@
       }
     },
     "help": {
-      "browser": "Navegador de Comandos\n-# Navegue por todos os comandos disponíveis usando a paginação ou pesquise por um comando específico",
-      "browser_results": "Navegador de Comandos\n-# Resultados da pesquisa por **${query}**",
-      "page": "Página **{page}** de **{total}**",
+      "browser": "### Navegador de Comandos\n-# Navegue por todos os comandos disponíveis usando a paginação ou pesquise por um comando específico",
+      "browser_results": "### Navegador de Comandos\n-# Resultados da pesquisa por **${query}**",
+      "page": "-# Página **{page}** de **{total}**",
       "filter": "Você não pode interagir com os componentes do comando de outro usuário.",
       "modal": {
         "title": "Navegador de Comandos",
@@ -82,7 +82,7 @@
     },
     "invite": {
       "invalid_link": "Por favor, forneça um link de convite válido para visualizar as informações.",
-      "created": "Criado Em:"
+      "created": "**Criado Em:**"
     },
     "lastfm": {
       "missing_api_key": "A chave da API do Last.fm não está configurada.",
@@ -94,16 +94,16 @@
       "listening": "**{username}** está ouvindo **{track}** por **{artist}**"
     },
     "role": {
-      "created": "Criado Em:",
+      "created": "**Criado Em:**",
       "hoisted": "Destacado:",
       "mentionable": "Mencionável:",
       "managed": "Gerenciado:",
       "position": "Posição:",
       "colors": "Cores:",
       "permissions": "Permissões:",
-      "yes": "Sim",
-      "no": "Não",
-      "none": "Nenhum"
+      "yes": "**Sim**",
+      "no": "**Não**",
+      "none": "**Nenhuma**"
     },
     "timestamp": {
       "invalid_time": "Por favor, forneça um horário válido para converter."
@@ -127,18 +127,19 @@
       "missing_api_key_2": "A chave da API do Microsoft Azure não está configurada.",
       "quoting_tweet": "-# Citando {tweet}, publicado por {author}",
       "replying_to_tweet": "-# Respondendo a {tweet}, publicado por {author}",
-      "posted_by": "-# Publicado por {verified}{author} ({username}){content}",
-      "translated": "Tweets traduzidos podem conter erros ou não refletir o conteúdo original",
+      "posted_by": "-# Publicado por {verified}{author} ({username})",
+      "translated": "-# Tweets traduzidos podem conter erros ou não refletir o conteúdo original",
+      "tweeted": "-# Tweetado Às:",
       "button": {
         "view": "Ver Tweet"
       }
     },
     "user": {
       "no_user": "Por favor, selecione um usuário válido para visualizar as informações.",
-      "created": "Criado Em:",
-      "joined": "Entrou Em:",
-      "boosting": "Impulsionando Desde:",
-      "roles": "Cargos:",
+      "created": "**Criado Em:**",
+      "joined": "**Entrou Em:**",
+      "boosting": "**Impulsionando Desde:**",
+      "roles": "**Cargos:**",
       "footer": {
         "text": "Devido às limitações do Discord, este perfil não pode ser exibido completamente. {profile}",
         "profile": "Abrir no Discord."

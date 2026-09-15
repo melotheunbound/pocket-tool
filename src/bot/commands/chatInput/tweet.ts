@@ -221,14 +221,32 @@ createApplicationCommand({
           ? ([
               {
                 type: ComponentType.TextDisplay,
-                content: `-# ${t(l, 'commands.tweet.quoting_tweet', { tweet: hyperlink(`https://x.com/${tweet.quotedPost?.author.username}/status/${tweet.quotedPost?.id}`, 'this tweet'), author: hyperlink(`https://x.com/${tweet.quotedPost?.author.username}`, `@${tweet.quotedPost?.author.username}`) })}`,
+                content: t(l, 'commands.tweet.quoting_tweet', {
+                  tweet: hyperlink(
+                    `https://x.com/${tweet.quotedPost?.author.username}/status/${tweet.quotedPost?.id}`,
+                    'this tweet',
+                  ),
+                  author: hyperlink(
+                    `https://x.com/${tweet.quotedPost?.author.username}`,
+                    `@${tweet.quotedPost?.author.username}`,
+                  ),
+                }),
               },
             ] satisfies APIMessageTopLevelComponent[])
           : tweet.parentPost
             ? ([
                 {
                   type: ComponentType.TextDisplay,
-                  content: `-# ${t(l, 'commands.tweet.replying_to_tweet', { tweet: hyperlink(`https://x.com/${tweet.parentPost?.author.username}/status/${tweet.parentPost?.id}`, 'this tweet'), author: hyperlink(`https://x.com/${tweet.parentPost?.author.username}`, `@${tweet.parentPost?.author.username}`) })}`,
+                  content: t(l, 'commands.tweet.replying_to_tweet', {
+                    tweet: hyperlink(
+                      `https://x.com/${tweet.parentPost?.author.username}/status/${tweet.parentPost?.id}`,
+                      'this tweet',
+                    ),
+                    author: hyperlink(
+                      `https://x.com/${tweet.parentPost?.author.username}`,
+                      `@${tweet.parentPost?.author.username}`,
+                    ),
+                  }),
                 },
               ] satisfies APIMessageTopLevelComponent[])
             : []),
@@ -237,7 +255,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `-# ${t(l, 'commands.tweet.posted_by', { verified: tweet.author.isVerified ? emoji('Verified') : '', author: tweet.author.name, username: hyperlink(`https://x.com/${tweet.author.username}`, `@${tweet.author.username}`) })}${content ? `\n\n${content}` : ''}`,
+              content: `${t(l, 'commands.tweet.posted_by', { verified: tweet.author.isVerified ? emoji('Verified') : '', author: tweet.author.name, username: hyperlink(`https://x.com/${tweet.author.username}`, `@${tweet.author.username}`) })}${content ? `\n\n${content}` : ''}`,
             },
             ...(tweet.media.length > 0
               ? ([
@@ -255,7 +273,7 @@ createApplicationCommand({
               ? ([
                   {
                     type: ComponentType.TextDisplay,
-                    content: `-# ${t(l, 'commands.tweet.translated')}`,
+                    content: t(l, 'commands.tweet.translated'),
                   },
                 ] satisfies APIMessageTopLevelComponent[])
               : []),
@@ -264,7 +282,7 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `-# ${timestamp(Temporal.Instant.from(tweet.createdAt).epochMilliseconds, TimestampStyle.FullDateShortTime)} (${timestamp(Temporal.Instant.from(tweet.createdAt).epochMilliseconds, TimestampStyle.RelativeTime)})`,
+              content: `${t(l, 'commands.tweet.tweeted')} ${timestamp(Temporal.Instant.from(tweet.createdAt).epochMilliseconds, TimestampStyle.FullDateShortTime)} (${timestamp(Temporal.Instant.from(tweet.createdAt).epochMilliseconds, TimestampStyle.RelativeTime)})`,
             },
             {
               type: ComponentType.Section,

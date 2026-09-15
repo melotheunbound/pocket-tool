@@ -88,7 +88,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `### ${t(l, 'commands.help.browser')}`,
+                  content: t(l, 'commands.help.browser'),
                 },
               ],
               accessory: {
@@ -112,7 +112,7 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `-# ${t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length })}`,
+              content: t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length }),
             },
             {
               type: ComponentType.ActionRow,
@@ -188,8 +188,8 @@ createApplicationCommand({
                       {
                         type: ComponentType.TextDisplay,
                         content: query
-                          ? `### ${t(l, 'commands.help.browser_results', { query })}`
-                          : `### ${t(l, 'commands.help.browser')}`,
+                          ? t(l, 'commands.help.browser_results', { query })
+                          : t(l, 'commands.help.browser'),
                       },
                     ],
                     accessory: {
@@ -213,7 +213,7 @@ createApplicationCommand({
                   },
                   {
                     type: ComponentType.TextDisplay,
-                    content: `-# ${t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length })}`,
+                    content: t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length }),
                   },
                   {
                     type: ComponentType.ActionRow,
@@ -277,8 +277,8 @@ createApplicationCommand({
                       {
                         type: ComponentType.TextDisplay,
                         content: query
-                          ? `### ${t(l, 'commands.help.browser_results', { query })}`
-                          : `### ${t(l, 'commands.help.browser')}`,
+                          ? t(l, 'commands.help.browser_results', { query })
+                          : t(l, 'commands.help.browser'),
                       },
                     ],
                     accessory: {
@@ -302,7 +302,7 @@ createApplicationCommand({
                   },
                   {
                     type: ComponentType.TextDisplay,
-                    content: `-# ${t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length })}`,
+                    content: t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length }),
                   },
                   {
                     type: ComponentType.ActionRow,
@@ -426,7 +426,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `### ${t(l, 'commands.help.browser_results', { query })}`,
+                        content: t(l, 'commands.help.browser_results', { query }),
                       },
                     ],
                     accessory: {
@@ -450,7 +450,7 @@ createApplicationCommand({
                   },
                   {
                     type: ComponentType.TextDisplay,
-                    content: `-# ${t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length })}`,
+                    content: t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length }),
                   },
                   {
                     type: ComponentType.ActionRow,
@@ -510,7 +510,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `### ${t(l, 'commands.help.browser')}`,
+                        content: t(l, 'commands.help.browser'),
                       },
                     ],
                     accessory: {
@@ -534,7 +534,7 @@ createApplicationCommand({
                   },
                   {
                     type: ComponentType.TextDisplay,
-                    content: `-# ${t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length })}`,
+                    content: t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length }),
                   },
                   {
                     type: ComponentType.ActionRow,
@@ -576,9 +576,7 @@ createApplicationCommand({
                   components: [
                     {
                       type: ComponentType.TextDisplay,
-                      content: query
-                        ? `### ${t(l, 'commands.help.browser_results', { query })}`
-                        : `### ${t(l, 'commands.help.browser')}`,
+                      content: query ? t(l, 'commands.help.browser_results', { query }) : t(l, 'commands.help.browser'),
                     },
                   ],
                   accessory: {
@@ -603,7 +601,7 @@ createApplicationCommand({
                 },
                 {
                   type: ComponentType.TextDisplay,
-                  content: `-# ${t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length })}`,
+                  content: t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length }),
                 },
                 {
                   type: ComponentType.ActionRow,
