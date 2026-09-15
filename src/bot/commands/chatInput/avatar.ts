@@ -121,7 +121,7 @@ createApplicationCommand({
                 {
                   type: ComponentType.Button,
                   url: cdn(`/avatars/${user.id}/${user.avatar}`, 4096, 'webp', true),
-                  label: 'Download Avatar',
+                  label: t(l, 'commands.avatar.buttons.global'),
                   style: ButtonStyle.Link,
                 },
                 ...(member && member?.avatar && interaction.guild_id
@@ -134,7 +134,7 @@ createApplicationCommand({
                           'webp',
                           true,
                         ),
-                        label: 'Download Server Avatar',
+                        label: t(l, 'commands.avatar.buttons.server'),
                         style: ButtonStyle.Link,
                       },
                     ] satisfies APIComponentInMessageActionRow[])

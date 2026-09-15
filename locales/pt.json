@@ -1,15 +1,18 @@
 {
   "commands": {
     "avatar": {
-      "server": {
-        "no_avatar": "<@{userId}> não possui um avatar no servidor."
-      },
-      "global": {
-        "no_avatar": "<@{userId}> não possui um avatar."
+      "no_avatar": "<@{userId}> não tem um avatar.",
+      "buttons": {
+        "global": "Baixar Avatar",
+        "server": "Baixar Avatar de Servidor"
       }
     },
     "banner": {
-      "no_banner": "<@{userId}> não possui um banner."
+      "no_banner": "<@{userId}> não tem um banner.",
+      "buttons": {
+        "global": "Baixar Banner",
+        "server": "Baixar Banner de Servidor"
+      }
     },
     "credits": {
       "development": {

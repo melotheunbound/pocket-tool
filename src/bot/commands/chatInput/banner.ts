@@ -125,7 +125,7 @@ createApplicationCommand({
                 {
                   type: ComponentType.Button,
                   url: cdn(`/banners/${user.id}/${user.banner}`, 4096, 'webp', true),
-                  label: 'Download Banner',
+                  label: t(l, 'commands.banner.buttons.global'),
                   style: ButtonStyle.Link,
                 },
                 ...(member && member?.banner && interaction.guild_id
@@ -138,7 +138,7 @@ createApplicationCommand({
                           'webp',
                           true,
                         ),
-                        label: 'Download Server Banner',
+                        label: t(l, 'commands.banner.buttons.server'),
                         style: ButtonStyle.Link,
                       },
                     ] satisfies APIComponentInMessageActionRow[])
