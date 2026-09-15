@@ -7,6 +7,8 @@ import {
   InteractionContextType,
   MessageFlags,
   type APIComponentInMessageActionRow,
+  type APIInteractionDataResolvedGuildMember,
+  type APIMediaGalleryItem,
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
 import { cdn, emoji } from '../../../utils/markdown'
@@ -52,14 +54,17 @@ createApplicationCommand({
     if (!target) {
       target = {
         user: (interaction.user ?? interaction.member?.user)!,
+        member: interaction.member as APIInteractionDataResolvedGuildMember,
       }
     }
 
-    const { user: rawUser } = target
+    const { user: rawUser, member: rawMember } = target
 
     const user = await client.api.users.get(rawUser.id)
+    const member =
+      interaction.guild_id && rawMember ? await client.api.guilds.getMember(interaction.guild_id, rawUser.id) : null
 
-    if (!user.banner) {
+    if (!user.banner && !member?.banner) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
           {
@@ -86,12 +91,30 @@ createApplicationCommand({
             {
               type: ComponentType.MediaGallery,
               items: [
-                {
-                  media: {
-                    url: cdn(`/banners/${user.id}/${user.banner}`, 4096, 'webp', true),
-                  },
-                },
-              ],
+                ...(user.banner
+                  ? ([
+                      {
+                        media: {
+                          url: cdn(`/banners/${user.id}/${user.banner}`, 4096, 'webp', true),
+                        },
+                      },
+                    ] satisfies APIMediaGalleryItem[])
+                  : []),
+                ...(member && member?.banner && interaction.guild_id
+                  ? ([
+                      {
+                        media: {
+                          url: cdn(
+                            `/guilds/${interaction.guild_id}/users/${user.id}/banners/${member.banner}`,
+                            4096,
+                            'webp',
+                            true,
+                          ),
+                        },
+                      },
+                    ] satisfies APIMediaGalleryItem[])
+                  : []),
+              ] satisfies APIMediaGalleryItem[],
             },
             {
               type: ComponentType.Separator,
@@ -101,28 +124,21 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.Button,
-                  url: cdn(`/banners/${user.id}/${user.banner}`, 4096, 'png'),
-                  label: 'PNG',
-                  style: ButtonStyle.Link,
-                },
-                {
-                  type: ComponentType.Button,
-                  url: cdn(`/banners/${user.id}/${user.banner}`, 4096, 'jpg'),
-                  label: 'JPG',
-                  style: ButtonStyle.Link,
-                },
-                {
-                  type: ComponentType.Button,
                   url: cdn(`/banners/${user.id}/${user.banner}`, 4096, 'webp', true),
-                  label: 'WEBP',
+                  label: 'Download Banner',
                   style: ButtonStyle.Link,
                 },
-                ...(user.banner?.startsWith('a_')
+                ...(member && member?.banner && interaction.guild_id
                   ? ([
                       {
                         type: ComponentType.Button,
-                        url: cdn(`/banners/${user.id}/${user.banner}`, 4096, 'gif'),
-                        label: 'GIF',
+                        url: cdn(
+                          `/guilds/${interaction.guild_id}/users/${user.id}/banners/${member.banner}`,
+                          4096,
+                          'webp',
+                          true,
+                        ),
+                        label: 'Download Server Banner',
                         style: ButtonStyle.Link,
                       },
                     ] satisfies APIComponentInMessageActionRow[])

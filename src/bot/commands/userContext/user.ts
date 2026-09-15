@@ -4,6 +4,8 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
+  type APIMediaGalleryItem,
+  type APIMessageTopLevelComponent,
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
 import { cdn, emoji, highlight, hyperlink, timestamp } from '../../../utils/markdown'
@@ -48,8 +50,41 @@ createApplicationCommand({
       return
     }
 
+    const u = await client.api.users.get(user.id)
+    const m = member && interaction.guild_id ? await client.api.guilds.getMember(interaction.guild_id, user.id) : null
+
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
       components: [
+        ...(m?.banner || u.banner
+          ? ([
+              {
+                type: ComponentType.Container,
+                components: [
+                  {
+                    type: ComponentType.MediaGallery,
+                    items: [
+                      m && m.banner
+                        ? {
+                            media: {
+                              url: cdn(
+                                `/guilds/${interaction.guild_id}/users/${user.id}/banners/${m.banner}`,
+                                4096,
+                                'webp',
+                                true,
+                              ),
+                            },
+                          }
+                        : {
+                            media: {
+                              url: cdn(`/banners/${user.id}/${u.banner}`, 4096, 'webp', true),
+                            },
+                          },
+                    ] satisfies APIMediaGalleryItem[],
+                  },
+                ],
+              },
+            ] satisfies APIMessageTopLevelComponent[])
+          : []),
         {
           type: ComponentType.Container,
           components: [

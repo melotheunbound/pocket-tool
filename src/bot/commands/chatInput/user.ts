@@ -6,6 +6,8 @@ import {
   InteractionContextType,
   MessageFlags,
   type APIInteractionDataResolvedGuildMember,
+  type APIMediaGalleryItem,
+  type APIMessageTopLevelComponent,
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
 import { cdn, emoji, highlight, hyperlink, timestamp } from '../../../utils/markdown'
@@ -42,45 +44,13 @@ createApplicationCommand({
       },
       required: false,
     },
-    {
-      type: ApplicationCommandOptionType.String,
-      name: {
-        global: 'scope',
-        'pt-BR': 'escopo',
-        'es-ES': 'ambito',
-      },
-      description: {
-        global: 'The scope of the information to display',
-        'pt-BR': 'O escopo da informação a ser exibida',
-        'es-ES': 'El ámbito de la información a mostrar',
-      },
-      choices: [
-        {
-          name: {
-            global: 'Global',
-            'pt-BR': 'Global',
-            'es-ES': 'Global',
-          },
-          value: 'global',
-        },
-        {
-          name: {
-            global: 'Server',
-            'pt-BR': 'Servidor',
-            'es-ES': 'Servidor',
-          },
-          value: 'server',
-        },
-      ],
-      required: false,
-    },
   ],
   cooldown: 3,
   acknowledge: true,
   async run(interaction, options, client) {
     const l = interaction.locale
 
-    let { target, scope } = options
+    let { target } = options
 
     if (!target) {
       target = {
@@ -89,94 +59,92 @@ createApplicationCommand({
       }
     }
 
-    scope ??= 'global'
-
     const { user, member } = target
 
-    if (scope === 'server' && member) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.Container,
-            components: [
+    const u = await client.api.users.get(user.id)
+    const m = member && interaction.guild_id ? await client.api.guilds.getMember(interaction.guild_id, user.id) : null
+
+    await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      components: [
+        ...(m?.banner || u.banner
+          ? ([
               {
-                type: ComponentType.Section,
+                type: ComponentType.Container,
                 components: [
                   {
-                    type: ComponentType.TextDisplay,
-                    content: `${emoji('Ping')} **${member.nick ?? user.global_name} (@${user.username})** ${highlight(user.id)}`,
+                    type: ComponentType.MediaGallery,
+                    items: [
+                      m && m.banner
+                        ? {
+                            media: {
+                              url: cdn(
+                                `/guilds/${interaction.guild_id}/users/${user.id}/banners/${m.banner}`,
+                                4096,
+                                'webp',
+                                true,
+                              ),
+                            },
+                          }
+                        : {
+                            media: {
+                              url: cdn(`/banners/${user.id}/${u.banner}`, 4096, 'webp', true),
+                            },
+                          },
+                    ] satisfies APIMediaGalleryItem[],
                   },
                 ],
-                accessory: {
-                  type: ComponentType.Thumbnail,
-                  media: {
-                    url: member.avatar
-                      ? cdn(
-                          `guilds/${interaction.guild_id}/users/${user.id}/avatars/${member.avatar}`,
-                          4096,
-                          'webp',
-                          true,
-                        )
-                      : user.avatar
-                        ? cdn(`/avatars/${user.id}/${user.avatar}`, 4096, 'webp', true)
-                        : cdn(`/embed/avatars/${Number(BigInt(user.id) >> 22n) % 6}`, 4096, 'png'),
-                  },
+              },
+            ] satisfies APIMessageTopLevelComponent[])
+          : []),
+        {
+          type: ComponentType.Container,
+          components: [
+            {
+              type: ComponentType.Section,
+              components: [
+                {
+                  type: ComponentType.TextDisplay,
+                  content: `${emoji('Ping')} **${member?.nick ?? user.global_name} (@${user.username})** ${highlight(user.id)}`,
                 },
-              },
-              {
-                type: ComponentType.Separator,
-              },
-              {
-                type: ComponentType.TextDisplay,
-                content: `${emoji('Calendar')} **${t(l, 'commands.user.created_at')}**\n${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})\n\n${emoji('Newbie')} **${t(l, 'commands.user.joined_at')}**\n${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.RelativeTime)})${
-                  member.roles.length > 0
-                    ? `\n\n${emoji('Role')} **${t(l, 'commands.user.roles')}**\n${member.roles
-                        .slice(0, 5)
-                        .map(id => `<@&${id}>`)
-                        .join(', ')}`
-                    : ''
-                }${member.roles.length > 5 ? ` ${highlight(`+${(member.roles.length - 5).toLocaleString('en-US')}`)}` : ``}\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.user.footer.text', { profile: hyperlink(`discord://-/users/${user.id}`, t(l, 'commands.user.footer.profile')) })}`,
-              },
-            ],
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      })
-    } else {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.Container,
-            components: [
-              {
-                type: ComponentType.Section,
-                components: [
-                  {
-                    type: ComponentType.TextDisplay,
-                    content: `${emoji('Ping')} **${user.global_name} (@${user.username})** ${highlight(user.id)}`,
-                  },
-                ],
-                accessory: {
-                  type: ComponentType.Thumbnail,
-                  media: {
-                    url: user.avatar
+              ],
+              accessory: {
+                type: ComponentType.Thumbnail,
+                media: {
+                  url: member?.avatar
+                    ? cdn(
+                        `guilds/${interaction.guild_id}/users/${user.id}/avatars/${member.avatar}`,
+                        4096,
+                        'webp',
+                        true,
+                      )
+                    : user.avatar
                       ? cdn(`/avatars/${user.id}/${user.avatar}`, 4096, 'webp', true)
                       : cdn(`/embed/avatars/${Number(BigInt(user.id) >> 22n) % 6}`, 4096, 'png'),
-                  },
                 },
               },
-              {
-                type: ComponentType.Separator,
-              },
-              {
-                type: ComponentType.TextDisplay,
-                content: `${emoji('Calendar')} **${t(l, 'commands.user.created_at')}**\n${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.user.footer.text', { profile: hyperlink(`discord://-/users/${user.id}`, t(l, 'commands.user.footer.profile')) })}`,
-              },
-            ],
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      })
-    }
+            },
+            {
+              type: ComponentType.Separator,
+            },
+            {
+              type: ComponentType.TextDisplay,
+              content: `${emoji('Calendar')} **${t(l, 'commands.user.created_at')}**\n${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})${
+                member
+                  ? `\n\n${emoji('Newbie')} **${t(l, 'commands.user.joined_at')}**\n${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.RelativeTime)})${
+                      member.roles.length > 0
+                        ? `\n\n${emoji('Role')} **${t(l, 'commands.user.roles')}**\n${member.roles
+                            .slice(0, 5)
+                            .map(id => `<@&${id}>`)
+                            .join(', ')}`
+                        : ''
+                    }${member.roles.length > 5 ? ` ${highlight(`+${(member.roles.length - 5).toLocaleString('en-US')}`)}` : ``}`
+                  : ''
+              }\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.user.footer.text', { profile: hyperlink(`discord://-/users/${user.id}`, t(l, 'commands.user.footer.profile')) })}`,
+            },
+          ],
+        },
+      ],
+      flags: MessageFlags.IsComponentsV2,
+    })
   },
 })
