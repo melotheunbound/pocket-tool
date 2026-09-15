@@ -138,6 +138,7 @@ if (env.get('register_commands')!.toBoolean() === true) {
             'pt-BR': 'Se a resposta deve ser visível apenas para você',
             'es-ES': 'Si la respuesta debe ser visible solo para ti',
           },
+          required: false,
         } satisfies BooleanChatInputOption)
       }
     })
