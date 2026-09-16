@@ -89,7 +89,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `${emoji('Clock')} **${timezone}:** ${formatted}`,
+              content: `${emoji('Clock')} ${timezone}: **${formatted}**`,
             },
           ],
         },
