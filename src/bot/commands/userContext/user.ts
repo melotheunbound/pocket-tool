@@ -93,7 +93,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `## ${emoji('Ping')} ${member?.nick ?? user.global_name}\n-# @${user.username} ${highlight(user.id)}`,
+                  content: `## ${emoji('Ping')} ${member?.nick ?? user.global_name}\n-# @${user.username} • ${highlight(user.id)}`,
                 },
               ],
               accessory: {
