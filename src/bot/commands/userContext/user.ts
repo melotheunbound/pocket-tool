@@ -128,14 +128,7 @@ createApplicationCommand({
                         : ''
                     }${member.roles.length > 5 ? ` ${highlight(`+${(member.roles.length - 5).toLocaleString('en-US')}`, HighlightStyle.Bold)}` : ``}`
                   : ''
-              }`,
-            },
-            {
-              type: ComponentType.Separator,
-            },
-            {
-              type: ComponentType.TextDisplay,
-              content: `-# ${emoji('Exclamation')} ${t(l, 'commands.user.footer.text', { profile: hyperlink(`discord://-/users/${user.id}`, t(l, 'commands.user.footer.profile')) })}`,
+              }\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.user.footer.text', { profile: hyperlink(`discord://-/users/${user.id}`, t(l, 'commands.user.footer.profile')) })}`,
             },
           ],
         },
