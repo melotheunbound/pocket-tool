@@ -10,7 +10,7 @@ import {
 import createApplicationCommand from '../../../builders/command'
 import { cdn, emoji, highlight, hyperlink, timestamp } from '../../../utils/markdown'
 import { getTimestampFromSnowflake } from '../../../utils/utils'
-import { TimestampStyle } from '../../../types/types'
+import { HighlightStyle, TimestampStyle } from '../../../types/types'
 import { t } from '../../../utils/localization'
 
 createApplicationCommand({
@@ -93,7 +93,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `${emoji('Ping')} **${member?.nick ?? user.global_name} (@${user.username})** ${highlight(user.id)}`,
+                  content: `## ${emoji('Ping')} ${member?.nick ?? user.global_name}\n-# @${user.username} ${highlight(user.id)}`,
                 },
               ],
               accessory: {
@@ -117,16 +117,16 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${emoji('Calendar')} ${t(l, 'commands.user.created')}\n${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})${
+              content: `${t(l, 'commands.user.created')} **${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})**${
                 member
-                  ? `\n\n${emoji('Newbie')} ${t(l, 'commands.user.joined')}\n${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.RelativeTime)})${member.premium_since ? `\n\n${emoji('Boost')} ${t(l, 'commands.user.boosting')}\n${timestamp(Temporal.Instant.from(member.premium_since!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.premium_since!).epochMilliseconds, TimestampStyle.RelativeTime)})` : ''}${
+                  ? `\n${t(l, 'commands.user.joined')} **${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.RelativeTime)})**${member.premium_since ? `\n${t(l, 'commands.user.boosting')} **${timestamp(Temporal.Instant.from(member.premium_since!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.premium_since!).epochMilliseconds, TimestampStyle.RelativeTime)})**` : ''}${
                       member.roles.length > 0
-                        ? `\n\n${emoji('Role')} ${t(l, 'commands.user.roles')}\n${member.roles
+                        ? `\n${t(l, 'commands.user.roles')} **${member.roles
                             .slice(0, 5)
                             .map(id => `<@&${id}>`)
-                            .join(', ')}`
+                            .join(', ')}**`
                         : ''
-                    }${member.roles.length > 5 ? ` ${highlight(`+${(member.roles.length - 5).toLocaleString('en-US')}`)}` : ``}`
+                    }${member.roles.length > 5 ? ` ${highlight(`+${(member.roles.length - 5).toLocaleString('en-US')}`, HighlightStyle.Bold)}` : ``}`
                   : ''
               }`,
             },

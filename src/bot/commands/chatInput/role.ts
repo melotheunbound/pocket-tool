@@ -68,7 +68,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `${emoji('Role')} **${role.name}** ${highlight(role.id)}`,
+                        content: `## ${emoji('Role')} ${role.name}\n-# ${highlight(role.id)}`,
                       },
                     ],
                     accessory: {
@@ -82,7 +82,7 @@ createApplicationCommand({
               : ([
                   {
                     type: ComponentType.TextDisplay,
-                    content: `${emoji('Role')} **${role.name}** ${highlight(role.id)}`,
+                    content: `## ${emoji('Role')} ${role.name}\n-# ${highlight(role.id)}`,
                   },
                 ] satisfies APIMessageTopLevelComponent[])),
             {
@@ -90,7 +90,7 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${emoji('Calendar')} ${t(l, 'commands.role.created')} ${timestamp(getTimestampFromSnowflake(role.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(role.id), TimestampStyle.RelativeTime)})\n\n> ${t(l, 'commands.role.hoisted')} ${role.hoist ? t(l, 'commands.role.yes') : t(l, 'commands.role.no')}\n> ${t(l, 'commands.role.mentionable')} ${role.mentionable ? t(l, 'commands.role.yes') : t(l, 'commands.role.no')}\n> ${t(l, 'commands.role.managed')} ${role.managed ? t(l, 'commands.role.yes') : t(l, 'commands.role.no')}\n> ${t(l, 'commands.role.position')} **${role.position}**\n> ${t(l, 'commands.role.colors')} **#${role.colors.primary_color.toString(16).padStart(6, '0')}${role.colors.secondary_color ? `, #${role.colors.secondary_color.toString(16).padStart(6, '0')}` : ''}${role.colors.tertiary_color ? `, #${role.colors.tertiary_color.toString(16).padStart(6, '0')}` : ''}**\n> ${t(l, 'commands.role.permissions')} **${shownPermissions.join(', ') || 'None'}**${extraPermissions > 0 ? ` \`+${extraPermissions}\`` : ''}`,
+              content: `${t(l, 'commands.role.created')} **${timestamp(getTimestampFromSnowflake(role.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(role.id), TimestampStyle.RelativeTime)})**\n${t(l, 'commands.role.hoisted')} ${role.hoist ? t(l, 'commands.role.yes') : t(l, 'commands.role.no')}\n${t(l, 'commands.role.mentionable')} ${role.mentionable ? t(l, 'commands.role.yes') : t(l, 'commands.role.no')}\n${t(l, 'commands.role.managed')} ${role.managed ? t(l, 'commands.role.yes') : t(l, 'commands.role.no')}\n${t(l, 'commands.role.position')} **${role.position}**\n${t(l, 'commands.role.colors')} **#${role.colors.primary_color.toString(16).padStart(6, '0')}${role.colors.secondary_color ? `, #${role.colors.secondary_color.toString(16).padStart(6, '0')}` : ''}${role.colors.tertiary_color ? `, #${role.colors.tertiary_color.toString(16).padStart(6, '0')}` : ''}**\n${t(l, 'commands.role.permissions')} **${shownPermissions.join(', ') || 'None'}**${extraPermissions > 0 ? ` \`+${extraPermissions}\`` : ''}`,
             },
           ],
         },

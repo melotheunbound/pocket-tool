@@ -5,6 +5,7 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
+  type APIComponentInContainer,
   type APIMediaGalleryItem,
   type APIMessageTopLevelComponent,
 } from '@discordjs/core'
@@ -115,27 +116,36 @@ createApplicationCommand({
         {
           type: ComponentType.Container,
           components: [
-            {
-              type: ComponentType.Section,
-              components: [
-                {
-                  type: ComponentType.TextDisplay,
-                  content: `${emoji('Home')} **${invite.guild.name}** ${highlight(invite.guild.id)}\n${invite.guild.description ? `*${invite.guild.description}*` : ''}`,
-                },
-              ],
-              accessory: {
-                type: ComponentType.Thumbnail,
-                media: {
-                  url: cdn(`/icons/${invite.guild.id}/${invite.guild.icon}`, 4096, 'webp', true),
-                },
-              },
-            },
+            ...(invite.guild.icon
+              ? ([
+                  {
+                    type: ComponentType.Section,
+                    components: [
+                      {
+                        type: ComponentType.TextDisplay,
+                        content: `## ${emoji('Home')} ${invite.guild.name}\n-# ${highlight(invite.guild.id)}\n${invite.guild.description ? `*${invite.guild.description}*` : ''}`,
+                      },
+                    ],
+                    accessory: {
+                      type: ComponentType.Thumbnail,
+                      media: {
+                        url: cdn(`/icons/${invite.guild.id}/${invite.guild.icon}`, 4096, 'webp', true),
+                      },
+                    },
+                  },
+                ] satisfies APIComponentInContainer[])
+              : ([
+                  {
+                    type: ComponentType.TextDisplay,
+                    content: `## ${emoji('Home')} ${invite.guild.name}\n-# ${highlight(invite.guild.id)}\n${invite.guild.description ? `*${invite.guild.description}*` : ''}`,
+                  },
+                ] satisfies APIComponentInContainer[])),
             {
               type: ComponentType.Separator,
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${emoji('Calendar')} ${t(l, 'commands.invite.created')} ${timestamp(getTimestampFromSnowflake(invite.guild.id), TimestampStyle.LongDate)}\n\n${emoji('People')} ${highlight(invite.approximate_member_count?.toLocaleString('en-US'), HighlightStyle.Bold)}   ${emoji('Boost')} ${highlight(invite.guild.premium_subscription_count?.toLocaleString('en-US'))}`,
+              content: `${t(l, 'commands.invite.created')} ${timestamp(getTimestampFromSnowflake(invite.guild.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(invite.guild.id), TimestampStyle.RelativeTime)})\n> ${emoji('People')} ${highlight(invite.approximate_member_count?.toLocaleString('en-US'), HighlightStyle.Bold)}   ${emoji('Boost')} ${highlight(invite.guild.premium_subscription_count?.toLocaleString('en-US'), HighlightStyle.Bold)}`,
             },
           ],
         },

@@ -82,7 +82,7 @@
     },
     "invite": {
       "invalid_link": "Por favor, proporciona una invitación válida para ver la información.",
-      "created": "**Creado El:**"
+      "created": "> Creado El:"
     },
     "lastfm": {
       "missing_api_key": "La clave de API de Last.fm no está configurada.",
@@ -94,13 +94,13 @@
       "listening": "**{username}** esta escuchando **{track} **por **{artist} **"
     },
     "role": {
-      "created": "**Creado El:**",
-      "hoisted": "Visible Por Separado:",
-      "mentionable": "Mencionable:",
-      "managed": "Gestionado:",
-      "position": "Posición:",
-      "colors": "Colores:",
-      "permissions": "Permisos:",
+      "created": "> Creado El:",
+      "hoisted": "> Visible Por Separado:",
+      "mentionable": "> Mencionable:",
+      "managed": "> Gestionado:",
+      "position": "> Posición:",
+      "colors": "> Colores:",
+      "permissions": "> Permisos:",
       "yes": "**Sí**",
       "no": "**No**",
       "none": "**Ninguno**"
@@ -136,10 +136,10 @@
     },
     "user": {
       "no_user": "Por favor, selecciona un usuario válido para ver la información.",
-      "created": "**Creado El:**",
-      "joined": "**Se Unió El:**",
-      "boosting": "**En Mejora Desde:**",
-      "roles": "**Roles:**",
+      "created": "> Creado El:",
+      "joined": "> Se Unió El:",
+      "boosting": "> En Mejora Desde:",
+      "roles": "> Roles:",
       "footer": {
         "text": "Debido a las limitaciones de Discord, este perfil no puede ser mostrado completamente. {profile}",
         "profile": "Abrir en Discord."
