@@ -74,7 +74,6 @@
     },
     "image": {
       "gif": {
-        "forwarded": "Forwarded messages are currently unsupported.",
         "no_image": "Please provide a valid image to turn into a GIF.",
         "no_images": "Please select at least one image to turn into a GIF.",
         "tip": "Hover over the GIF to add it to your favorites!"
@@ -110,14 +109,12 @@
     },
     "translate": {
       "missing_api_key": "The Microsoft Azure API key is not set.",
-      "forwarded": "Forwarded messages are currently unsupported.",
       "no_text": "Please provide some text to translate.",
       "translated": "Translated from **{sourceFlag} {sourceLanguage}** to **{targetFlag} {targetLanguage}**",
       "auto_detected_target": "The target language was selected based on the user's locale"
     },
     "tts": {
       "missing_api_key": "The ElevenLabs API key is not set.",
-      "forwarded": "Forwarded messages are currently unsupported.",
       "limit": "You have reached your daily TTS limit of {limit} messages. Try again {timestamp}.",
       "no_text": "Please provide some text to convert to speech."
     },
@@ -147,7 +144,6 @@
     },
     "ocr": {
       "missing_api_key": "OCR API key is not set.",
-      "forwarded": "Forwarded messages are currently unsupported.",
       "no_image": "Please select an image to extract text from."
     },
     "quote": {
@@ -196,7 +192,6 @@
     },
     "stt": {
       "missing_api_key": "The ElevenLabs API key is not set.",
-      "forwarded": "Forwarded messages are currently unsupported.",
       "limit": "You have reached your daily STT limit of {limit} voice messages. Try again {timestamp}.",
       "no_voice_message": "Please select a voice message to transcribe.",
       "voice_message_length": "The voice message must be shorter than {max} minutes."

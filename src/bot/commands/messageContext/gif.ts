@@ -28,26 +28,7 @@ createApplicationCommand({
 
     const message = interaction.data.resolved.messages[interaction.data.target_id]
 
-    if (message?.message_snapshots && message.message_snapshots.length > 0) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.Container,
-            components: [
-              {
-                type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.forwarded')}`,
-              },
-            ],
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      })
-
-      return
-    }
-
-    if (!message || !message.attachments.length) {
+    if (!message || (!message.attachments?.length && !message.message_snapshots?.[0]?.message?.attachments?.length)) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
           {
@@ -66,7 +47,9 @@ createApplicationCommand({
       return
     }
 
-    const attachments = Object.values(message.attachments).slice(0, 10)
+    const attachments = (
+      message.attachments?.length ? message.attachments : (message.message_snapshots?.[0]?.message?.attachments ?? [])
+    ).slice(0, 10)
 
     const files = await Promise.all(
       attachments.map(async (attachment, index) => {

@@ -74,7 +74,6 @@
     },
     "image": {
       "gif": {
-        "forwarded": "Mensagens encaminhadas não são compatíveis no momento.",
         "no_image": "Por favor, forneça uma imagem válida para transformá-la em GIF.",
         "no_images": "Por favor, selecione pelo menos uma imagem para criar um GIF.",
         "tip": "Passe o mouse sobre o GIF para adicioná-lo aos seus favoritos!"
@@ -110,14 +109,12 @@
     },
     "translate": {
       "missing_api_key": "A chave da API do Microsoft Azure não está configurada.",
-      "forwarded": "Mensagens encaminhadas não são compatíveis no momento.",
       "no_text": "Por favor, forneça algum texto para traduzir.",
       "translated": "Traduzido de **{sourceFlag} {sourceLanguage}** para **{targetFlag} {targetLanguage}**",
       "auto_detected_target": "O idioma de destino foi selecionado com base no idioma do usuário"
     },
     "tts": {
       "missing_api_key": "A chave da API do ElevenLabs não está configurada.",
-      "forwarded": "Mensagens encaminhadas não são compatíveis no momento.",
       "limit": "Você atingiu seu limite diário de TTS de {limit} mensagens. Tente novamente {timestamp}.",
       "no_text": "Por favor, forneça algum texto para converter em fala."
     },
@@ -147,7 +144,6 @@
     },
     "ocr": {
       "missing_api_key": "A chave da API de OCR não está configurada.",
-      "forwarded": "Mensagens encaminhadas não são compatíveis no momento.",
       "no_image": "Por favor, selecione uma imagem para extrair o texto."
     },
     "quote": {

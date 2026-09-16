@@ -51,25 +51,6 @@ createApplicationCommand({
 
     const message = interaction.data.resolved.messages[interaction.data.target_id]
 
-    if (message?.message_snapshots && message.message_snapshots.length > 0) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.Container,
-            components: [
-              {
-                type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} ${t(l, 'commands.tts.forwarded')}`,
-              },
-            ],
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      })
-
-      return
-    }
-
     const date = Temporal.Now.zonedDateTimeISO().toPlainDate().toString()
     const key = `tts:${interaction.user?.id ?? interaction.member?.user.id}:${date}`
 
@@ -99,7 +80,11 @@ createApplicationCommand({
       return
     }
 
-    if (!message || !message.content.trim()) {
+    const text = (
+      message?.content?.trim() ? message.content : (message?.message_snapshots?.[0]?.message?.content ?? '')
+    ).trim()
+
+    if (!text) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
           {
@@ -117,8 +102,6 @@ createApplicationCommand({
 
       return
     }
-
-    const text = message.content.trim()
 
     const [{ ElevenLabsClient }, { decodeOpusBytes, getWaveform }] = await Promise.all([
       import('@elevenlabs/elevenlabs-js'),

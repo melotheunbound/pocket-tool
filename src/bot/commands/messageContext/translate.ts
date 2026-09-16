@@ -51,26 +51,11 @@ createApplicationCommand({
 
     const message = interaction.data.resolved.messages[interaction.data.target_id]
 
-    if (message?.message_snapshots && message.message_snapshots.length > 0) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.Container,
-            components: [
-              {
-                type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} ${t(l, 'commands.translate.forwarded')}`,
-              },
-            ],
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      })
+    const text = (
+      message?.content?.trim() ? message.content : (message?.message_snapshots?.[0]?.message?.content ?? '')
+    ).trim()
 
-      return
-    }
-
-    if (!message || !message.content.trim()) {
+    if (!text) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
           {
@@ -88,8 +73,6 @@ createApplicationCommand({
 
       return
     }
-
-    const text = message.content.trim()
 
     const targetCode =
       findClosestMatch(

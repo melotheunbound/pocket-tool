@@ -49,30 +49,13 @@ createApplicationCommand({
 
     const message = interaction.data.resolved.messages[interaction.data.target_id]
 
-    if (message?.message_snapshots && message.message_snapshots.length > 0) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.Container,
-            components: [
-              {
-                type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} ${t(l, 'commands.ocr.forwarded')}`,
-              },
-            ],
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      })
+    const attachments = (
+      message?.attachments?.length ? message.attachments : (message?.message_snapshots?.[0]?.message?.attachments ?? [])
+    ).slice(0, 10)
 
-      return
-    }
+    const attachment = attachments.find(attachment => attachment.content_type?.startsWith('image/'))
 
-    if (
-      !message ||
-      !message.attachments.length ||
-      !message.attachments.find(attachment => attachment.content_type?.startsWith('image/'))
-    ) {
+    if (!attachment) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
           {
@@ -90,8 +73,6 @@ createApplicationCommand({
 
       return
     }
-
-    const attachment = message.attachments.find(attachment => attachment.content_type?.startsWith('image/'))!
 
     const image = await makeRequest(attachment.url, {
       method: RequestMethod.GET,

@@ -51,25 +51,6 @@ createApplicationCommand({
 
     const message = interaction.data.resolved.messages[interaction.data.target_id]
 
-    if (message?.message_snapshots && message.message_snapshots.length > 0) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.Container,
-            components: [
-              {
-                type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} ${t(l, 'commands.stt.forwarded')}`,
-              },
-            ],
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      })
-
-      return
-    }
-
     const date = Temporal.Now.zonedDateTimeISO().toPlainDate().toString()
     const key = `stt:${interaction.user?.id ?? interaction.member?.user.id}:${date}`
 
@@ -99,11 +80,13 @@ createApplicationCommand({
       return
     }
 
-    if (
-      !message ||
-      !message.attachments.length ||
-      !message.attachments.find(attachment => attachment.content_type?.startsWith('audio/'))
-    ) {
+    const attachments = (
+      message?.attachments?.length ? message.attachments : (message?.message_snapshots?.[0]?.message?.attachments ?? [])
+    ).slice(0, 10)
+
+    const voice = attachments.find(attachment => attachment.content_type?.startsWith('audio/'))
+
+    if (!voice) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
           {
@@ -121,8 +104,6 @@ createApplicationCommand({
 
       return
     }
-
-    const voice = message.attachments.find(attachment => attachment.content_type?.startsWith('audio/'))!
 
     if (!voice.duration_secs || voice.duration_secs > (plus ? 5 * 60 * 1000 : 1 * 60 * 1000)) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
