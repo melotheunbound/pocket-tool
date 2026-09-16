@@ -5,6 +5,8 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
+  type APIMediaGalleryItem,
+  type APIMessageTopLevelComponent,
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
 import { cdn, emoji, highlight, timestamp } from '../../../utils/markdown'
@@ -91,6 +93,25 @@ createApplicationCommand({
 
     await client.api.interactions.editReply(interaction.application_id, interaction.token, {
       components: [
+        ...(invite.guild.banner
+          ? ([
+              {
+                type: ComponentType.Container,
+                components: [
+                  {
+                    type: ComponentType.MediaGallery,
+                    items: [
+                      {
+                        media: {
+                          url: cdn(`/banners/${invite.guild.id}/${invite.guild.banner}`, 4096, 'webp', true),
+                        },
+                      },
+                    ] satisfies APIMediaGalleryItem[],
+                  },
+                ],
+              },
+            ] satisfies APIMessageTopLevelComponent[])
+          : []),
         {
           type: ComponentType.Container,
           components: [
@@ -114,7 +135,7 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${emoji('Calendar')} ${t(l, 'invite.created')}\n${timestamp(getTimestampFromSnowflake(invite.guild.id), TimestampStyle.LongDate)}\n\n${emoji('People')} ${highlight(invite.approximate_member_count?.toLocaleString('en-US'), HighlightStyle.Bold)}   ${emoji('Boost')} ${highlight(invite.guild.premium_subscription_count?.toLocaleString('en-US'))}`,
+              content: `${emoji('Calendar')} ${t(l, 'commands.invite.created')} ${timestamp(getTimestampFromSnowflake(invite.guild.id), TimestampStyle.LongDate)}\n\n${emoji('People')} ${highlight(invite.approximate_member_count?.toLocaleString('en-US'), HighlightStyle.Bold)}   ${emoji('Boost')} ${highlight(invite.guild.premium_subscription_count?.toLocaleString('en-US'))}`,
             },
           ],
         },

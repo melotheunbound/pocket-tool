@@ -128,9 +128,9 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${emoji('Calendar')} ${t(l, 'commands.user.created')}\n${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})${
+              content: `${emoji('Calendar')} ${t(l, 'commands.user.created')} ${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})${
                 member
-                  ? `\n\n${emoji('Newbie')} ${t(l, 'commands.user.joined')}\n${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.RelativeTime)})${member.premium_since ? `\n\n${emoji('Boost')} ${t(l, 'commands.user.boosting')}\n${timestamp(Temporal.Instant.from(member.premium_since!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.premium_since!).epochMilliseconds, TimestampStyle.RelativeTime)})` : ''}${
+                  ? `\n\n${emoji('Newbie')} ${t(l, 'commands.user.joined')} ${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.RelativeTime)})${member.premium_since ? `\n\n${emoji('Boost')} ${t(l, 'commands.user.boosting')} ${timestamp(Temporal.Instant.from(member.premium_since!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.premium_since!).epochMilliseconds, TimestampStyle.RelativeTime)})` : ''}${
                       member.roles.length > 0
                         ? `\n\n${emoji('Role')} ${t(l, 'commands.user.roles')}\n${member.roles
                             .slice(0, 5)
