@@ -107,6 +107,9 @@
     "timestamp": {
       "invalid_time": "Por favor, proporciona un tiempo válido para convertir."
     },
+    "timezone": {
+      "invalid_timezone": "Por favor, proporciona una zona horaria válida para ver."
+    },
     "translate": {
       "missing_api_key": "La clave de API de Microsoft Azure no está configurada.",
       "no_text": "Por favor, proporciona el texto para traducir.",

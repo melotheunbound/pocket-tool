@@ -9,6 +9,7 @@ import {
 import createApplicationCommand from '../../../builders/command'
 import { getAutocompleteFocusedOption } from '../../../utils/utils'
 import { emoji } from '../../../utils/markdown'
+import { t } from '../../../utils/localization'
 
 const supportedTimezones = new Set(Intl.supportedValuesOf('timeZone'))
 
@@ -68,10 +69,30 @@ createApplicationCommand({
     await client.api.interactions.createAutocompleteResponse(interaction.id, interaction.token, { choices })
   },
   async run(interaction, options, client) {
+    const l = interaction.locale
+
     const { timezone } = options
 
-    const tz = supportedTimezones.has(timezone) ? timezone : Temporal.Now.timeZoneId()
-    const time = Temporal.Now.zonedDateTimeISO(tz)
+    if (!supportedTimezones.has(timezone)) {
+      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+        components: [
+          {
+            type: ComponentType.Container,
+            components: [
+              {
+                type: ComponentType.TextDisplay,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.timezone.invalid_timezone')}`,
+              },
+            ],
+          },
+        ],
+        flags: MessageFlags.IsComponentsV2,
+      })
+
+      return
+    }
+
+    const time = Temporal.Now.zonedDateTimeISO(timezone)
 
     const formatted = `${time.toLocaleString('en-US', {
       weekday: 'long',
@@ -92,7 +113,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `${emoji('Clock')} ${tz}: **${formatted}**`,
+              content: `${emoji('Clock')} ${timezone}: **${formatted}**`,
             },
           ],
         },
