@@ -208,15 +208,17 @@ createApplicationCommand({
   },
 })
 
-function parseDate(time: string, timezone: string): number {
+const supportedTimezones = new Set(Intl.supportedValuesOf('timeZone'))
+
+function parseDate(time: string, timezone: string): number | null {
+  const tz = supportedTimezones.has(timezone) ? timezone : Temporal.Now.timeZoneId()
+
   const reference = Temporal.Now.instant()
 
   const parsed = parse(time, {
     instant: new Date(reference.epochMilliseconds),
-    timezone,
+    timezone: tz,
   })[0]
 
-  if (!parsed) throw new Error('Invalid date provided')
-
-  return parsed.date().getTime()
+  return parsed ? parsed.date().getTime() : null
 }

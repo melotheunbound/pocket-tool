@@ -68,7 +68,10 @@ createApplicationCommand({
   async run(interaction, options, client) {
     const { timezone } = options
 
-    const time = Temporal.Now.zonedDateTimeISO(timezone)
+    const supportedTimezones = new Set(Intl.supportedValuesOf('timeZone'))
+    const time = supportedTimezones.has(timezone)
+      ? Temporal.Now.zonedDateTimeISO(timezone)
+      : Temporal.Now.zonedDateTimeISO()
 
     const formatted = `${time.toLocaleString('en-US', {
       weekday: 'long',
