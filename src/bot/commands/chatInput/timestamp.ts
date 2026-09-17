@@ -13,6 +13,21 @@ import type { TimestampStyle } from '../../../types/types'
 import { getAutocompleteFocusedOption } from '../../../utils/utils'
 import { t } from '../../../utils/localization'
 
+const supportedTimezones = new Set(Intl.supportedValuesOf('timeZone'))
+
+function parseDate(time: string, timezone: string): number | null {
+  const tz = supportedTimezones.has(timezone) ? timezone : Temporal.Now.timeZoneId()
+
+  const reference = Temporal.Now.instant()
+
+  const parsed = parse(time, {
+    instant: new Date(reference.epochMilliseconds),
+    timezone: tz,
+  })[0]
+
+  return parsed ? parsed.date().getTime() : null
+}
+
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
   name: {
@@ -207,18 +222,3 @@ createApplicationCommand({
     })
   },
 })
-
-const supportedTimezones = new Set(Intl.supportedValuesOf('timeZone'))
-
-function parseDate(time: string, timezone: string): number | null {
-  const tz = supportedTimezones.has(timezone) ? timezone : Temporal.Now.timeZoneId()
-
-  const reference = Temporal.Now.instant()
-
-  const parsed = parse(time, {
-    instant: new Date(reference.epochMilliseconds),
-    timezone: tz,
-  })[0]
-
-  return parsed ? parsed.date().getTime() : null
-}

@@ -17,6 +17,20 @@ import { RequestMethod, ResponseType, TimestampStyle } from '../../../types/type
 import { AZURE_LANGUAGES } from '../../constants'
 import { t } from '../../../utils/localization'
 
+function extractTweetId(input: string): string | undefined {
+  const trimmed = input.trim()
+
+  if (/^\d+$/.test(trimmed)) return trimmed
+
+  try {
+    const tweetUrl = new URL(trimmed)
+    const id = tweetUrl.pathname.split('/').pop()
+    return id && /^\d+$/.test(id) ? id : undefined
+  } catch {
+    return undefined
+  }
+}
+
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
   name: {
@@ -307,17 +321,3 @@ createApplicationCommand({
     })
   },
 })
-
-function extractTweetId(input: string): string | undefined {
-  const trimmed = input.trim()
-
-  if (/^\d+$/.test(trimmed)) return trimmed
-
-  try {
-    const tweetUrl = new URL(trimmed)
-    const id = tweetUrl.pathname.split('/').pop()
-    return id && /^\d+$/.test(id) ? id : undefined
-  } catch {
-    return undefined
-  }
-}

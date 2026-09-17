@@ -10,6 +10,8 @@ import createApplicationCommand from '../../../builders/command'
 import { getAutocompleteFocusedOption } from '../../../utils/utils'
 import { emoji } from '../../../utils/markdown'
 
+const supportedTimezones = new Set(Intl.supportedValuesOf('timeZone'))
+
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
   name: {
@@ -68,10 +70,8 @@ createApplicationCommand({
   async run(interaction, options, client) {
     const { timezone } = options
 
-    const supportedTimezones = new Set(Intl.supportedValuesOf('timeZone'))
-    const time = supportedTimezones.has(timezone)
-      ? Temporal.Now.zonedDateTimeISO(timezone)
-      : Temporal.Now.zonedDateTimeISO()
+    const tz = supportedTimezones.has(timezone) ? timezone : Temporal.Now.timeZoneId()
+    const time = Temporal.Now.zonedDateTimeISO(tz)
 
     const formatted = `${time.toLocaleString('en-US', {
       weekday: 'long',
@@ -92,7 +92,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `${emoji('Clock')} ${timezone}: **${formatted}**`,
+              content: `${emoji('Clock')} ${tz}: **${formatted}**`,
             },
           ],
         },

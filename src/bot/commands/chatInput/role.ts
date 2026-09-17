@@ -14,6 +14,14 @@ import { getTimestampFromSnowflake } from '../../../utils/utils'
 import { TimestampStyle } from '../../../types/types'
 import { t } from '../../../utils/localization'
 
+function formatPermissions(bitfield: string): string[] {
+  const bits = BigInt(bitfield)
+
+  return Object.entries(PermissionFlagsBits)
+    .filter(([_, value]) => (bits & BigInt(value)) === BigInt(value))
+    .map(([name]) => name)
+}
+
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
   name: {
@@ -99,11 +107,3 @@ createApplicationCommand({
     })
   },
 })
-
-function formatPermissions(bitfield: string): string[] {
-  const bits = BigInt(bitfield)
-
-  return Object.entries(PermissionFlagsBits)
-    .filter(([_, value]) => (bits & BigInt(value)) === BigInt(value))
-    .map(([name]) => name)
-}
