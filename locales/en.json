@@ -114,7 +114,7 @@
       "missing_api_key": "The Microsoft Azure API key is not set.",
       "no_text": "Please provide some text to translate.",
       "translated": "Translated from **{sourceFlag} {sourceLanguage}** to **{targetFlag} {targetLanguage}**",
-      "auto_detected_target": "The target language was selected based on the user's locale"
+      "auto_detected_target": "The target language was selected based on your Discord locale"
     },
     "tts": {
       "missing_api_key": "The ElevenLabs API key is not set.",

@@ -114,7 +114,7 @@
       "missing_api_key": "A chave da API do Microsoft Azure não está configurada.",
       "no_text": "Por favor, forneça algum texto para traduzir.",
       "translated": "Traduzido de **{sourceFlag} {sourceLanguage}** para **{targetFlag} {targetLanguage}**",
-      "auto_detected_target": "O idioma de destino foi selecionado com base no idioma do usuário"
+      "auto_detected_target": "O idioma de destino foi selecionado com base no seu idioma do Discord"
     },
     "tts": {
       "missing_api_key": "A chave da API do ElevenLabs não está configurada.",
