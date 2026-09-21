@@ -197,15 +197,8 @@ try {
   console.error('An error occurred while connecting to the gateway:', error)
 }
 
-// little trick to make my life easier
-const VOTE_PROMPT_CHANCE = 0.15
-
-function shouldShowVotePrompt(): boolean {
-  return Math.random() < VOTE_PROMPT_CHANCE
-}
-
 function injectVotePrompt<T extends { content?: string; components?: any[]; flags?: number }>(body: T): T {
-  if (!shouldShowVotePrompt()) return body
+  if (!(Math.random() < 0.15)) return body
 
   const isComponentsV2 = !!((body.flags ?? 0) & MessageFlags.IsComponentsV2)
 

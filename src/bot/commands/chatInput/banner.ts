@@ -62,7 +62,9 @@ createApplicationCommand({
 
     const user = await client.api.users.get(rawUser.id)
     const member =
-      interaction.guild_id && rawMember ? await client.api.guilds.getMember(interaction.guild_id, rawUser.id).catch(() => null) : null
+      interaction.guild_id && rawMember
+        ? await client.api.guilds.getMember(interaction.guild_id, rawUser.id).catch(() => null)
+        : null
 
     if (!user.banner && !member?.banner) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
