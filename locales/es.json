@@ -33,7 +33,7 @@
       "community_message": "-# Este bot no existiría sin la ayuda de nuestra comunidad. ¡Gracias! ❤️"
     },
     "debug": {
-      "browser": "### Navegador de Shards\n-# Introduce el ID de un servidor para ver la información de su shard correspondiente. Actualmente estás en el shard **#{shardId}**",
+      "browser": "Navegador de Shards\n-# Introduce el ID de un servidor para ver la información de su shard correspondiente. Actualmente estás en el shard **#{shardId}**",
       "shard": {
         "title": "-# **Shard #{shardId}:**",
         "latency": "> Latencia:",
@@ -61,8 +61,8 @@
       }
     },
     "help": {
-      "browser": "### Navegador de Comandos\n-# Explora todos los comandos disponibles mediante paginación o busca un comando específico.",
-      "browser_results": "### Navegador de Comandos\n-# Resultados de búsqueda para **${query}**",
+      "browser": "Navegador de Comandos\n-# Explora todos los comandos disponibles mediante paginación o busca un comando específico.",
+      "browser_results": "Navegador de Comandos\n-# Resultados de búsqueda para **${query}**",
       "page": "-# Página **{page}** de **{total}**",
       "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
       "modal": {
@@ -153,7 +153,7 @@
       "forwarded": "Los mensajes reenviados no están soportados actualmente.",
       "no_text_or_sticker": "Selecciona un mensaje que contenga texto o un sticker para citarlo.",
       "original": "Ir al mensaje original!",
-      "editor": "### Editor de Citas\n-# Usa los menús siguientes para personalizar tu cita o generar una tarjeta aleatoria",
+      "editor": "Editor de Citas\n-# Usa los menús siguientes para personalizar tu cita o generar una tarjeta aleatoria",
       "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
       "selects": {
         "fonts": {

@@ -33,7 +33,7 @@
       "community_message": "-# Este bot não existiria sem o apoio da nossa comunidade! Obrigado! ❤️"
     },
     "debug": {
-      "browser": "### Navegador de Shards\n-# Insira o ID de um servidor para visualizar as informações do shard. Atualmente no shard **#{shardId}**",
+      "browser": "Navegador de Shards\n-# Insira o ID de um servidor para visualizar as informações do shard. Atualmente no shard **#{shardId}**",
       "shard": {
         "title": "-# **Shard #{shardId}:**",
         "latency": "> Latência:",
@@ -61,8 +61,8 @@
       }
     },
     "help": {
-      "browser": "### Navegador de Comandos\n-# Navegue por todos os comandos disponíveis usando a paginação ou pesquise por um comando específico",
-      "browser_results": "### Navegador de Comandos\n-# Resultados da pesquisa por **${query}**",
+      "browser": "Navegador de Comandos\n-# Navegue por todos os comandos disponíveis usando a paginação ou pesquise por um comando específico",
+      "browser_results": "Navegador de Comandos\n-# Resultados da pesquisa por **${query}**",
       "page": "-# Página **{page}** de **{total}**",
       "filter": "Você não pode interagir com os componentes do comando de outro usuário.",
       "modal": {
@@ -153,7 +153,7 @@
       "forwarded": "Mensagens encaminhadas não são compatíveis no momento.",
       "no_text_or_sticker": "Por favor, selecione uma mensagem contendo texto ou figurinhas para citar.",
       "original": "Ir para a mensagem original!",
-      "editor": "### Editor de Citações\n-# Use os menus abaixo para personalizar sua citação ou gerar um cartão aleatório",
+      "editor": "Editor de Citações\n-# Use os menus abaixo para personalizar sua citação ou gerar um cartão aleatório",
       "filter": "Você não pode interagir com os componentes do comando de outro usuário.",
       "selects": {
         "fonts": {

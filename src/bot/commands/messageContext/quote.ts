@@ -249,7 +249,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
+                  content: `### ${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                 },
               ],
               accessory: {
@@ -454,7 +454,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
+                        content: `### ${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                       },
                     ],
                     accessory: {
@@ -1045,7 +1045,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
+                        content: `### ${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                       },
                     ],
                     accessory: {
@@ -1224,7 +1224,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
+                        content: `### ${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                       },
                     ],
                     accessory: {
@@ -1433,7 +1433,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
+                        content: `### ${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                       },
                     ],
                     accessory: {
@@ -1639,7 +1639,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
+                        content: `### ${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                       },
                     ],
                     accessory: {

@@ -33,7 +33,7 @@
       "community_message": "-# This bot wouldn't exist without the support of our community! Thank you! ❤️"
     },
     "debug": {
-      "browser": "### Shard Browser\n-# Enter a server ID to view its shard information. Currently on shard **#{shardId}**",
+      "browser": "Shard Browser\n-# Enter a server ID to view its shard information. Currently on shard **#{shardId}**",
       "shard": {
         "title": "-# **Shard #{shardId}:**",
         "latency": "> Latency:",
@@ -61,8 +61,8 @@
       }
     },
     "help": {
-      "browser": "### Command Browser\n-# Browse all available commands using pagination, or search for a specific command",
-      "browser_results": "### Command Browser\n-# Search results for **${query}**",
+      "browser": "Command Browser\n-# Browse all available commands using pagination, or search for a specific command",
+      "browser_results": "Command Browser\n-# Search results for **${query}**",
       "page": "-# Page **{page}** of **{total}**",
       "filter": "You cannot interact with components from another user's command.",
       "modal": {
@@ -153,7 +153,7 @@
       "forwarded": "Forwarded messages are currently unsupported.",
       "no_text_or_sticker": "Please select a message containing text or stickers to quote.",
       "original": "Jump to original message!",
-      "editor": "### Quote Editor\n-# Use the menus below to customize your quote or generate a random card",
+      "editor": "Quote Editor\n-# Use the menus below to customize your quote or generate a random card",
       "filter": "You cannot interact with components from another user's command.",
       "selects": {
         "fonts": {
