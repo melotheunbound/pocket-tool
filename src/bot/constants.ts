@@ -28,6 +28,10 @@ export enum Emoji {
   Auto = '<:auto:1543217554674155571>',
   Topgg = '<:topgg:1545150926694649978>',
   Trash = '<:trash:1548282081640054934>',
+  Person = '<:person:1551734721854177332>',
+  Slash = '<:slash:1551734752162222140>',
+  Palette = '<:palette:1551734773876138054>',
+  Bot = '<:bot:1551734834571776090>',
   // pagination
   Previous = '<:previous:1535622582454194228>',
   Next = '<:next:1535622608429654037>',

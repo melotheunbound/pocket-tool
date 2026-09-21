@@ -37,6 +37,82 @@ type Session = {
   stickers: Buffer[]
 }
 
+async function resolveQuoteContent(message: APIMessage) {
+  const content = message.content.trim()
+  const mentions = message.mentions
+
+  const customEmojiRegex = /<a?:\w+:(\d+)>/g
+  const emojiIds = [...new Set([...content.matchAll(customEmojiRegex)].map(match => match[1]!))]
+
+  const stickers: Buffer[] = []
+  const stickerFallbacks: string[] = []
+
+  const [emojiResults] = await Promise.all([
+    Promise.allSettled(
+      emojiIds.map(async id => {
+        const data = await makeRequest(cdn(`/emojis/${id}`, undefined, 'png', false), {
+          method: RequestMethod.GET,
+          response: ResponseType.BUFFER,
+          timeout: 10 * 1000,
+        })
+        return [id, data] as const
+      }),
+    ),
+    Promise.all(
+      (message.sticker_items ?? []).map(async sticker => {
+        const url =
+          sticker.format_type === StickerFormatType.GIF
+            ? `https://media.discordapp.net/stickers/${sticker.id}.gif`
+            : cdn(
+                `/stickers/${sticker.id}`,
+                undefined,
+                sticker.format_type === StickerFormatType.Lottie ? 'json' : 'png',
+                false,
+              )
+
+        try {
+          let data = await makeRequest(url, {
+            method: RequestMethod.GET,
+            response: ResponseType.BUFFER,
+            timeout: 10 * 1000,
+          })
+
+          if (sticker.format_type === StickerFormatType.Lottie) {
+            const { createCanvas, LottieAnimation } = await import('@napi-rs/canvas')
+            const animation = LottieAnimation.loadFromData(data)
+            const canvas = createCanvas(320, 320)
+
+            animation.seekFrame(0)
+            animation.render(canvas.getContext('2d'), { x: 0, y: 0, width: 320, height: 320 })
+            data = await sharp(canvas.toBuffer('image/png')).png().toBuffer()
+          } else if (sticker.format_type === StickerFormatType.GIF) {
+            data = await sharp(data, { animated: false }).png().toBuffer()
+          }
+
+          stickers.push(data)
+        } catch {
+          stickerFallbacks.push(`[Sticker: ${sticker.name}]`)
+        }
+      }),
+    ),
+  ])
+
+  const emojis = Object.fromEntries(
+    emojiResults.flatMap(result => (result.status === 'fulfilled' ? [result.value] : [])),
+  )
+
+  const parsedContent = content.replace(/<@!?(\d+)>/g, (_, id) => {
+    const user = mentions?.find(user => user.id === id)
+    return user ? `@${user.global_name ?? user.username}` : '@unknown'
+  })
+
+  return {
+    content: [parsedContent, ...stickerFallbacks].filter(Boolean).join('\n'),
+    emojis,
+    stickers,
+  }
+}
+
 createApplicationCommand({
   type: ApplicationCommandType.Message,
   name: {
@@ -153,7 +229,7 @@ createApplicationCommand({
       components: [
         {
           type: ComponentType.TextDisplay,
-          content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
+          content: `-# ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
         },
         {
           type: ComponentType.MediaGallery,
@@ -173,7 +249,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: t(l, 'commands.quote.editor'),
+                  content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                 },
               ],
               accessory: {
@@ -358,7 +434,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
+                content: `-# ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
               },
               {
                 type: ComponentType.MediaGallery,
@@ -378,7 +454,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: t(l, 'commands.quote.editor'),
+                        content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                       },
                     ],
                     accessory: {
@@ -560,7 +636,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
+                  content: `-# ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
                 },
                 {
                   type: ComponentType.MediaGallery,
@@ -580,7 +656,7 @@ createApplicationCommand({
                       components: [
                         {
                           type: ComponentType.TextDisplay,
-                          content: t(l, 'commands.quote.editor'),
+                          content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                         },
                       ],
                       accessory: {
@@ -765,7 +841,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
+                  content: `-# ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
                 },
                 {
                   type: ComponentType.MediaGallery,
@@ -785,7 +861,7 @@ createApplicationCommand({
                       components: [
                         {
                           type: ComponentType.TextDisplay,
-                          content: t(l, 'commands.quote.editor'),
+                          content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                         },
                       ],
                       accessory: {
@@ -949,7 +1025,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
+                content: `-# ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
               },
               {
                 type: ComponentType.MediaGallery,
@@ -969,7 +1045,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: t(l, 'commands.quote.editor'),
+                        content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                       },
                     ],
                     accessory: {
@@ -1128,7 +1204,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
+                content: `-# ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
               },
               {
                 type: ComponentType.MediaGallery,
@@ -1148,7 +1224,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: t(l, 'commands.quote.editor'),
+                        content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                       },
                     ],
                     accessory: {
@@ -1337,7 +1413,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
+                content: `-# ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
               },
               {
                 type: ComponentType.MediaGallery,
@@ -1357,7 +1433,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: t(l, 'commands.quote.editor'),
+                        content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                       },
                     ],
                     accessory: {
@@ -1543,7 +1619,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
+                content: `-# ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
               },
               {
                 type: ComponentType.MediaGallery,
@@ -1563,7 +1639,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: t(l, 'commands.quote.editor'),
+                        content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                       },
                     ],
                     accessory: {
@@ -1711,7 +1787,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `-# ${emoji('Quote')} ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
+              content: `-# ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, 'Jump to original message')}`,
             },
             {
               type: ComponentType.MediaGallery,
@@ -1731,7 +1807,7 @@ createApplicationCommand({
                   components: [
                     {
                       type: ComponentType.TextDisplay,
-                      content: t(l, 'commands.quote.editor'),
+                      content: `${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
                     },
                   ],
                   accessory: {
@@ -1874,80 +1950,3 @@ createApplicationCommand({
     })
   },
 })
-
-async function resolveQuoteContent(message: APIMessage) {
-  const content = message.content.trim()
-  const mentions = message.mentions
-
-  const customEmojiRegex = /<a?:\w+:(\d+)>/g
-
-  const emojiIds = [...new Set([...content.matchAll(customEmojiRegex)].map(match => match[1]!))]
-
-  const emojis = Object.fromEntries(
-    (
-      await Promise.allSettled(
-        emojiIds.map(async id => {
-          const data = await makeRequest(cdn(`/emojis/${id}`, undefined, 'png', false), {
-            method: RequestMethod.GET,
-            response: ResponseType.BUFFER,
-            timeout: 10 * 1000,
-          })
-
-          return [id, data] as const
-        }),
-      )
-    ).flatMap(result => (result.status === 'fulfilled' ? [result.value] : [])),
-  )
-
-  const parsedContent = content.replace(/<@!?(\d+)>/g, (_, id) => {
-    const user = mentions?.find(user => user.id === id)
-
-    return user ? `@${user.global_name ?? user.username}` : '@unknown'
-  })
-
-  const resolvedStickers = await Promise.all(
-    (message.sticker_items ?? []).map(async sticker => {
-      const url =
-        sticker.format_type === StickerFormatType.GIF
-          ? `https://media.discordapp.net/stickers/${sticker.id}.gif`
-          : cdn(
-              `/stickers/${sticker.id}`,
-              undefined,
-              sticker.format_type === StickerFormatType.Lottie ? 'json' : 'png',
-              false,
-            )
-
-      try {
-        let data = await makeRequest(url, {
-          method: RequestMethod.GET,
-          response: ResponseType.BUFFER,
-          timeout: 10 * 1000,
-        })
-
-        if (sticker.format_type === StickerFormatType.Lottie) {
-          const { createCanvas, LottieAnimation } = await import('@napi-rs/canvas')
-          const animation = LottieAnimation.loadFromData(data)
-          const canvas = createCanvas(320, 320)
-
-          animation.seekFrame(0)
-          animation.render(canvas.getContext('2d'), { x: 0, y: 0, width: 320, height: 320 })
-          data = await sharp(canvas.toBuffer('image/png')).png().toBuffer()
-        } else if (sticker.format_type === StickerFormatType.GIF) {
-          data = await sharp(data, { animated: false }).png().toBuffer()
-        }
-
-        return { data }
-      } catch {
-        return { fallback: `[Sticker: ${sticker.name}]` }
-      }
-    }),
-  )
-
-  const stickerFallbacks = resolvedStickers.flatMap(sticker => (sticker.fallback ? [sticker.fallback] : []))
-
-  return {
-    content: [parsedContent, ...stickerFallbacks].filter(Boolean).join('\n'),
-    emojis,
-    stickers: resolvedStickers.flatMap(sticker => (sticker.data ? [sticker.data] : [])),
-  }
-}

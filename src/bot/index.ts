@@ -5,8 +5,10 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   Client,
+  ComponentType,
   GatewayDispatchEvents,
   GatewayIntentBits,
+  MessageFlags,
   PresenceUpdateStatus,
   Routes,
   type GatewayDispatchPayload,
@@ -24,6 +26,7 @@ import { commands } from '../builders/command'
 import createCollector from '../builders/collector'
 import { getShardMemory, handleShardMemoryResponse } from '../utils/shard'
 import { join } from 'path'
+import { emoji } from '../utils/markdown'
 
 process.on('uncaughtException', console.error)
 process.on('unhandledRejection', console.error)
@@ -193,3 +196,65 @@ try {
 } catch (error) {
   console.error('An error occurred while connecting to the gateway:', error)
 }
+
+// little trick to make my life easier
+const VOTE_PROMPT_CHANCE = 0.15
+
+function shouldShowVotePrompt(): boolean {
+  return Math.random() < VOTE_PROMPT_CHANCE
+}
+
+function injectVotePrompt<T extends { content?: string; components?: any[]; flags?: number }>(body: T): T {
+  if (!shouldShowVotePrompt()) return body
+
+  const isComponentsV2 = !!((body.flags ?? 0) & MessageFlags.IsComponentsV2)
+
+  if (isComponentsV2) {
+    const textDisplay = {
+      type: ComponentType.TextDisplay,
+      content: `-# ${emoji('Topgg')} Consider voting for us on [top.gg](https://top.gg/bot/1489362526880796903)`,
+    }
+
+    body.components = [textDisplay, ...(body.components ?? [])]
+  } else if (body.content) {
+    body.content = `-# ${emoji('Topgg')} Consider voting for us on [top.gg](https://top.gg/bot/1489362526880796903)\n\n${body.content}`
+  }
+
+  return body
+}
+
+const reply = client.api.interactions.reply.bind(client.api.interactions)
+
+client.api.interactions.reply = (async (interactionId, interactionToken, body, options) => {
+  if (body.content && !body.allowed_mentions) {
+    body.allowed_mentions = { parse: [] }
+  }
+
+  injectVotePrompt(body)
+
+  return reply(interactionId, interactionToken, body, options)
+}) as typeof client.api.interactions.reply
+
+const editReply = client.api.interactions.editReply.bind(client.api.interactions)
+
+client.api.interactions.editReply = (async (applicationId, interactionToken, callbackData, messageId, options) => {
+  if (callbackData.content && !callbackData.allowed_mentions) {
+    callbackData.allowed_mentions = { parse: [] }
+  }
+
+  injectVotePrompt(callbackData)
+
+  return editReply(applicationId, interactionToken, callbackData, messageId, options)
+}) as typeof client.api.interactions.editReply
+
+const followUp = client.api.interactions.followUp.bind(client.api.interactions)
+
+client.api.interactions.followUp = (async (applicationId, interactionToken, body, options) => {
+  if (body.content && !body.allowed_mentions) {
+    body.allowed_mentions = { parse: [] }
+  }
+
+  injectVotePrompt(body)
+
+  return followUp(applicationId, interactionToken, body, options)
+}) as typeof client.api.interactions.followUp
