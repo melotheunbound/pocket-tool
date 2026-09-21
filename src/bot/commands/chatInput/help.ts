@@ -88,7 +88,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `### ${emoji('Slash')} ${t(l, 'commands.help.browser')}`,
+                  content: `## ${emoji('Slash')} ${t(l, 'commands.help.browser')}`,
                 },
               ],
               accessory: {
@@ -188,8 +188,8 @@ createApplicationCommand({
                       {
                         type: ComponentType.TextDisplay,
                         content: query
-                          ? `### ${emoji('Slash')} ${t(l, 'commands.help.browser_results', { query })}`
-                          : `### ${emoji('Slash')} ${t(l, 'commands.help.browser')}`,
+                          ? `## ${emoji('Slash')} ${t(l, 'commands.help.browser_results', { query })}`
+                          : `## ${emoji('Slash')} ${t(l, 'commands.help.browser')}`,
                       },
                     ],
                     accessory: {
@@ -277,8 +277,8 @@ createApplicationCommand({
                       {
                         type: ComponentType.TextDisplay,
                         content: query
-                          ? `### ${emoji('Slash')} ${t(l, 'commands.help.browser_results', { query })}`
-                          : `### ${emoji('Slash')} ${t(l, 'commands.help.browser')}`,
+                          ? `## ${emoji('Slash')} ${t(l, 'commands.help.browser_results', { query })}`
+                          : `## ${emoji('Slash')} ${t(l, 'commands.help.browser')}`,
                       },
                     ],
                     accessory: {
@@ -371,9 +371,9 @@ createApplicationCommand({
                 ).value
               : undefined
 
-          if (!name || !name.trim().toLowerCase()) return
+          const search = name?.trim().toLowerCase()
 
-          const search = name.trim().toLowerCase()
+          if (!search) return
 
           const results = commands.filter(command => command.name.trim().toLowerCase().includes(search))
 
@@ -426,7 +426,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `### ${emoji('Slash')} ${t(l, 'commands.help.browser_results', { query })}`,
+                        content: `## ${emoji('Slash')} ${t(l, 'commands.help.browser_results', { query })}`,
                       },
                     ],
                     accessory: {
@@ -510,7 +510,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `### ${emoji('Slash')} ${t(l, 'commands.help.browser')}`,
+                        content: `## ${emoji('Slash')} ${t(l, 'commands.help.browser')}`,
                       },
                     ],
                     accessory: {
@@ -577,8 +577,8 @@ createApplicationCommand({
                     {
                       type: ComponentType.TextDisplay,
                       content: query
-                        ? `### ${emoji('Slash')} ${t(l, 'commands.help.browser_results', { query })}`
-                        : `### ${emoji('Slash')} ${t(l, 'commands.help.browser')}`,
+                        ? `## ${emoji('Slash')} ${t(l, 'commands.help.browser_results', { query })}`
+                        : `## ${emoji('Slash')} ${t(l, 'commands.help.browser')}`,
                     },
                   ],
                   accessory: {

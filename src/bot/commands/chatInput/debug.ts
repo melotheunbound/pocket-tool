@@ -99,7 +99,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `### ${emoji('Bot')} ${t(l, 'commands.debug.browser', { shardId })}`,
+                  content: `## ${emoji('Bot')} ${t(l, 'commands.debug.browser', { shardId })}`,
                 },
               ],
               accessory: {
@@ -258,7 +258,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `### ${emoji('Bot')} ${t(l, 'commands.debug.browser', { shardId })}`,
+                        content: `## ${emoji('Bot')} ${t(l, 'commands.debug.browser', { shardId })}`,
                       },
                     ],
                     accessory: {
@@ -322,7 +322,7 @@ createApplicationCommand({
                   components: [
                     {
                       type: ComponentType.TextDisplay,
-                      content: `### ${emoji('Bot')} ${t(l, 'commands.debug.browser', { shardId })}`,
+                      content: `## ${emoji('Bot')} ${t(l, 'commands.debug.browser', { shardId })}`,
                     },
                   ],
                   accessory: {
