@@ -203,7 +203,7 @@
   "events": {
     "interaction_create": {
       "cooldown": "Please wait! You're on cooldown for {command}. You can use this command again {timestamp}.",
-      "blocked": "{command} was blocked due to ${article}. Please try again with **ephemeral** enabled.",
+      "blocked": "{command} was blocked due to {article}. Please try again with **ephemeral** enabled.",
       "error": {
         "text": "{error}\n-# If you believe this is a bug, please report it in our **{support}**",
         "support": "support server."

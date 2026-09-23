@@ -68,8 +68,9 @@ createApplicationCommand({
     })
 
     const track = lastfm.recenttracks?.track?.[0]
+    const isNowPlaying = track['@attr']?.nowplaying === 'true'
 
-    if (!track) {
+    if (!isNowPlaying) {
       await client.api.interactions.editReply(interaction.application_id, interaction.token, {
         components: [
           {

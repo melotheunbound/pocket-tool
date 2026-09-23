@@ -198,7 +198,7 @@ try {
 }
 
 function injectVotePrompt<T extends { content?: string; components?: any[]; flags?: number }>(body: T): T {
-  if (!(Math.random() < 0.15)) return body
+  if (!(Math.random() < 0.33)) return body
 
   const isComponentsV2 = !!((body.flags ?? 0) & MessageFlags.IsComponentsV2)
 

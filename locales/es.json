@@ -62,7 +62,7 @@
     },
     "help": {
       "browser": "Navegador de Comandos\n-# Explora todos los comandos disponibles mediante paginación o busca un comando específico.",
-      "browser_results": "Navegador de Comandos\n-# Resultados de búsqueda para **${query}**",
+      "browser_results": "Navegador de Comandos\n-# Resultados de búsqueda para **{query}**",
       "page": "-# Página **{page}** de **{total}**",
       "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
       "modal": {
@@ -204,7 +204,7 @@
   "events": {
     "interaction_create": {
       "cooldown": "¡Espera! Estás en espera para el comando {command}. Puedes usar el comando de nuevo en {timestamp}.",
-      "blocked": "{command} ha sido bloqueado por ${article}. Inténtalo de nuevo con **ephemeral** habilitado.",
+      "blocked": "{command} ha sido bloqueado por {article}. Inténtalo de nuevo con **ephemeral** habilitado.",
       "error": {
         "text": "{error}\n-# Si crees que esto es un error, repórtalo en nuestro **{support}**",
         "support": "servidor de soporte."
