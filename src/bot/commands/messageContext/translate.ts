@@ -70,7 +70,7 @@ createApplicationCommand({
       },
     })
 
-    const sourceCode = translation.translations[0].detected_source_lang
+    const sourceCode = translation.translations[0].detected_source_language
 
     const sourceLanguage = DEEPLX_LANGUAGES.find(language => language.code === sourceCode)
 
