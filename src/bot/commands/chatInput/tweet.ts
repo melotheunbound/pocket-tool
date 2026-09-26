@@ -190,7 +190,7 @@ createApplicationCommand({
         headers: {
           'Content-type': 'application/json',
         },
-        params: {
+        body: {
           text: content,
           target_lang: targetCode,
           source_lang: sourceCode ?? 'auto',
