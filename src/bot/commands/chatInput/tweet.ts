@@ -191,7 +191,7 @@ createApplicationCommand({
           'Content-type': 'application/json',
         },
         body: {
-          text: content,
+          text: [content],
           target_lang: targetCode,
           source_lang: sourceCode ?? 'auto',
         },
