@@ -29,7 +29,7 @@ createApplicationCommand({
     const ocrApiKey = env.get('ocr_api_key')?.toString()
 
     if (!ocrApiKey) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -56,7 +56,7 @@ createApplicationCommand({
     const attachment = attachments.find(attachment => attachment.content_type?.startsWith('image/'))
 
     if (!attachment) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -97,7 +97,7 @@ createApplicationCommand({
       body: form,
     })
 
-    await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+    await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       components: [
         {
           type: ComponentType.Container,

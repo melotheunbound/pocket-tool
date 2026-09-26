@@ -5,22 +5,13 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
-  PermissionFlagsBits,
   type APIMessageTopLevelComponent,
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
 import { cdn, emoji, highlight, timestamp } from '../../../utils/markdown'
-import { getTimestampFromSnowflake } from '../../../utils/utils'
+import { formatRolePermissions, getTimestampFromSnowflake } from '../../../utils/utils'
 import { TimestampStyle } from '../../../types/types'
 import { t } from '../../../utils/localization'
-
-function formatPermissions(bitfield: string): string[] {
-  const bits = BigInt(bitfield)
-
-  return Object.entries(PermissionFlagsBits)
-    .filter(([_, value]) => (bits & BigInt(value)) === BigInt(value))
-    .map(([name]) => name)
-}
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -59,12 +50,12 @@ createApplicationCommand({
 
     const { target: role } = options
 
-    const permissions = formatPermissions(role.permissions)
+    const permissions = formatRolePermissions(role.permissions)
 
     const shownPermissions = permissions.slice(0, 5)
     const extraPermissions = permissions.length - shownPermissions.length
 
-    await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+    await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       components: [
         {
           type: ComponentType.Container,

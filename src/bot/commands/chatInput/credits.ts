@@ -28,7 +28,7 @@ createApplicationCommand({
   async run(interaction, option, client) {
     const l = interaction.locale
 
-    await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+    await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       components: [
         {
           type: ComponentType.Container,

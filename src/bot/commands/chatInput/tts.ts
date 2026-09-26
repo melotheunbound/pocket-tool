@@ -135,7 +135,7 @@ createApplicationCommand({
     const elevenLabsApiKey = env.get('eleven_labs_api_key')?.toString()
 
     if (!elevenLabsApiKey) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -164,7 +164,7 @@ createApplicationCommand({
     if (usage >= limit) {
       const resetAt = Temporal.Now.instant().toZonedDateTimeISO('UTC').startOfDay().add({ days: 1 }).toInstant()
 
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -185,7 +185,7 @@ createApplicationCommand({
     const text = rawText.trim()
 
     if (!text) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -224,7 +224,7 @@ createApplicationCommand({
     const buffer = Buffer.from(audio.audioBase64, 'base64')
     const decoded = await decodeOpusBytes(buffer)
 
-    await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+    await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       attachments: [
         {
           id: 0,

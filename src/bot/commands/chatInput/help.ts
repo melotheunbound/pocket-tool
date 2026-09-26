@@ -78,64 +78,69 @@ createApplicationCommand({
       )
       .join('\n\n')
 
-    const response = await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-      components: [
-        {
-          type: ComponentType.Container,
-          components: [
-            {
-              type: ComponentType.Section,
-              components: [
-                {
-                  type: ComponentType.TextDisplay,
-                  content: `## ${emoji('Slash')} ${t(l, 'commands.help.browser')}`,
+    const response = await client.api.interactions.respond(
+      interaction.application_id,
+      interaction.id,
+      interaction.token,
+      {
+        components: [
+          {
+            type: ComponentType.Container,
+            components: [
+              {
+                type: ComponentType.Section,
+                components: [
+                  {
+                    type: ComponentType.TextDisplay,
+                    content: `## ${emoji('Slash')} ${t(l, 'commands.help.browser')}`,
+                  },
+                ],
+                accessory: {
+                  type: ComponentType.Button,
+                  custom_id: 'commands-browser',
+                  emoji: toComponentEmoji('Search'),
+                  style: ButtonStyle.Secondary,
                 },
-              ],
-              accessory: {
-                type: ComponentType.Button,
-                custom_id: 'commands-browser',
-                emoji: toComponentEmoji('Search'),
-                style: ButtonStyle.Secondary,
               },
-            },
-          ],
-        },
-        {
-          type: ComponentType.Container,
-          components: [
-            {
-              type: ComponentType.TextDisplay,
-              content: result,
-            },
-            {
-              type: ComponentType.Separator,
-            },
-            {
-              type: ComponentType.TextDisplay,
-              content: t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length }),
-            },
-            {
-              type: ComponentType.ActionRow,
-              components: [
-                {
-                  type: ComponentType.Button,
-                  custom_id: 'commands-prev',
-                  emoji: toComponentEmoji('Previous'),
-                  style: ButtonStyle.Secondary,
-                },
-                {
-                  type: ComponentType.Button,
-                  custom_id: 'commands-next',
-                  emoji: toComponentEmoji('Next'),
-                  style: ButtonStyle.Secondary,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-      flags: MessageFlags.IsComponentsV2,
-    })
+            ],
+          },
+          {
+            type: ComponentType.Container,
+            components: [
+              {
+                type: ComponentType.TextDisplay,
+                content: result,
+              },
+              {
+                type: ComponentType.Separator,
+              },
+              {
+                type: ComponentType.TextDisplay,
+                content: t(l, 'commands.help.page', { page: pages.pointer + 1, total: pages.length }),
+              },
+              {
+                type: ComponentType.ActionRow,
+                components: [
+                  {
+                    type: ComponentType.Button,
+                    custom_id: 'commands-prev',
+                    emoji: toComponentEmoji('Previous'),
+                    style: ButtonStyle.Secondary,
+                  },
+                  {
+                    type: ComponentType.Button,
+                    custom_id: 'commands-next',
+                    emoji: toComponentEmoji('Next'),
+                    style: ButtonStyle.Secondary,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        flags: MessageFlags.IsComponentsV2,
+      },
+    )
 
     const collector = client.api.interactions.createCollector<
       APIMessageComponentButtonInteraction | APIModalSubmitInteraction
@@ -177,7 +182,7 @@ createApplicationCommand({
             )
             .join('\n\n')
 
-          await client.api.interactions.editReply(i.application_id, i.token, {
+          await client.api.interactions.respond(i.application_id, i.id, i.token, {
             components: [
               {
                 type: ComponentType.Container,
@@ -266,7 +271,7 @@ createApplicationCommand({
             )
             .join('\n\n')
 
-          await client.api.interactions.editReply(i.application_id, i.token, {
+          await client.api.interactions.respond(i.application_id, i.id, i.token, {
             components: [
               {
                 type: ComponentType.Container,
@@ -416,7 +421,7 @@ createApplicationCommand({
             )
             .join('\n\n')
 
-          await client.api.interactions.editReply(i.application_id, i.token, {
+          await client.api.interactions.respond(i.application_id, i.id, i.token, {
             components: [
               {
                 type: ComponentType.Container,
@@ -500,7 +505,7 @@ createApplicationCommand({
             )
             .join('\n\n')
 
-          await client.api.interactions.editReply(i.application_id, i.token, {
+          await client.api.interactions.respond(i.application_id, i.id, i.token, {
             components: [
               {
                 type: ComponentType.Container,
@@ -566,7 +571,7 @@ createApplicationCommand({
 
     collector.once('end', () => {
       void client.api.interactions
-        .editReply(interaction.application_id, interaction.token, {
+        .respond(interaction.application_id, interaction.id, interaction.token, {
           components: [
             {
               type: ComponentType.Container,

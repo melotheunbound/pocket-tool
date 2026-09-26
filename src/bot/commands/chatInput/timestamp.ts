@@ -7,26 +7,10 @@ import {
   MessageFlags,
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
-import { parse } from 'chrono-node'
 import { emoji, timestamp } from '../../../utils/markdown'
 import type { TimestampStyle } from '../../../types/types'
-import { getAutocompleteFocusedOption } from '../../../utils/utils'
+import { getAutocompleteFocusedOption, parseDate } from '../../../utils/utils'
 import { t } from '../../../utils/localization'
-
-const supportedTimezones = new Set(Intl.supportedValuesOf('timeZone'))
-
-function parseDate(time: string, timezone: string): number | null {
-  const tz = supportedTimezones.has(timezone) ? timezone : Temporal.Now.timeZoneId()
-
-  const reference = Temporal.Now.instant()
-
-  const parsed = parse(time, {
-    instant: new Date(reference.epochMilliseconds),
-    timezone: tz,
-  })[0]
-
-  return parsed ? parsed.date().getTime() : null
-}
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -193,7 +177,7 @@ createApplicationCommand({
     const date = parseDate(time, timezone ?? 'UTC')
 
     if (!date) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -211,7 +195,7 @@ createApplicationCommand({
       return
     }
 
-    await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+    await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       components: [
         {
           type: ComponentType.TextDisplay,

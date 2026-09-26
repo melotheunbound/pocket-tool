@@ -29,7 +29,7 @@ createApplicationCommand({
     const message = interaction.data.resolved.messages[interaction.data.target_id]
 
     if (!message || (!message.attachments?.length && !message.message_snapshots?.[0]?.message?.attachments?.length)) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -74,7 +74,7 @@ createApplicationCommand({
     const validFiles = files.filter(file => file !== null)
 
     if (!validFiles.length) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -92,7 +92,7 @@ createApplicationCommand({
       return
     }
 
-    await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+    await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       content: `-# ${emoji('GIF')} ${t(l, 'commands.image.gif.tip')}`,
       files: validFiles,
     })

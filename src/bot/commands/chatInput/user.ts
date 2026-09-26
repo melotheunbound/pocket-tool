@@ -64,7 +64,7 @@ createApplicationCommand({
     const u = await client.api.users.get(user.id)
     const m = member && interaction.guild_id ? await client.api.guilds.getMember(interaction.guild_id, user.id) : null
 
-    await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+    await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       components: [
         ...(m?.banner || u.banner
           ? ([

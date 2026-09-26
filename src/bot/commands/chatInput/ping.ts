@@ -32,7 +32,7 @@ createApplicationCommand({
       .total({ unit: 'milliseconds' })
       .toFixed(0)
 
-    await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+    await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       content: `Pong!\n-# Gateway (Shard #${shardId}): **${wsPing}ms** • REST: **${restPing}ms** • Roundtrip: **${roundtrip}ms**`,
     })
   },

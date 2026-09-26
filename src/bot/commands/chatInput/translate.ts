@@ -11,8 +11,7 @@ import { findClosestMatch, getAutocompleteFocusedOption } from '../../../utils/u
 import { makeRequest } from '../../../utils/request'
 import { RequestMethod, ResponseType } from '../../../types/types'
 import { emoji } from '../../../utils/markdown'
-import { AZURE_LANGUAGES } from '../../constants'
-import env from '../../../utils/env'
+import { DEEPLX_LANGUAGES } from '../../constants'
 import { t } from '../../../utils/localization'
 
 createApplicationCommand({
@@ -81,7 +80,7 @@ createApplicationCommand({
     const focused = getAutocompleteFocusedOption(interaction.data.options)
     const value = String(focused?.value ?? '').toLowerCase()
 
-    const languages = AZURE_LANGUAGES.filter(language => {
+    const languages = DEEPLX_LANGUAGES.filter(language => {
       return language.name.toLowerCase().includes(value) || language.code.toLowerCase().includes(value)
     })
 
@@ -134,31 +133,10 @@ createApplicationCommand({
 
     const { text: rawText, from, to } = options
 
-    const azureApiKey = env.get('azure_api_key')?.toString()
-
-    if (!azureApiKey) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.Container,
-            components: [
-              {
-                type: ComponentType.TextDisplay,
-                content: `${emoji('Wrong')} ${t(l, 'commands.translate.missing_api_key')}`,
-              },
-            ],
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      })
-
-      return
-    }
-
     const text = rawText.trim()
 
     if (!text) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -176,45 +154,39 @@ createApplicationCommand({
       return
     }
 
-    const sourceCode = from === 'auto' ? undefined : from
+    const sourceCode = from ?? 'auto'
     const targetCode =
       to === 'auto'
         ? (findClosestMatch(
             interaction.locale,
-            AZURE_LANGUAGES.map(language => language.code),
+            DEEPLX_LANGUAGES.map(language => language.code),
           ) ?? 'en')
         : (to ?? 'en')
 
-    const translation = await makeRequest('https://api.cognitive.microsofttranslator.com/translate', {
+    const translation = await makeRequest('https://oneshot-free.www.deepl.com/v1/translate', {
       method: RequestMethod.POST,
       response: ResponseType.JSON,
       headers: {
         'Content-type': 'application/json',
-        'Ocp-Apim-Subscription-Key': azureApiKey,
       },
       params: {
-        'api-version': '3.0',
-        ...(sourceCode ? { from: sourceCode } : {}),
-        to: targetCode,
+        text,
+        target_lang: targetCode,
+        source_lang: sourceCode,
       },
-      body: [
-        {
-          text,
-        },
-      ],
     })
 
-    const actualSourceCode = sourceCode ?? translation[0].detectedLanguage?.language
+    const actualSourceCode = sourceCode ?? translation.source_lang
 
-    const sourceLanguage = AZURE_LANGUAGES.find(language => language.code === actualSourceCode)
+    const sourceLanguage = DEEPLX_LANGUAGES.find(language => language.code === actualSourceCode)
 
     if (!sourceLanguage) throw new Error(`Unsupported source language: ${actualSourceCode}`)
 
-    const targetLanguage = AZURE_LANGUAGES.find(language => language.code === translation[0].translations[0].to)
+    const targetLanguage = DEEPLX_LANGUAGES.find(language => language.code === translation.target_lang)
 
-    if (!targetLanguage) throw new Error(`Unsupported target language: ${translation[0].translations[0].to}`)
+    if (!targetLanguage) throw new Error(`Unsupported target language: ${translation.target_lang}`)
 
-    await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+    await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       components: [
         {
           type: ComponentType.Container,
@@ -228,7 +200,7 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${translation[0].translations[0].text}${
+              content: `${translation.data}${
                 to === undefined || to === 'auto'
                   ? `\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.translate.auto_detected_target')}`
                   : ''

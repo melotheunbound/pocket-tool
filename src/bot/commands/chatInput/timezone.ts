@@ -7,11 +7,9 @@ import {
   MessageFlags,
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
-import { getAutocompleteFocusedOption } from '../../../utils/utils'
+import { getAutocompleteFocusedOption, supportedTimezones } from '../../../utils/utils'
 import { emoji } from '../../../utils/markdown'
 import { t } from '../../../utils/localization'
-
-const supportedTimezones = new Set(Intl.supportedValuesOf('timeZone'))
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -74,7 +72,7 @@ createApplicationCommand({
     const { timezone } = options
 
     if (!supportedTimezones.has(timezone)) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -106,7 +104,7 @@ createApplicationCommand({
       hour12: false,
     })}`
 
-    await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+    await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       components: [
         {
           type: ComponentType.Container,

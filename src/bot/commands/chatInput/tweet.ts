@@ -9,27 +9,13 @@ import {
   type APIMessageTopLevelComponent,
 } from '@discordjs/core'
 import createApplicationCommand from '../../../builders/command'
-import { findClosestMatch, getAutocompleteFocusedOption, toComponentEmoji } from '../../../utils/utils'
+import { extractTweetId, findClosestMatch, getAutocompleteFocusedOption, toComponentEmoji } from '../../../utils/utils'
 import env from '../../../utils/env'
 import { emoji, hyperlink, timestamp } from '../../../utils/markdown'
 import { makeRequest } from '../../../utils/request'
 import { RequestMethod, ResponseType, TimestampStyle } from '../../../types/types'
-import { AZURE_LANGUAGES } from '../../constants'
+import { DEEPLX_LANGUAGES } from '../../constants'
 import { t } from '../../../utils/localization'
-
-function extractTweetId(input: string): string | undefined {
-  const trimmed = input.trim()
-
-  if (/^\d+$/.test(trimmed)) return trimmed
-
-  try {
-    const tweetUrl = new URL(trimmed)
-    const id = tweetUrl.pathname.split('/').pop()
-    return id && /^\d+$/.test(id) ? id : undefined
-  } catch {
-    return undefined
-  }
-}
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -78,7 +64,7 @@ createApplicationCommand({
     const focused = getAutocompleteFocusedOption(interaction.data.options)
     const value = String(focused?.value ?? '').toLowerCase()
 
-    const languages = AZURE_LANGUAGES.filter(language => {
+    const languages = DEEPLX_LANGUAGES.filter(language => {
       return language.name.toLowerCase().includes(value) || language.code.toLowerCase().includes(value)
     })
 
@@ -107,7 +93,7 @@ createApplicationCommand({
     const tolgchuTwitterApiKey = env.get('tolgchu_twitter_api_key')?.toString()
 
     if (!tolgchuTwitterApiKey) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -128,7 +114,7 @@ createApplicationCommand({
     const tweetId = extractTweetId(url)
 
     if (!tweetId) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -165,7 +151,7 @@ createApplicationCommand({
       const azureApiKey = env.get('azure_api_key')?.toString()
 
       if (!azureApiKey) {
-        await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+        await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
           components: [
             {
               type: ComponentType.Container,
@@ -186,7 +172,7 @@ createApplicationCommand({
       const sourceCode = tweet.language
         ? findClosestMatch(
             tweet.language,
-            AZURE_LANGUAGES.map(language => language.code),
+            DEEPLX_LANGUAGES.map(language => language.code),
           )
         : undefined
 
@@ -194,30 +180,24 @@ createApplicationCommand({
         language === 'auto'
           ? (findClosestMatch(
               interaction.locale,
-              AZURE_LANGUAGES.map(language => language.code),
+              DEEPLX_LANGUAGES.map(language => language.code),
             ) ?? 'en')
           : language
 
-      const translation = await makeRequest('https://api.cognitive.microsofttranslator.com/translate', {
+      const translation = await makeRequest('https://oneshot-free.www.deepl.com/v1/translate', {
         method: RequestMethod.POST,
         response: ResponseType.JSON,
         headers: {
-          'Content-Type': 'application/json',
-          'Ocp-Apim-Subscription-Key': azureApiKey,
+          'Content-type': 'application/json',
         },
         params: {
-          'api-version': '3.0',
-          ...(sourceCode ? { from: sourceCode } : {}),
-          to: targetCode,
+          text: content,
+          target_lang: targetCode,
+          source_lang: sourceCode ?? 'auto',
         },
-        body: [
-          {
-            text: content,
-          },
-        ],
       })
 
-      const translated = translation[0]?.translations?.[0]?.text
+      const translated = translation.data
       isTranslated = !!translated
       content = translated ?? content
     }
@@ -229,7 +209,7 @@ createApplicationCommand({
       content = content?.replace(pattern, hyperlink(`https://x.com/hashtag/${hashtag}`, `#${hashtag}`))
     }
 
-    await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+    await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       components: [
         ...(tweet.quotedPost
           ? ([

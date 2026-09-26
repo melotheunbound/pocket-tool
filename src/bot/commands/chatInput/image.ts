@@ -630,7 +630,7 @@ createApplicationCommand({
 
       const captioned = await applyCaption(buffer, text, format === 'gif')
 
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         attachments: [
           {
             id: 0,
@@ -654,7 +654,7 @@ createApplicationCommand({
 
       const grayscaled = await applyGrayscale(buffer, format === 'gif')
 
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         attachments: [
           {
             id: 0,
@@ -678,7 +678,7 @@ createApplicationCommand({
 
       const blurred = await applyBlur(buffer, strength, format === 'gif')
 
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         attachments: [
           {
             id: 0,
@@ -702,7 +702,7 @@ createApplicationCommand({
 
       const flipped = await applyFlip(buffer, format === 'gif')
 
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         attachments: [
           {
             id: 0,
@@ -726,7 +726,7 @@ createApplicationCommand({
 
       const flopped = await applyFlop(buffer, format === 'gif')
 
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         attachments: [
           {
             id: 0,
@@ -750,7 +750,7 @@ createApplicationCommand({
 
       const speechBubbled = await applySpeechBubble(buffer, undefined, format === 'gif')
 
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         attachments: [
           {
             id: 0,
@@ -799,7 +799,7 @@ createApplicationCommand({
 
       const petpeted = await createPetpetGif(buffer)
 
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         attachments: [
           {
             id: 0,
@@ -823,7 +823,7 @@ createApplicationCommand({
 
       const gifed = await convertToGif(buffer)
 
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         content: `-# ${emoji('GIF')} ${t(l, 'commands.image.gif.tip')}`,
         files: [
           {
@@ -842,7 +842,7 @@ createApplicationCommand({
 
       const pixelated = await applyPixelate(buffer, scale, format === 'gif')
 
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         attachments: [
           {
             id: 0,

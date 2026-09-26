@@ -9,8 +9,7 @@ import createApplicationCommand from '../../../builders/command'
 import { emoji } from '../../../utils/markdown'
 import { makeRequest } from '../../../utils/request'
 import { RequestMethod, ResponseType } from '../../../types/types'
-import { AZURE_LANGUAGES } from '../../constants'
-import env from '../../../utils/env'
+import { DEEPLX_LANGUAGES } from '../../constants'
 import { findClosestMatch } from '../../../utils/utils'
 import { t } from '../../../utils/localization'
 
@@ -28,27 +27,6 @@ createApplicationCommand({
   async run(interaction, client) {
     const l = interaction.locale
 
-    const azureApiKey = env.get('azure_api_key')?.toString()
-
-    if (!azureApiKey) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-        components: [
-          {
-            type: ComponentType.Container,
-            components: [
-              {
-                type: ComponentType.TextDisplay,
-                content: `${emoji('Wrong')} ${t(l, 'commands.translate.missing_api_key')}`,
-              },
-            ],
-          },
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      })
-
-      return
-    }
-
     const message = interaction.data.resolved.messages[interaction.data.target_id]
 
     const text = (
@@ -56,7 +34,7 @@ createApplicationCommand({
     ).trim()
 
     if (!text) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -77,7 +55,7 @@ createApplicationCommand({
     const targetCode =
       findClosestMatch(
         interaction.locale,
-        AZURE_LANGUAGES.map(language => language.code),
+        DEEPLX_LANGUAGES.map(language => language.code),
       ) ?? 'en'
 
     const translation = await makeRequest('https://api.cognitive.microsofttranslator.com/translate', {
@@ -85,30 +63,25 @@ createApplicationCommand({
       response: ResponseType.JSON,
       headers: {
         'Content-type': 'application/json',
-        'Ocp-Apim-Subscription-Key': azureApiKey,
       },
       params: {
-        'api-version': '3.0',
-        to: targetCode,
+        text,
+        target_lang: targetCode,
+        source_lang: 'auto',
       },
-      body: [
-        {
-          text,
-        },
-      ],
     })
 
-    const sourceCode = translation[0].detectedLanguage?.language
+    const sourceCode = translation.source_lang
 
-    const sourceLanguage = AZURE_LANGUAGES.find(language => language.code === sourceCode)
+    const sourceLanguage = DEEPLX_LANGUAGES.find(language => language.code === sourceCode)
 
     if (!sourceLanguage) throw new Error(`Unsupported source language: ${sourceCode}`)
 
-    const targetLanguage = AZURE_LANGUAGES.find(language => language.code === translation[0].translations[0].to)
+    const targetLanguage = DEEPLX_LANGUAGES.find(language => language.code === translation.target_lang)
 
-    if (!targetLanguage) throw new Error(`Unsupported target language: ${translation[0].translations[0].to}`)
+    if (!targetLanguage) throw new Error(`Unsupported target language: ${translation.target_lang}`)
 
-    await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+    await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       components: [
         {
           type: ComponentType.Container,
@@ -122,7 +95,7 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${translation[0].translations[0].text}\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.translate.auto_detected_target')}`,
+              content: `${translation.data}\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.translate.auto_detected_target')}`,
             },
           ],
         },

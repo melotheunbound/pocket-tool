@@ -11,6 +11,7 @@ import {
   MessageFlags,
   PresenceUpdateStatus,
   Routes,
+  type APIMessage,
   type GatewayDispatchPayload,
   type RESTPutAPIApplicationCommandsJSONBody,
   type RESTPutAPIApplicationGuildCommandsJSONBody,
@@ -27,6 +28,7 @@ import createCollector from '../builders/collector'
 import { getShardMemory, handleShardMemoryResponse } from '../utils/shard'
 import { join } from 'path'
 import { emoji } from '../utils/markdown'
+import { MESSAGE_BLOCK_REASONS } from './constants'
 
 process.on('uncaughtException', console.error)
 process.on('unhandledRejection', console.error)
@@ -197,7 +199,7 @@ try {
   console.error('An error occurred while connecting to the gateway:', error)
 }
 
-function injectVotePrompt<T extends { content?: string; components?: any[]; flags?: number }>(body: T): T {
+function votePrompt<T extends { content?: string; components?: any[]; flags?: number }>(body: T): T {
   if (!(Math.random() < 0.33)) return body
 
   const isComponentsV2 = !!((body.flags ?? 0) & MessageFlags.IsComponentsV2)
@@ -216,38 +218,27 @@ function injectVotePrompt<T extends { content?: string; components?: any[]; flag
   return body
 }
 
-const reply = client.api.interactions.reply.bind(client.api.interactions)
+client.api.interactions.respond = (async (applicationId, interactionId, interactionToken, body, messageId, options) => {
+  body.allowed_mentions ??= { parse: [] }
 
-client.api.interactions.reply = (async (interactionId, interactionToken, body, options) => {
-  if (body.content && !body.allowed_mentions) {
-    body.allowed_mentions = { parse: [] }
+  votePrompt(body)
+
+  const original = await client.api.interactions.getOriginalReply(applicationId, interactionToken).catch(() => null)
+
+  try {
+    return original
+      ? await client.api.interactions.editReply(applicationId, interactionToken, body, messageId, options)
+      : (await client.api.interactions.reply(interactionId, interactionToken, body, options)).resource?.message
+  } catch (error) {
+    const code = (error as any)?.code
+    const blocked = MESSAGE_BLOCK_REASONS[code as keyof typeof MESSAGE_BLOCK_REASONS]
+
+    if (!blocked) throw error
+
+    await client.api.interactions.deleteReply(applicationId, interactionToken).catch(() => null)
+
+    body.flags = (body.flags ?? 0) | MessageFlags.Ephemeral
+
+    return await client.api.interactions.followUp(applicationId, interactionToken, body, options)
   }
-
-  injectVotePrompt(body)
-
-  return reply(interactionId, interactionToken, body, options)
-}) as typeof client.api.interactions.reply
-
-const editReply = client.api.interactions.editReply.bind(client.api.interactions)
-
-client.api.interactions.editReply = (async (applicationId, interactionToken, callbackData, messageId, options) => {
-  if (callbackData.content && !callbackData.allowed_mentions) {
-    callbackData.allowed_mentions = { parse: [] }
-  }
-
-  injectVotePrompt(callbackData)
-
-  return editReply(applicationId, interactionToken, callbackData, messageId, options)
-}) as typeof client.api.interactions.editReply
-
-const followUp = client.api.interactions.followUp.bind(client.api.interactions)
-
-client.api.interactions.followUp = (async (applicationId, interactionToken, body, options) => {
-  if (body.content && !body.allowed_mentions) {
-    body.allowed_mentions = { parse: [] }
-  }
-
-  injectVotePrompt(body)
-
-  return followUp(applicationId, interactionToken, body, options)
-}) as typeof client.api.interactions.followUp
+}) as typeof client.api.interactions.respond

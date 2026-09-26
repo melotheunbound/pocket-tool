@@ -111,7 +111,6 @@
       "invalid_timezone": "Por favor, proporciona una zona horaria válida para ver."
     },
     "translate": {
-      "missing_api_key": "La clave de API de Microsoft Azure no está configurada.",
       "no_text": "Por favor, proporciona el texto para traducir.",
       "translated": "Traducido de **{sourceFlag} {sourceLanguage}** a **{targetFlag} {targetLanguage}**",
       "auto_detected_target": "El idioma de destino fue seleccionado según el idioma de tu Discord"
@@ -124,7 +123,6 @@
     "tweet": {
       "missing_api_key": "La clave de API de Tolgchu Twitter no está configurada.",
       "invalid_tweet": "Por favor, proporciona una URL o ID válidos para ver el tweet.",
-      "missing_api_key_2": "La clave de API de Microsoft Azure no está configurada.",
       "quoting_tweet": "-# *Citando {tweet}, publicado por {author}*",
       "replying_to_tweet": "-# *Respondiendo a {tweet}, publicado por {author}*",
       "posted_by": "-# Publicado por {verified}{author} ({username})",

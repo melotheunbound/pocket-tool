@@ -25,7 +25,7 @@ import {
 import env from '../../utils/env'
 import { getChatInputOption, getCommandPath, parseCommandOptions } from '../../utils/utils'
 import { emoji, hyperlink, timestamp } from '../../utils/markdown'
-import { MESSAGE_BLOCK_REASONS, SUPPORT } from '../constants'
+import { SUPPORT } from '../constants'
 import { redis } from '../../utils/redis'
 import { commands } from '../../builders/command'
 import { checkCooldown } from '../../utils/cooldown'
@@ -93,37 +93,20 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
       )
 
       if (expiration) {
-        if (chatInput.acknowledge) {
-          await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-            components: [
-              {
-                type: ComponentType.Container,
-                components: [
-                  {
-                    type: ComponentType.TextDisplay,
-                    content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
-                  },
-                ],
-              },
-            ],
-            flags: MessageFlags.IsComponentsV2,
-          })
-        } else {
-          await client.api.interactions.reply(interaction.id, interaction.token, {
-            components: [
-              {
-                type: ComponentType.Container,
-                components: [
-                  {
-                    type: ComponentType.TextDisplay,
-                    content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
-                  },
-                ],
-              },
-            ],
-            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          })
-        }
+        await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
+          components: [
+            {
+              type: ComponentType.Container,
+              components: [
+                {
+                  type: ComponentType.TextDisplay,
+                  content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
+                },
+              ],
+            },
+          ],
+          flags: MessageFlags.IsComponentsV2,
+        })
 
         return
       }
@@ -135,54 +118,22 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
           client,
         )
       } catch (error) {
-        const code = (error as any).code
-        const blocked = MESSAGE_BLOCK_REASONS[code as keyof typeof MESSAGE_BLOCK_REASONS]
-
-        if (blocked) {
-          if (chatInput.acknowledge)
-            await client.api.interactions.deleteReply(interaction.application_id, interaction.token)
-
-          await client.api.interactions.followUp(interaction.application_id, interaction.token, {
-            content: `-# ${t(l, 'events.interaction_create.blocked', { command: `</${interaction.data.name}:${interaction.data.id}>`, article: hyperlink(blocked.article, blocked.reason) })}`,
-            flags: MessageFlags.Ephemeral,
-          })
-
-          return
-        }
-
         console.error(`Command ${interaction.data.name} encountered an error:`, error)
 
-        if (chatInput.acknowledge) {
-          await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-            components: [
-              {
-                type: ComponentType.Container,
-                components: [
-                  {
-                    type: ComponentType.TextDisplay,
-                    content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
-                  },
-                ],
-              },
-            ],
-            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          })
-        } else {
-          await client.api.interactions.reply(interaction.id, interaction.token, {
-            components: [
-              {
-                type: ComponentType.Container,
-                components: [
-                  {
-                    type: ComponentType.TextDisplay,
-                    content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
-                  },
-                ],
-              },
-            ],
-            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          })
-        }
+        await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
+          components: [
+            {
+              type: ComponentType.Container,
+              components: [
+                {
+                  type: ComponentType.TextDisplay,
+                  content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
+                },
+              ],
+            },
+          ],
+          flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
+        })
       }
 
       break
@@ -207,37 +158,20 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
       )
 
       if (expiration) {
-        if (messageContext.acknowledge) {
-          await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-            components: [
-              {
-                type: ComponentType.Container,
-                components: [
-                  {
-                    type: ComponentType.TextDisplay,
-                    content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
-                  },
-                ],
-              },
-            ],
-            flags: MessageFlags.IsComponentsV2,
-          })
-        } else {
-          await client.api.interactions.reply(interaction.id, interaction.token, {
-            components: [
-              {
-                type: ComponentType.Container,
-                components: [
-                  {
-                    type: ComponentType.TextDisplay,
-                    content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
-                  },
-                ],
-              },
-            ],
-            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          })
-        }
+        await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
+          components: [
+            {
+              type: ComponentType.Container,
+              components: [
+                {
+                  type: ComponentType.TextDisplay,
+                  content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
+                },
+              ],
+            },
+          ],
+          flags: MessageFlags.IsComponentsV2,
+        })
 
         return
       }
@@ -245,54 +179,22 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
       try {
         await messageContext.run(interaction as APIMessageApplicationCommandInteraction, client)
       } catch (error) {
-        const code = (error as any).code
-        const blocked = MESSAGE_BLOCK_REASONS[code as keyof typeof MESSAGE_BLOCK_REASONS]
-
-        if (blocked) {
-          if (messageContext.acknowledge)
-            await client.api.interactions.deleteReply(interaction.application_id, interaction.token)
-
-          await client.api.interactions.followUp(interaction.application_id, interaction.token, {
-            content: `-# ${t(l, 'events.interaction_create.blocked', { command: `</${interaction.data.name}:${interaction.data.id}>`, article: hyperlink(blocked.article, blocked.reason) })}`,
-            flags: MessageFlags.Ephemeral,
-          })
-
-          return
-        }
-
         console.error(`Command ${interaction.data.name} encountered an error:`, error)
 
-        if (messageContext.acknowledge) {
-          await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-            components: [
-              {
-                type: ComponentType.Container,
-                components: [
-                  {
-                    type: ComponentType.TextDisplay,
-                    content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
-                  },
-                ],
-              },
-            ],
-            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          })
-        } else {
-          await client.api.interactions.reply(interaction.id, interaction.token, {
-            components: [
-              {
-                type: ComponentType.Container,
-                components: [
-                  {
-                    type: ComponentType.TextDisplay,
-                    content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
-                  },
-                ],
-              },
-            ],
-            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          })
-        }
+        await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
+          components: [
+            {
+              type: ComponentType.Container,
+              components: [
+                {
+                  type: ComponentType.TextDisplay,
+                  content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
+                },
+              ],
+            },
+          ],
+          flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
+        })
       }
 
       break
@@ -317,37 +219,20 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
       )
 
       if (expiration) {
-        if (userContext.acknowledge) {
-          await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-            components: [
-              {
-                type: ComponentType.Container,
-                components: [
-                  {
-                    type: ComponentType.TextDisplay,
-                    content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
-                  },
-                ],
-              },
-            ],
-            flags: MessageFlags.IsComponentsV2,
-          })
-        } else {
-          await client.api.interactions.reply(interaction.id, interaction.token, {
-            components: [
-              {
-                type: ComponentType.Container,
-                components: [
-                  {
-                    type: ComponentType.TextDisplay,
-                    content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
-                  },
-                ],
-              },
-            ],
-            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          })
-        }
+        await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
+          components: [
+            {
+              type: ComponentType.Container,
+              components: [
+                {
+                  type: ComponentType.TextDisplay,
+                  content: `${emoji('Exclamation')} ${t(l, 'events.interaction_create.cooldown', { command: `</${interaction.data.name}:${interaction.data.id}>`, timestamp: timestamp(expiration, TimestampStyle.RelativeTime) })}`,
+                },
+              ],
+            },
+          ],
+          flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
+        })
 
         return
       }
@@ -355,54 +240,22 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
       try {
         await userContext.run(interaction as APIUserApplicationCommandInteraction, client)
       } catch (error) {
-        const code = (error as any).code
-        const blocked = MESSAGE_BLOCK_REASONS[code as keyof typeof MESSAGE_BLOCK_REASONS]
-
-        if (blocked) {
-          if (userContext.acknowledge)
-            await client.api.interactions.deleteReply(interaction.application_id, interaction.token)
-
-          await client.api.interactions.followUp(interaction.application_id, interaction.token, {
-            content: `-# ${t(l, 'events.interaction_create.blocked', { command: `</${interaction.data.name}:${interaction.data.id}>`, article: hyperlink(blocked.article, blocked.reason) })}`,
-            flags: MessageFlags.Ephemeral,
-          })
-
-          return
-        }
-
         console.error(`Command ${interaction.data.name} encountered an error:`, error)
 
-        if (userContext.acknowledge) {
-          await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-            components: [
-              {
-                type: ComponentType.Container,
-                components: [
-                  {
-                    type: ComponentType.TextDisplay,
-                    content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
-                  },
-                ],
-              },
-            ],
-            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          })
-        } else {
-          await client.api.interactions.reply(interaction.id, interaction.token, {
-            components: [
-              {
-                type: ComponentType.Container,
-                components: [
-                  {
-                    type: ComponentType.TextDisplay,
-                    content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
-                  },
-                ],
-              },
-            ],
-            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
-          })
-        }
+        await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
+          components: [
+            {
+              type: ComponentType.Container,
+              components: [
+                {
+                  type: ComponentType.TextDisplay,
+                  content: `${emoji('Wrong')} ${t(l, 'events.interaction_create.error.text', { error: error instanceof Error ? error.message : String(error), support: hyperlink(SUPPORT, t(l, 'events.interaction_create.error.support'), '', false) })}`,
+                },
+              ],
+            },
+          ],
+          flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
+        })
       }
 
       break

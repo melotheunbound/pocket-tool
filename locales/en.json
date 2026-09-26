@@ -111,7 +111,6 @@
       "invalid_timezone": "Please provide a valid timezone to view."
     },
     "translate": {
-      "missing_api_key": "The Microsoft Azure API key is not set.",
       "no_text": "Please provide some text to translate.",
       "translated": "Translated from **{sourceFlag} {sourceLanguage}** to **{targetFlag} {targetLanguage}**",
       "auto_detected_target": "The target language was selected based on your Discord locale"
@@ -124,7 +123,6 @@
     "tweet": {
       "missing_api_key": "The Tolgchu Twitter API key is not set.",
       "invalid_tweet": "Please provide a valid tweet URL or ID to view the tweet.",
-      "missing_api_key_2": "The Microsoft Azure API key is not set.",
       "quoting_tweet": "-# *Quoting {tweet}, posted by {author}*",
       "replying_to_tweet": "-# *Replying to {tweet}, posted by {author}*",
       "posted_by": "-# Posted by {verified} {author} ({username})",

@@ -37,7 +37,7 @@ createApplicationCommand({
     const lastfmApiKey = env.get('lastfm_api_key')?.toString()
 
     if (!lastfmApiKey) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -71,7 +71,7 @@ createApplicationCommand({
     const isNowPlaying = track['@attr']?.nowplaying === 'true'
 
     if (!isNowPlaying) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -96,7 +96,7 @@ createApplicationCommand({
     const spotifyClientSecret = env.get('spotify_client_secret')?.toString()
 
     if (!spotifyClientId || !spotifyClientSecret) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -140,7 +140,7 @@ createApplicationCommand({
     const spotifyTrack = spotify.tracks?.items?.[0]
 
     if (!spotifyTrack) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -158,7 +158,7 @@ createApplicationCommand({
       return
     }
 
-    await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+    await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       content: t(l, 'commands.lastfm.listening', {
         username,
         track: hyperlink(spotifyTrack.external_urls.spotify, spotifyTrack.name, '', true),

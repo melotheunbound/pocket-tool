@@ -89,62 +89,67 @@ createApplicationCommand({
       .map(command => `> </${command.name}:${command.id}>: **${Number(command.uses).toLocaleString('en-US')} uses**`)
       .join('\n')
 
-    const response = await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-      components: [
-        {
-          type: ComponentType.Container,
-          components: [
-            {
-              type: ComponentType.Section,
-              components: [
-                {
-                  type: ComponentType.TextDisplay,
-                  content: `## ${emoji('Bot')} ${t(l, 'commands.debug.browser', { shardId })}`,
+    const response = await client.api.interactions.respond(
+      interaction.application_id,
+      interaction.id,
+      interaction.token,
+      {
+        components: [
+          {
+            type: ComponentType.Container,
+            components: [
+              {
+                type: ComponentType.Section,
+                components: [
+                  {
+                    type: ComponentType.TextDisplay,
+                    content: `## ${emoji('Bot')} ${t(l, 'commands.debug.browser', { shardId })}`,
+                  },
+                ],
+                accessory: {
+                  type: ComponentType.Button,
+                  custom_id: 'shard-browser',
+                  emoji: toComponentEmoji('Search'),
+                  style: ButtonStyle.Secondary,
                 },
-              ],
-              accessory: {
-                type: ComponentType.Button,
-                custom_id: 'shard-browser',
-                emoji: toComponentEmoji('Search'),
-                style: ButtonStyle.Secondary,
               },
-            },
-          ],
-        },
-        {
-          type: ComponentType.Container,
-          components: [
-            {
-              type: ComponentType.TextDisplay,
-              content: `${t(l, 'commands.debug.shard.title', { shardId })}\n${t(l, 'commands.debug.shard.latency')} **${shard.ping}ms**\n${t(l, 'commands.debug.shard.uptime')} **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n${t(l, 'commands.debug.shard.memory')} **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n${t(l, 'commands.debug.user_installs')} **${app.approximate_user_install_count}**\n${t(l, 'commands.debug.servers')} **${app.approximate_guild_count}**\n${t(l, 'commands.debug.today_command_usage')}\n${t(l, 'commands.debug.today')} **${today}**\n${t(l, 'commands.debug.last_hour')} **${lastHour}**\n${t(l, 'commands.debug.last_minute')} **${lastMinute}**\n${t(l, 'commands.debug.today_top_commands')}\n${topCommands}`,
-            },
-            {
-              type: ComponentType.Separator,
-            },
-            {
-              type: ComponentType.ActionRow,
-              components: [
-                {
-                  type: ComponentType.Button,
-                  label: t(l, 'commands.debug.buttons.authorize'),
-                  emoji: toComponentEmoji('Link'),
-                  url: INVITE,
-                  style: ButtonStyle.Link,
-                },
-                {
-                  type: ComponentType.Button,
-                  label: t(l, 'commands.debug.buttons.support'),
-                  emoji: toComponentEmoji('Discord'),
-                  url: SUPPORT,
-                  style: ButtonStyle.Link,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-      flags: MessageFlags.IsComponentsV2,
-    })
+            ],
+          },
+          {
+            type: ComponentType.Container,
+            components: [
+              {
+                type: ComponentType.TextDisplay,
+                content: `${t(l, 'commands.debug.shard.title', { shardId })}\n${t(l, 'commands.debug.shard.latency')} **${shard.ping}ms**\n${t(l, 'commands.debug.shard.uptime')} **${msToReadableTime(Temporal.Now.instant().epochMilliseconds - shard.uptime!)} (${timestamp(shard.uptime!, TimestampStyle.LongDateShortTime)})**\n${t(l, 'commands.debug.shard.memory')} **${readableSize(memory.heapUsed)} (${readableSize(memory.heapTotal)})**\n${t(l, 'commands.debug.user_installs')} **${app.approximate_user_install_count}**\n${t(l, 'commands.debug.servers')} **${app.approximate_guild_count}**\n${t(l, 'commands.debug.today_command_usage')}\n${t(l, 'commands.debug.today')} **${today}**\n${t(l, 'commands.debug.last_hour')} **${lastHour}**\n${t(l, 'commands.debug.last_minute')} **${lastMinute}**\n${t(l, 'commands.debug.today_top_commands')}\n${topCommands}`,
+              },
+              {
+                type: ComponentType.Separator,
+              },
+              {
+                type: ComponentType.ActionRow,
+                components: [
+                  {
+                    type: ComponentType.Button,
+                    label: t(l, 'commands.debug.buttons.authorize'),
+                    emoji: toComponentEmoji('Link'),
+                    url: INVITE,
+                    style: ButtonStyle.Link,
+                  },
+                  {
+                    type: ComponentType.Button,
+                    label: t(l, 'commands.debug.buttons.support'),
+                    emoji: toComponentEmoji('Discord'),
+                    url: SUPPORT,
+                    style: ButtonStyle.Link,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        flags: MessageFlags.IsComponentsV2,
+      },
+    )
 
     const collector = client.api.interactions.createCollector<
       APIMessageComponentButtonInteraction | APIModalSubmitInteraction
@@ -248,7 +253,7 @@ createApplicationCommand({
           shard = client.gateway.shards.get(shardId)!
           memory = await shard.memory()
 
-          await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+          await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
             components: [
               {
                 type: ComponentType.Container,
@@ -312,7 +317,7 @@ createApplicationCommand({
 
     collector.once('end', () => {
       void client.api.interactions
-        .editReply(interaction.application_id, interaction.token, {
+        .respond(interaction.application_id, interaction.id, interaction.token, {
           components: [
             {
               type: ComponentType.Container,

@@ -5,9 +5,7 @@ import {
   ComponentType,
   InteractionContextType,
   MessageFlags,
-  StickerFormatType,
   TextInputStyle,
-  type APIMessage,
   type APIMessageComponentButtonInteraction,
   type APIMessageComponentSelectMenuInteraction,
   type APIModalSubmitInteraction,
@@ -20,9 +18,8 @@ import type { ColorKey, EffectKey, FontKey, FontSizeKey } from '../../../utils/c
 import { Collection } from '@discordjs/collection'
 import { makeRequest } from '../../../utils/request'
 import { RequestMethod, ResponseType } from '../../../types/types'
-import { toComponentEmoji } from '../../../utils/utils'
+import { resolveQuoteContent, toComponentEmoji } from '../../../utils/utils'
 import { isHex, shuffle, type Hexadecimal } from '@tolga1452/toolbox.js'
-import sharp from 'sharp'
 import { t } from '../../../utils/localization'
 import { getInteractionCollectorDeadline } from '../../../builders/collector'
 
@@ -35,82 +32,6 @@ type Session = {
   content: string
   emojis: Record<string, Buffer>
   stickers: Buffer[]
-}
-
-async function resolveQuoteContent(message: APIMessage) {
-  const content = message.content.trim()
-  const mentions = message.mentions
-
-  const customEmojiRegex = /<a?:\w+:(\d+)>/g
-  const emojiIds = [...new Set([...content.matchAll(customEmojiRegex)].map(match => match[1]!))]
-
-  const stickers: Buffer[] = []
-  const stickerFallbacks: string[] = []
-
-  const [emojiResults] = await Promise.all([
-    Promise.allSettled(
-      emojiIds.map(async id => {
-        const data = await makeRequest(cdn(`/emojis/${id}`, undefined, 'png', false), {
-          method: RequestMethod.GET,
-          response: ResponseType.BUFFER,
-          timeout: 10 * 1000,
-        })
-        return [id, data] as const
-      }),
-    ),
-    Promise.all(
-      (message.sticker_items ?? []).map(async sticker => {
-        const url =
-          sticker.format_type === StickerFormatType.GIF
-            ? `https://media.discordapp.net/stickers/${sticker.id}.gif`
-            : cdn(
-                `/stickers/${sticker.id}`,
-                undefined,
-                sticker.format_type === StickerFormatType.Lottie ? 'json' : 'png',
-                false,
-              )
-
-        try {
-          let data = await makeRequest(url, {
-            method: RequestMethod.GET,
-            response: ResponseType.BUFFER,
-            timeout: 10 * 1000,
-          })
-
-          if (sticker.format_type === StickerFormatType.Lottie) {
-            const { createCanvas, LottieAnimation } = await import('@napi-rs/canvas')
-            const animation = LottieAnimation.loadFromData(data)
-            const canvas = createCanvas(320, 320)
-
-            animation.seekFrame(0)
-            animation.render(canvas.getContext('2d'), { x: 0, y: 0, width: 320, height: 320 })
-            data = await sharp(canvas.toBuffer('image/png')).png().toBuffer()
-          } else if (sticker.format_type === StickerFormatType.GIF) {
-            data = await sharp(data, { animated: false }).png().toBuffer()
-          }
-
-          stickers.push(data)
-        } catch {
-          stickerFallbacks.push(`[Sticker: ${sticker.name}]`)
-        }
-      }),
-    ),
-  ])
-
-  const emojis = Object.fromEntries(
-    emojiResults.flatMap(result => (result.status === 'fulfilled' ? [result.value] : [])),
-  )
-
-  const parsedContent = content.replace(/<@!?(\d+)>/g, (_, id) => {
-    const user = mentions?.find(user => user.id === id)
-    return user ? `@${user.global_name ?? user.username}` : '@unknown'
-  })
-
-  return {
-    content: [parsedContent, ...stickerFallbacks].filter(Boolean).join('\n'),
-    emojis,
-    stickers,
-  }
 }
 
 createApplicationCommand({
@@ -130,7 +51,7 @@ createApplicationCommand({
     const message = interaction.data.resolved.messages[interaction.data.target_id]
 
     if (message?.message_snapshots && message.message_snapshots.length > 0) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -149,7 +70,7 @@ createApplicationCommand({
     }
 
     if (!message || (!message.content.trim() && !message.sticker_items?.length)) {
-      await client.api.interactions.editReply(interaction.application_id, interaction.token, {
+      await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
             type: ComponentType.Container,
@@ -225,164 +146,169 @@ createApplicationCommand({
       effects: session.effects,
     })
 
-    const response = await client.api.interactions.editReply(interaction.application_id, interaction.token, {
-      components: [
-        {
-          type: ComponentType.TextDisplay,
-          content: `-# ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
-        },
-        {
-          type: ComponentType.MediaGallery,
-          items: [
-            {
-              media: {
-                url: `attachment://quote.${session.effects.includes('gif') ? 'gif' : 'png'}`,
-              },
-            },
-          ],
-        },
-        {
-          type: ComponentType.Container,
-          components: [
-            {
-              type: ComponentType.Section,
-              components: [
-                {
-                  type: ComponentType.TextDisplay,
-                  content: `### ${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
+    const response = await client.api.interactions.respond(
+      interaction.application_id,
+      interaction.id,
+      interaction.token,
+      {
+        components: [
+          {
+            type: ComponentType.TextDisplay,
+            content: `-# ${hyperlink(`https://discord.com/channels/${interaction.guild_id ?? '@me'}/${message.channel_id}/${message.id}`, t(l, 'commands.quote.original'))}`,
+          },
+          {
+            type: ComponentType.MediaGallery,
+            items: [
+              {
+                media: {
+                  url: `attachment://quote.${session.effects.includes('gif') ? 'gif' : 'png'}`,
                 },
-              ],
-              accessory: {
-                type: ComponentType.Button,
-                custom_id: 'random',
-                label: t(l, 'commands.quote.button.random_label'),
-                emoji: toComponentEmoji('Spark'),
-                style: ButtonStyle.Secondary,
               },
-            },
-          ],
-        },
-        {
-          type: ComponentType.ActionRow,
-          components: [
-            {
-              type: ComponentType.StringSelect,
-              custom_id: 'quote-font',
-              placeholder: t(l, 'commands.quote.selects.font.placeholder'),
-              options: Object.entries(CARD_FONTS).map(([value, item]) => ({
-                emoji: toComponentEmoji(item.emoji),
-                label: item.label,
-                description: item.description,
-                value,
-                default: value === session.font,
-              })),
-            },
-          ],
-        },
-        {
-          type: ComponentType.ActionRow,
-          components: [
-            {
-              type: ComponentType.StringSelect,
-              custom_id: 'quote-size',
-              placeholder: t(l, 'commands.quote.selects.font_size.placeholder'),
-              options: [
-                ...Object.entries(FONT_SIZES).map(([value, item]) => ({
-                  ...(value === session.fontSize ? { emoji: toComponentEmoji('Selected') } : {}),
-                  label: item.label,
-                  description: item.description,
-                  value,
-                  default: value === session.fontSize,
-                })),
-                {
-                  emoji: toComponentEmoji('CustomFontSize'),
-                  label: t(l, 'commands.quote.selects.font_size.custom_label'),
-                  description: t(l, 'commands.quote.selects.font_size.custom_description'),
-                  value: 'custom',
+            ],
+          },
+          {
+            type: ComponentType.Container,
+            components: [
+              {
+                type: ComponentType.Section,
+                components: [
+                  {
+                    type: ComponentType.TextDisplay,
+                    content: `### ${emoji('Quote')} ${t(l, 'commands.quote.editor')}`,
+                  },
+                ],
+                accessory: {
+                  type: ComponentType.Button,
+                  custom_id: 'random',
+                  label: t(l, 'commands.quote.button.random_label'),
+                  emoji: toComponentEmoji('Spark'),
+                  style: ButtonStyle.Secondary,
                 },
-                ...(!(session.fontSize in FONT_SIZES)
-                  ? [
-                      {
-                        emoji: toComponentEmoji('Selected'),
-                        label: t(l, 'commands.quote.selects.font_size.custom_selected_label', {
-                          size: session.fontSize,
-                        }),
-                        description: t(l, 'commands.quote.selects.font_size.custom_selected_description'),
-                        value: String(session.fontSize),
-                        default: true,
-                      },
-                    ]
-                  : []),
-              ],
-            },
-          ],
-        },
-        {
-          type: ComponentType.ActionRow,
-          components: [
-            {
-              type: ComponentType.StringSelect,
-              custom_id: 'quote-color',
-              placeholder: t(l, 'commands.quote.selects.color.placeholder'),
-              options: [
-                ...Object.entries(CARD_COLORS).map(([value, item]) => ({
+              },
+            ],
+          },
+          {
+            type: ComponentType.ActionRow,
+            components: [
+              {
+                type: ComponentType.StringSelect,
+                custom_id: 'quote-font',
+                placeholder: t(l, 'commands.quote.selects.font.placeholder'),
+                options: Object.entries(CARD_FONTS).map(([value, item]) => ({
                   emoji: toComponentEmoji(item.emoji),
                   label: item.label,
                   description: item.description,
                   value,
-                  default: value === session.color,
+                  default: value === session.font,
                 })),
-                {
-                  emoji: toComponentEmoji('CustomColor'),
-                  label: t(l, 'commands.quote.selects.custom_color_label'),
-                  description: t(l, 'commands.quote.selects.color.custom_selected_description'),
-                  value: 'custom',
-                },
-                ...(!(session.color in CARD_COLORS)
-                  ? [
-                      {
-                        emoji: toComponentEmoji('Selected'),
-                        label: t(l, 'commands.quote.selects.color.custom_selected_label', {
-                          color: session.color,
-                        }),
-                        description: t(l, 'commands.quote.selects.color.custom_selected_description'),
-                        value: session.color,
-                        default: true,
-                      },
-                    ]
-                  : []),
-              ],
-            },
-          ],
-        },
-        {
-          type: ComponentType.ActionRow,
-          components: [
-            {
-              type: ComponentType.StringSelect,
-              custom_id: 'quote-effects',
-              placeholder: t(l, 'commands.quote.selects.effects_placeholder'),
-              min_values: 0,
-              max_values: Object.keys(CARD_EFFECTS).length,
-              options: Object.entries(CARD_EFFECTS).map(([value, item]) => ({
-                emoji: toComponentEmoji(item.emoji),
-                label: item.label,
-                description: item.description,
-                value,
-                default: session.effects.includes(value as EffectKey),
-              })),
-            },
-          ],
-        },
-      ],
-      files: [
-        {
-          name: `quote.${session.effects.includes('gif') ? 'gif' : 'png'}`,
-          data: card,
-        },
-      ],
-      flags: MessageFlags.IsComponentsV2,
-    })
+              },
+            ],
+          },
+          {
+            type: ComponentType.ActionRow,
+            components: [
+              {
+                type: ComponentType.StringSelect,
+                custom_id: 'quote-size',
+                placeholder: t(l, 'commands.quote.selects.font_size.placeholder'),
+                options: [
+                  ...Object.entries(FONT_SIZES).map(([value, item]) => ({
+                    ...(value === session.fontSize ? { emoji: toComponentEmoji('Selected') } : {}),
+                    label: item.label,
+                    description: item.description,
+                    value,
+                    default: value === session.fontSize,
+                  })),
+                  {
+                    emoji: toComponentEmoji('CustomFontSize'),
+                    label: t(l, 'commands.quote.selects.font_size.custom_label'),
+                    description: t(l, 'commands.quote.selects.font_size.custom_description'),
+                    value: 'custom',
+                  },
+                  ...(!(session.fontSize in FONT_SIZES)
+                    ? [
+                        {
+                          emoji: toComponentEmoji('Selected'),
+                          label: t(l, 'commands.quote.selects.font_size.custom_selected_label', {
+                            size: session.fontSize,
+                          }),
+                          description: t(l, 'commands.quote.selects.font_size.custom_selected_description'),
+                          value: String(session.fontSize),
+                          default: true,
+                        },
+                      ]
+                    : []),
+                ],
+              },
+            ],
+          },
+          {
+            type: ComponentType.ActionRow,
+            components: [
+              {
+                type: ComponentType.StringSelect,
+                custom_id: 'quote-color',
+                placeholder: t(l, 'commands.quote.selects.color.placeholder'),
+                options: [
+                  ...Object.entries(CARD_COLORS).map(([value, item]) => ({
+                    emoji: toComponentEmoji(item.emoji),
+                    label: item.label,
+                    description: item.description,
+                    value,
+                    default: value === session.color,
+                  })),
+                  {
+                    emoji: toComponentEmoji('CustomColor'),
+                    label: t(l, 'commands.quote.selects.custom_color_label'),
+                    description: t(l, 'commands.quote.selects.color.custom_selected_description'),
+                    value: 'custom',
+                  },
+                  ...(!(session.color in CARD_COLORS)
+                    ? [
+                        {
+                          emoji: toComponentEmoji('Selected'),
+                          label: t(l, 'commands.quote.selects.color.custom_selected_label', {
+                            color: session.color,
+                          }),
+                          description: t(l, 'commands.quote.selects.color.custom_selected_description'),
+                          value: session.color,
+                          default: true,
+                        },
+                      ]
+                    : []),
+                ],
+              },
+            ],
+          },
+          {
+            type: ComponentType.ActionRow,
+            components: [
+              {
+                type: ComponentType.StringSelect,
+                custom_id: 'quote-effects',
+                placeholder: t(l, 'commands.quote.selects.effects_placeholder'),
+                min_values: 0,
+                max_values: Object.keys(CARD_EFFECTS).length,
+                options: Object.entries(CARD_EFFECTS).map(([value, item]) => ({
+                  emoji: toComponentEmoji(item.emoji),
+                  label: item.label,
+                  description: item.description,
+                  value,
+                  default: session.effects.includes(value as EffectKey),
+                })),
+              },
+            ],
+          },
+        ],
+        files: [
+          {
+            name: `quote.${session.effects.includes('gif') ? 'gif' : 'png'}`,
+            data: card,
+          },
+        ],
+        flags: MessageFlags.IsComponentsV2,
+      },
+    )
 
     const collector = client.api.interactions.createCollector<
       APIMessageComponentSelectMenuInteraction | APIMessageComponentButtonInteraction | APIModalSubmitInteraction
@@ -430,7 +356,7 @@ createApplicationCommand({
             effects: session.effects,
           })
 
-          await client.api.interactions.editReply(i.application_id, i.token, {
+          await client.api.interactions.respond(i.application_id, i.id, i.token, {
             components: [
               {
                 type: ComponentType.TextDisplay,
@@ -632,7 +558,7 @@ createApplicationCommand({
               effects: session.effects,
             })
 
-            await client.api.interactions.editReply(i.application_id, i.token, {
+            await client.api.interactions.respond(i.application_id, i.id, i.token, {
               components: [
                 {
                   type: ComponentType.TextDisplay,
@@ -837,7 +763,7 @@ createApplicationCommand({
               effects: session.effects,
             })
 
-            await client.api.interactions.editReply(i.application_id, i.token, {
+            await client.api.interactions.respond(i.application_id, i.id, i.token, {
               components: [
                 {
                   type: ComponentType.TextDisplay,
@@ -1021,7 +947,7 @@ createApplicationCommand({
             effects: session.effects,
           })
 
-          await client.api.interactions.editReply(i.application_id, i.token, {
+          await client.api.interactions.respond(i.application_id, i.id, i.token, {
             components: [
               {
                 type: ComponentType.TextDisplay,
@@ -1200,7 +1126,7 @@ createApplicationCommand({
             effects: session.effects,
           })
 
-          await client.api.interactions.editReply(i.application_id, i.token, {
+          await client.api.interactions.respond(i.application_id, i.id, i.token, {
             components: [
               {
                 type: ComponentType.TextDisplay,
@@ -1409,7 +1335,7 @@ createApplicationCommand({
             effects: session.effects,
           })
 
-          await client.api.interactions.editReply(i.application_id, i.token, {
+          await client.api.interactions.respond(i.application_id, i.id, i.token, {
             components: [
               {
                 type: ComponentType.TextDisplay,
@@ -1615,7 +1541,7 @@ createApplicationCommand({
             effects: session.effects,
           })
 
-          await client.api.interactions.editReply(i.application_id, i.token, {
+          await client.api.interactions.respond(i.application_id, i.id, i.token, {
             components: [
               {
                 type: ComponentType.TextDisplay,
@@ -1783,7 +1709,7 @@ createApplicationCommand({
       sessions.delete(interaction.token)
 
       void client.api.interactions
-        .editReply(interaction.application_id, interaction.token, {
+        .respond(interaction.application_id, interaction.id, interaction.token, {
           components: [
             {
               type: ComponentType.TextDisplay,

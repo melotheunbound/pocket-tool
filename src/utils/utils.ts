@@ -1,15 +1,24 @@
 import { join } from 'path'
 import { pathToFileURL } from 'url'
 import { Emoji } from '../bot/constants'
-import type { ApplicationCommand, ChatInputOptions, Localization } from '../types/types'
+import {
+  RequestMethod,
+  ResponseType,
+  type ApplicationCommand,
+  type ChatInputOptions,
+  type Localization,
+} from '../types/types'
 import {
   API,
   ApplicationCommandOptionType,
   ApplicationCommandType,
   InteractionType,
+  PermissionFlagsBits,
+  StickerFormatType,
   type APIApplicationCommandInteractionDataOption,
   type APIApplicationCommandOption,
   type APIChatInputApplicationCommandInteraction,
+  type APIMessage,
   type APIMessageComponentEmoji,
   type LocalizationMap,
   type RESTPostAPIApplicationCommandsJSONBody,
@@ -17,14 +26,16 @@ import {
   type Snowflake,
 } from '@discordjs/core'
 import { readdir } from 'fs/promises'
+import { cdn } from './markdown'
+import { makeRequest } from './request'
+import sharp from 'sharp'
+import { parse } from 'chrono-node'
 
 export async function readDirectory(folder: string): Promise<void> {
   const files = await readdir(folder, { recursive: true })
 
   for (const filename of files) {
-    if (!filename.endsWith('.ts')) {
-      continue
-    }
+    if (!filename.endsWith('.ts')) continue
 
     const fullPath = join(folder, filename)
 
@@ -439,4 +450,117 @@ export function readableSize(bytes: number, micro: boolean = false, precision = 
   } while (Math.round(Math.abs(bytes) * round) / round >= thresh && unit < readableSizeUnits.length - 1)
 
   return `${bytes.toFixed(precision)} ${readableSizeUnits[unit]}`
+}
+
+export function formatRolePermissions(bitfield: string): string[] {
+  const bits = BigInt(bitfield)
+
+  return Object.entries(PermissionFlagsBits)
+    .filter(([_, value]) => (bits & BigInt(value)) === BigInt(value))
+    .map(([name]) => name)
+}
+
+export const supportedTimezones = new Set(Intl.supportedValuesOf('timeZone'))
+
+export function parseDate(time: string, timezone: string): number | null {
+  const tz = supportedTimezones.has(timezone) ? timezone : Temporal.Now.timeZoneId()
+
+  const reference = Temporal.Now.instant()
+
+  const parsed = parse(time, {
+    instant: new Date(reference.epochMilliseconds),
+    timezone: tz,
+  })[0]
+
+  return parsed ? parsed.date().getTime() : null
+}
+
+export function extractTweetId(input: string): string | undefined {
+  const trimmed = input.trim()
+
+  if (/^\d+$/.test(trimmed)) return trimmed
+
+  try {
+    const tweetUrl = new URL(trimmed)
+    const id = tweetUrl.pathname.split('/').pop()
+    return id && /^\d+$/.test(id) ? id : undefined
+  } catch {
+    return undefined
+  }
+}
+
+export async function resolveQuoteContent(message: APIMessage) {
+  const content = message.content.trim()
+  const mentions = message.mentions
+
+  const customEmojiRegex = /<a?:\w+:(\d+)>/g
+  const emojiIds = [...new Set([...content.matchAll(customEmojiRegex)].map(match => match[1]!))]
+
+  const stickers: Buffer[] = []
+  const stickerFallbacks: string[] = []
+
+  const [emojiResults] = await Promise.all([
+    Promise.allSettled(
+      emojiIds.map(async id => {
+        const data = await makeRequest(cdn(`/emojis/${id}`, undefined, 'png', false), {
+          method: RequestMethod.GET,
+          response: ResponseType.BUFFER,
+          timeout: 10 * 1000,
+        })
+        return [id, data] as const
+      }),
+    ),
+    Promise.all(
+      (message.sticker_items ?? []).map(async sticker => {
+        const url =
+          sticker.format_type === StickerFormatType.GIF
+            ? `https://media.discordapp.net/stickers/${sticker.id}.gif`
+            : cdn(
+                `/stickers/${sticker.id}`,
+                undefined,
+                sticker.format_type === StickerFormatType.Lottie ? 'json' : 'png',
+                false,
+              )
+
+        try {
+          let data = await makeRequest(url, {
+            method: RequestMethod.GET,
+            response: ResponseType.BUFFER,
+            timeout: 10 * 1000,
+          })
+
+          if (sticker.format_type === StickerFormatType.Lottie) {
+            const { createCanvas, LottieAnimation } = await import('@napi-rs/canvas')
+            const animation = LottieAnimation.loadFromData(data)
+            const canvas = createCanvas(320, 320)
+
+            animation.seekFrame(0)
+            animation.render(canvas.getContext('2d'), { x: 0, y: 0, width: 320, height: 320 })
+            data = await sharp(canvas.toBuffer('image/png')).png().toBuffer()
+          } else if (sticker.format_type === StickerFormatType.GIF) {
+            data = await sharp(data, { animated: false }).png().toBuffer()
+          }
+
+          stickers.push(data)
+        } catch {
+          stickerFallbacks.push(`[Sticker: ${sticker.name}]`)
+        }
+      }),
+    ),
+  ])
+
+  const emojis = Object.fromEntries(
+    emojiResults.flatMap(result => (result.status === 'fulfilled' ? [result.value] : [])),
+  )
+
+  const parsedContent = content.replace(/<@!?(\d+)>/g, (_, id) => {
+    const user = mentions?.find(user => user.id === id)
+    return user ? `@${user.global_name ?? user.username}` : '@unknown'
+  })
+
+  return {
+    content: [parsedContent, ...stickerFallbacks].filter(Boolean).join('\n'),
+    emojis,
+    stickers,
+  }
 }
