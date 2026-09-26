@@ -154,7 +154,7 @@ createApplicationCommand({
       return
     }
 
-    const sourceCode = from ?? 'auto'
+    const sourceCode = from === 'auto' ? undefined : from
     const targetCode =
       to === 'auto'
         ? (findClosestMatch(
@@ -172,19 +172,19 @@ createApplicationCommand({
       body: {
         text: [text],
         target_lang: targetCode,
-        source_lang: sourceCode,
+        ...(sourceCode ? { source_lang: sourceCode } : {}),
       },
     })
 
-    const actualSourceCode = sourceCode ?? translation.source_lang
+    const actualSourceCode = sourceCode ?? translation.translations[0].detected_source_lang
 
     const sourceLanguage = DEEPLX_LANGUAGES.find(language => language.code === actualSourceCode)
 
     if (!sourceLanguage) throw new Error(`Unsupported source language: ${actualSourceCode}`)
 
-    const targetLanguage = DEEPLX_LANGUAGES.find(language => language.code === translation.target_lang)
+    const targetLanguage = DEEPLX_LANGUAGES.find(language => language.code === targetCode)
 
-    if (!targetLanguage) throw new Error(`Unsupported target language: ${translation.target_lang}`)
+    if (!targetLanguage) throw new Error(`Unsupported target language: ${targetCode}`)
 
     await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       components: [
@@ -200,7 +200,7 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${translation.data}${
+              content: `${translation.translations[0].text}${
                 to === undefined || to === 'auto'
                   ? `\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.translate.auto_detected_target')}`
                   : ''

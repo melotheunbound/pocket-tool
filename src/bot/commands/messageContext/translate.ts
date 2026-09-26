@@ -58,7 +58,7 @@ createApplicationCommand({
         DEEPLX_LANGUAGES.map(language => language.code),
       ) ?? 'en'
 
-    const translation = await makeRequest('https://api.cognitive.microsofttranslator.com/translate', {
+    const translation = await makeRequest('https://oneshot-free.www.deepl.com/v1/translate', {
       method: RequestMethod.POST,
       response: ResponseType.JSON,
       headers: {
@@ -67,19 +67,18 @@ createApplicationCommand({
       body: {
         text: [text],
         target_lang: targetCode,
-        source_lang: 'auto',
       },
     })
 
-    const sourceCode = translation.source_lang
+    const sourceCode = translation.translations[0].detected_source_lang
 
     const sourceLanguage = DEEPLX_LANGUAGES.find(language => language.code === sourceCode)
 
     if (!sourceLanguage) throw new Error(`Unsupported source language: ${sourceCode}`)
 
-    const targetLanguage = DEEPLX_LANGUAGES.find(language => language.code === translation.target_lang)
+    const targetLanguage = DEEPLX_LANGUAGES.find(language => language.code === targetCode)
 
-    if (!targetLanguage) throw new Error(`Unsupported target language: ${translation.target_lang}`)
+    if (!targetLanguage) throw new Error(`Unsupported target language: ${targetCode}`)
 
     await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       components: [
@@ -95,7 +94,7 @@ createApplicationCommand({
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${translation.data}\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.translate.auto_detected_target')}`,
+              content: `${translation.translations[0].text}\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.translate.auto_detected_target')}`,
             },
           ],
         },

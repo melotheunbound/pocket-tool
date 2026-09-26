@@ -193,11 +193,11 @@ createApplicationCommand({
         body: {
           text: [content],
           target_lang: targetCode,
-          source_lang: sourceCode ?? 'auto',
+          ...(sourceCode ? { source_lang: sourceCode } : {}),
         },
       })
 
-      const translated = translation.data
+      const translated = translation.translations[0].text
       isTranslated = !!translated
       content = translated ?? content
     }
