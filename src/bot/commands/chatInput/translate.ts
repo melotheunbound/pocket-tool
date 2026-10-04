@@ -171,7 +171,7 @@ createApplicationCommand({
 
     const targetLanguage = GOOGLE_TRANSLATOR_LANGUAGES.find(language => language.code === targetCode)
 
-    if (!targetLanguage) throw new Error(`Unsupported target language: ${targetCode}`)
+    if (!targetLanguage) throw new Error(`Unsupported target language`)
 
     const translation = await makeRequest('https://translate.googleapis.com/translate_a/single', {
       method: RequestMethod.GET,
@@ -189,7 +189,7 @@ createApplicationCommand({
 
     const sourceLanguage = GOOGLE_TRANSLATOR_LANGUAGES.find(language => language.code === translation[2])
 
-    if (!sourceLanguage) throw new Error(`Unsupported detected source language: ${translation[2]}`)
+    if (!sourceLanguage) throw new Error(`Unsupported detected source language`)
 
     await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       components: [
