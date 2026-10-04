@@ -132,7 +132,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               ],
             },
           ],
-          flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
+          flags: MessageFlags.IsComponentsV2,
         })
       }
 
@@ -193,7 +193,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               ],
             },
           ],
-          flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
+          flags: MessageFlags.IsComponentsV2,
         })
       }
 
@@ -231,7 +231,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               ],
             },
           ],
-          flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
+          flags: MessageFlags.IsComponentsV2,
         })
 
         return
@@ -254,7 +254,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
               ],
             },
           ],
-          flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
+          flags: MessageFlags.IsComponentsV2,
         })
       }
 
