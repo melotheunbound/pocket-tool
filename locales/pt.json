@@ -80,8 +80,18 @@
       }
     },
     "invite": {
-      "invalid_link": "Por favor, forneça um link de convite válido para visualizar as informações.",
-      "created": "> Criado Em:"
+      "invalid_link": "Forneça um link de convite válido para visualizar as informações.",
+      "invite_info": "-# Informações do Convite:",
+      "code": "> Código:",
+      "created": "> Criado Em:",
+      "expires": "> Expira Em:",
+      "inviter": "> Criado Por:",
+      "guild_info": "-# Informações do Servidor:",
+      "id": "> ID:",
+      "name": "> Nome:",
+      "description": "> Descrição:",
+      "members": "> Membros:",
+      "boosts": "> Impulsos:"
     },
     "lastfm": {
       "missing_api_key": "A chave da API do Last.fm não está configurada.",
@@ -93,16 +103,20 @@
       "listening": "**{username}** está ouvindo **{track}** por **{artist}**"
     },
     "role": {
-      "created": "> Criado Em:",
+      "role_info": "-# Informações do Cargo:",
+      "id": "> ID:",
+      "mention": "> Menção:",
+      "name": "> Nome:",
+      "created": "> Criado em:",
       "hoisted": "> Destacado:",
       "mentionable": "> Mencionável:",
       "managed": "> Gerenciado:",
       "position": "> Posição:",
       "colors": "> Cores:",
       "permissions": "> Permissões:",
-      "yes": "**Sim**",
-      "no": "**Não**",
-      "none": "**Nenhuma**"
+      "yes": "Sim",
+      "no": "Não",
+      "none": "Nenhum"
     },
     "timestamp": {
       "invalid_time": "Por favor, forneça um horário válido para converter."
@@ -120,21 +134,40 @@
       "limit": "Você atingiu seu limite diário de TTS de {limit} mensagens. Tente novamente {timestamp}.",
       "no_text": "Por favor, forneça algum texto para converter em fala."
     },
-    "tweet": {
-      "missing_api_key": "A chave da API do Twitter da Tolgchu não está configurada.",
-      "invalid_tweet": "Por favor, forneça uma URL ou ID de tweet válido para visualizar o tweet.",
-      "quoting_tweet": "-# Citando {tweet}, publicado por {author}",
-      "replying_to_tweet": "-# Respondendo a {tweet}, publicado por {author}",
-      "posted_by": "-# Publicado por {verified}{author} ({username})",
-      "translated": "-# Tweets traduzidos podem conter erros ou não refletir o conteúdo original",
-      "tweeted": "-# Tweetado Às:",
-      "button": {
-        "view": "Ver Tweet"
+    "twitter": {
+      "missing_api_key": "A chave da API do Twitter da Tolgchu não está definida.",
+      "tweet": {
+        "invalid_tweet": "Forneça uma URL ou ID de tweet válido para visualizar o tweet.",
+        "quoting": "-# *Citando {tweet}, publicado por {author}*",
+        "replying": "-# *Respondendo a {tweet}, publicado por {author}*",
+        "author": "-# Tweetado por {verified} **{author}** ({username})",
+        "translated": "-# Tweets traduzidos podem conter imprecisões ou não refletir o conteúdo original",
+        "poll_ended": "Enquete Terminada Em:",
+        "poll_ends": "Enquete Termina Em:",
+        "votes": "Votos",
+        "tweeted": "-# Tweetado Em:",
+        "views": "Visualizações",
+        "button": {
+          "view": "Ver Tweet"
+        }
+      },
+      "profile": {
+        "posts": "Publicações",
+        "joined": "-# Entrou Em:",
+        "following": "Seguindo",
+        "followers": "Seguidores"
       }
     },
     "user": {
-      "no_user": "Por favor, selecione um usuário válido para visualizar as informações.",
+      "no_user": "Selecione um usuário válido para visualizar as informações.",
+      "user_info": "-# **Informações do Usuário:**",
+      "id": "> ID:",
+      "username": "> Nome de Usuário:",
+      "display_name": "> Nome de Exibição:",
       "created": "> Criado Em:",
+      "mention": "> Menção:",
+      "member_info": "-# **Informações do Membro:**",
+      "nickname": "> Apelido:",
       "joined": "> Entrou Em:",
       "boosting": "> Impulsionando Desde:",
       "roles": "> Cargos:",

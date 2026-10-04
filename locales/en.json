@@ -81,7 +81,17 @@
     },
     "invite": {
       "invalid_link": "Please provide an invite link to view information about.",
-      "created": "> Created At:"
+      "invite_info": "-# **Invite Information:**",
+      "code": "> Code:",
+      "expires": "> Expires At:",
+      "inviter": "> Inviter:",
+      "guild_info": "-# **Server Information:**",
+      "id": "> ID:",
+      "name": "> Name:",
+      "description": "> Description:",
+      "created": "> Created At:",
+      "members": "> Members:",
+      "boosts": "> Boosts:"
     },
     "lastfm": {
       "missing_api_key": "The Last.fm API key is not set.",
@@ -93,6 +103,10 @@
       "listening": "**{username}** is listening to **{track} **by **{artist} **"
     },
     "role": {
+      "role_info": "-# **Role Information:**",
+      "id": "> ID:",
+      "mention": "> Mention:",
+      "name": "> Name:",
       "created": "> Created At:",
       "hoisted": "> Hoisted:",
       "mentionable": "> Mentionable:",
@@ -120,21 +134,40 @@
       "limit": "You have reached your daily TTS limit of {limit} messages. Try again {timestamp}.",
       "no_text": "Please provide some text to convert to speech."
     },
-    "tweet": {
+    "twitter": {
       "missing_api_key": "The Tolgchu Twitter API key is not set.",
-      "invalid_tweet": "Please provide a valid tweet URL or ID to view the tweet.",
-      "quoting_tweet": "-# *Quoting {tweet}, posted by {author}*",
-      "replying_to_tweet": "-# *Replying to {tweet}, posted by {author}*",
-      "posted_by": "-# Posted by {verified} {author} ({username})",
-      "translated": "-# Translated tweets may be inaccurate or may not reflect the original content",
-      "tweeted": "-# Tweeted At:",
-      "button": {
-        "view": "View Tweet"
+      "tweet": {
+        "invalid_tweet": "Please provide a valid tweet URL or ID to view the tweet.",
+        "quoting": "-# *Quoting {tweet}, posted by {author}*",
+        "replying": "-# *Replying to {tweet}, posted by {author}*",
+        "author": "-# Tweeted by {verified} **{author}** ({username})",
+        "translated": "-# Translated tweets may be inaccurate or may not reflect the original content",
+        "poll_ended": "Poll Ended At:",
+        "poll_ends": "Poll Ends At:",
+        "votes": "Votes",
+        "tweeted": "-# Tweeted At:",
+        "views": "Views",
+        "button": {
+          "view": "View Tweet"
+        }
+      },
+      "profile": {
+        "posts": "Posts",
+        "joined": "-# Joined At:",
+        "following": "Following",
+        "followers": "Followers"
       }
     },
     "user": {
       "no_user": "Please select a valid user to view information for.",
+      "user_info": "-# **User Information:**",
+      "id": "> ID:",
+      "mention": "> Mention:",
+      "username": "> Username:",
+      "display_name": "> Display Name:",
       "created": "> Created At:",
+      "member_info": "-# **Member Information:**",
+      "nickname": "> Nickname:",
       "joined": "> Joined At:",
       "boosting": "> Boosting Since:",
       "roles": "> Roles:",

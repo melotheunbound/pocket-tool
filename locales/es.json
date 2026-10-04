@@ -80,8 +80,18 @@
       }
     },
     "invite": {
-      "invalid_link": "Por favor, proporciona una invitación válida para ver la información.",
-      "created": "> Creado El:"
+      "invalid_link": "Proporciona un enlace de invitación válido para ver la información.",
+      "invite_info": "-# Información de la Invitación:",
+      "code": "> Código:",
+      "expires": "> Expira El:",
+      "inviter": "> Creado Por:",
+      "guild_info": "-# Información del Servidor:",
+      "id": "> ID:",
+      "name": "> Nombre:",
+      "description": "> Descripción:",
+      "created": "> Creado El:",
+      "members": "> Miembros:",
+      "boosts": "> Mejoras:"
     },
     "lastfm": {
       "missing_api_key": "La clave de API de Last.fm no está configurada.",
@@ -93,16 +103,20 @@
       "listening": "**{username}** esta escuchando **{track} **por **{artist} **"
     },
     "role": {
-      "created": "> Creado El:",
-      "hoisted": "> Visible Por Separado:",
+      "role_info": "-# Información del Rol:",
+      "id": "> ID:",
+      "mention": "> Mención:",
+      "name": "> Nombre:",
+      "created": "> Creado el:",
+      "hoisted": "> Destacado:",
       "mentionable": "> Mencionable:",
       "managed": "> Gestionado:",
       "position": "> Posición:",
       "colors": "> Colores:",
       "permissions": "> Permisos:",
-      "yes": "**Sí**",
-      "no": "**No**",
-      "none": "**Ninguno**"
+      "yes": "Sí",
+      "no": "No",
+      "none": "Ninguno"
     },
     "timestamp": {
       "invalid_time": "Por favor, proporciona un tiempo válido para convertir."
@@ -120,26 +134,45 @@
       "limit": "Has alcanzado el límite diario de {limit} mensajes TTS. Inténtalo de nuevo en {timestamp}.",
       "no_text": "Por favor, proporciona un texto para convertirlo a voz."
     },
-    "tweet": {
-      "missing_api_key": "La clave de API de Tolgchu Twitter no está configurada.",
-      "invalid_tweet": "Por favor, proporciona una URL o ID válidos para ver el tweet.",
-      "quoting_tweet": "-# *Citando {tweet}, publicado por {author}*",
-      "replying_to_tweet": "-# *Respondiendo a {tweet}, publicado por {author}*",
-      "posted_by": "-# Publicado por {verified}{author} ({username})",
-      "translated": "-# Los tweets traducidos pueden contener errores o no reflejar el contenido original.",
-      "tweeted": "-# Tweeteado El:",
-      "button": {
-        "view": "Ver Tweet"
+    "twitter": {
+      "missing_api_key": "La clave de la API de Twitter de Tolgchu no está configurada.",
+      "tweet": {
+        "invalid_tweet": "Proporciona una URL o ID de tweet válido para ver el tweet.",
+        "quoting": "-# *Citando {tweet}, publicado por {author}*",
+        "replying": "-# *Respondiendo a {tweet}, publicado por {author}*",
+        "author": "-# Tuiteado por {verified} **{author}** ({username})",
+        "translated": "-# Los tweets traducidos pueden contener imprecisiones o no reflejar el contenido original",
+        "poll_ended": "Encuesta Terminada El:",
+        "poll_ends": "Encuesta Termina El:",
+        "votes": "Votos",
+        "tweeted": "-# Tuiteado El:",
+        "views": "Visualizaciones",
+        "button": {
+          "view": "Ver Tweet"
+        }
+      },
+      "profile": {
+        "posts": "Publicaciones",
+        "joined": "-# Se Unió El:",
+        "following": "Siguiendo",
+        "followers": "Seguidores"
       }
     },
     "user": {
-      "no_user": "Por favor, selecciona un usuario válido para ver la información.",
+      "no_user": "Selecciona un usuario válido para ver la información.",
+      "user_info": "-# **Información del Usuario:**",
+      "id": "> ID:",
+      "username": "> Nombre de Usuario:",
+      "display_name": "> Nombre de Visualización:",
       "created": "> Creado El:",
+      "mention": "> Mención:",
+      "member_info": "-# **Información del Miembro:**",
+      "nickname": "> Apodo:",
       "joined": "> Se Unió El:",
       "boosting": "> En Mejora Desde:",
       "roles": "> Roles:",
       "footer": {
-        "text": "Debido a las limitaciones de Discord, este perfil no puede ser mostrado completamente. {profile}",
+        "text": "Debido a las limitaciones de Discord, este perfil no se puede mostrar por completo. {profile}",
         "profile": "Abrir en Discord."
       }
     },
