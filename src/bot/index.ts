@@ -11,7 +11,6 @@ import {
   MessageFlags,
   PresenceUpdateStatus,
   Routes,
-  type APIMessage,
   type GatewayDispatchPayload,
   type RESTPutAPIApplicationCommandsJSONBody,
   type RESTPutAPIApplicationGuildCommandsJSONBody,
@@ -228,7 +227,7 @@ client.api.interactions.respond = (async (applicationId, interactionId, interact
   try {
     return original
       ? await client.api.interactions.editReply(applicationId, interactionToken, body, messageId, options)
-      : (await client.api.interactions.reply(interactionId, interactionToken, body, options)).resource?.message
+      : (await client.api.interactions.reply(interactionId, interactionToken, body, options))!.resource!.message
   } catch (error) {
     const code = (error as any)?.code
     const blocked = MESSAGE_BLOCK_REASONS[code as keyof typeof MESSAGE_BLOCK_REASONS]

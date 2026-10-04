@@ -1,12 +1,11 @@
 import type { Collection } from '@discordjs/collection'
 import type { Collector, CollectorOptions, GatewayShard } from './types'
+import type { APIMessage, Snowflake } from '@discordjs/core'
 import type {
-  APIMessage,
+  CreateInteractionFollowUpResponseOptions,
   CreateInteractionResponseOptions,
   EditInteractionResponseOptions,
-  RESTPostAPIInteractionCallbackWithResponseResult,
-  Snowflake,
-} from '@discordjs/core'
+} from '@discordjs/core/http-only'
 import type { RequestData } from '@discordjs/rest'
 
 declare module '@discordjs/core' {
