@@ -123,11 +123,14 @@ createApplicationCommand({
       content = content?.replace(pattern, hyperlink(`https://x.com/hashtag/${hashtag}`, `#${hashtag}`))
     })
 
-    post.mentions.forEach((mention: string) => {
-      const escaped = mention.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    post.mentions.forEach((mention: any) => {
+      const escaped = mention.username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       const pattern = new RegExp(`@${escaped}(?![\\p{L}\\p{N}_])`, 'gu')
 
-      content = content?.replace(pattern, hyperlink(`https://x.com/${encodeURIComponent(mention)}`, `@${mention}`))
+      content = content?.replace(
+        pattern,
+        hyperlink(`https://x.com/${encodeURIComponent(mention.username)}`, `@${mention.username}`),
+      )
     })
 
     await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
@@ -195,7 +198,7 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `${t(l, 'commands.twitter.tweet.tweet_author', {
+              content: `${t(l, 'commands.twitter.tweet.author', {
                 verified: post.author.isVerified ? emoji('Verified') : '',
                 author: post.author.name,
                 username: hyperlink(`https://x.com/${post.author.username}`, `@${post.author.username}`),
@@ -213,7 +216,7 @@ createApplicationCommand({
                   },
                 ] satisfies APIMessageTopLevelComponent[])
               : []),
-            ...(post.hasPoll
+            ...(post.poll
               ? ([
                   {
                     type: ComponentType.Separator,
@@ -250,7 +253,7 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `${t(l, 'commands.twitter.tweeted')} ${timestamp(
+                  content: `${t(l, 'commands.twitter.tweet.tweeted')} ${timestamp(
                     Temporal.Instant.from(post.createdAt).epochMilliseconds,
                     TimestampStyle.FullDateShortTime,
                   )} (${timestamp(
@@ -261,7 +264,7 @@ createApplicationCommand({
               ],
               accessory: {
                 type: ComponentType.Button,
-                label: t(l, 'commands.twitter.button.view'),
+                label: t(l, 'commands.twitter.tweet.button.view'),
                 emoji: toComponentEmoji('Link'),
                 url: `https://x.com/${post.author.username}/status/${id}`,
                 style: ButtonStyle.Link,

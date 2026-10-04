@@ -84,11 +84,13 @@
       "invite_info": "-# Información de la Invitación:",
       "code": "> Código:",
       "expires": "> Expira El:",
+      "no_expiration": "Nunca.",
       "inviter": "> Creado Por:",
       "guild_info": "-# Información del Servidor:",
       "id": "> ID:",
       "name": "> Nombre:",
       "description": "> Descripción:",
+      "no_description": "No hay ninguna descripción disponible.",
       "created": "> Creado El:",
       "members": "> Miembros:",
       "boosts": "> Mejoras:"

@@ -85,11 +85,13 @@
       "code": "> Código:",
       "created": "> Criado Em:",
       "expires": "> Expira Em:",
+      "no_expiration": "Nunca.",
       "inviter": "> Criado Por:",
       "guild_info": "-# Informações do Servidor:",
       "id": "> ID:",
       "name": "> Nome:",
       "description": "> Descrição:",
+      "no_description": "Nenhuma descrição disponível.",
       "members": "> Membros:",
       "boosts": "> Impulsos:"
     },
