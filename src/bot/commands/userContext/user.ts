@@ -93,7 +93,20 @@ createApplicationCommand({
               components: [
                 {
                   type: ComponentType.TextDisplay,
-                  content: `## ${emoji('Person')} ${member?.nick ?? user.global_name}\n-# @${user.username} • ${highlight(user.id)}`,
+                  content: `${t(l, 'commands.user.user_info')}\n${t(l, 'commands.user.id')} ${highlight(user.id, HighlightStyle.Bold)}\n${t(l, 'commands.user.mention')} **<@${user.id}>**\n${t(l, 'commands.user.username')} **${user.username}**\n${t(l, 'commands.user.display_name')} **${user.global_name}**\n${t(l, 'commands.user.created')} **${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})**${
+                    member
+                      ? `\n${t(l, 'commands.user.member_info')}${member.nick ? `\n${t(l, 'commands.user.nickname')} **${member.nick}**` : ''}\n${t(l, 'commands.user.joined')} **${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.RelativeTime)})**${member.premium_since ? `\n${t(l, 'commands.user.boosting')} **${timestamp(Temporal.Instant.from(member.premium_since!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.premium_since!).epochMilliseconds, TimestampStyle.RelativeTime)})**` : ``}${
+                          member.roles.length
+                            ? `\n${t(l, 'commands.user.roles')} **${member.roles
+                                .slice(0, 5)
+                                .map(r => `<@&${r}>`)
+                                .join(
+                                  ', ',
+                                )}**${member.roles.length > 5 ? ` ${highlight(`+${(member.roles.length - 5).toLocaleString('en-US')}`, HighlightStyle.Bold)}` : ``}`
+                            : ''
+                        }`
+                      : ''
+                  }\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.user.footer.text', { profile: hyperlink(`discord://-/users/${user.id}`, t(l, 'commands.user.footer.profile')) })}`,
                 },
               ],
               accessory: {
@@ -111,24 +124,6 @@ createApplicationCommand({
                       : cdn(`/embed/avatars/${Number(BigInt(user.id) >> 22n) % 6}`, 4096, 'png'),
                 },
               },
-            },
-            {
-              type: ComponentType.Separator,
-            },
-            {
-              type: ComponentType.TextDisplay,
-              content: `${t(l, 'commands.user.created')} **${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(user.id), TimestampStyle.RelativeTime)})**${
-                member
-                  ? `\n${t(l, 'commands.user.joined')} **${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.joined_at!).epochMilliseconds, TimestampStyle.RelativeTime)})**${member.premium_since ? `\n${t(l, 'commands.user.boosting')} **${timestamp(Temporal.Instant.from(member.premium_since!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(member.premium_since!).epochMilliseconds, TimestampStyle.RelativeTime)})**` : ''}${
-                      member.roles.length > 0
-                        ? `\n${t(l, 'commands.user.roles')} **${member.roles
-                            .slice(0, 5)
-                            .map(id => `<@&${id}>`)
-                            .join(', ')}**`
-                        : ''
-                    }${member.roles.length > 5 ? ` ${highlight(`+${(member.roles.length - 5).toLocaleString('en-US')}`, HighlightStyle.Bold)}` : ``}`
-                  : ''
-              }\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.user.footer.text', { profile: hyperlink(`discord://-/users/${user.id}`, t(l, 'commands.user.footer.profile')) })}`,
             },
           ],
         },

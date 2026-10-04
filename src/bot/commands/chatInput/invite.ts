@@ -123,7 +123,7 @@ createApplicationCommand({
                     components: [
                       {
                         type: ComponentType.TextDisplay,
-                        content: `## ${emoji('Home')} ${invite.guild.name}\n-# ${highlight(invite.guild.id)}\n${invite.guild.description ? `*${invite.guild.description}*` : ''}`,
+                        content: `${t(l, 'commands.invite.invite_info')}\n${t(l, 'commands.invite.code')} ${highlight(invite.code, HighlightStyle.Bold)}\n${t(l, 'commands.invite.expires')} **${timestamp(Temporal.Instant.from(invite.expires_at!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(invite.expires_at!).epochMilliseconds, TimestampStyle.RelativeTime)})**\n${t(l, 'commands.invite.inviter')} **@${invite.inviter?.username}**\n${t(l, 'commands.invite.guild_info')}\n${t(l, 'commands.invite.id')} ${highlight(invite.guild.id, HighlightStyle.Bold)}\n${t(l, 'commands.invite.name')} **${invite.guild.name}**\n${t(l, 'commands.invite.description')} **${invite.guild.description}**\n${t(l, 'commands.invite.members')} **${invite.approximate_member_count?.toLocaleString('en-US')}**\n${t(l, 'commands.invite.boosts')} **${invite.guild.premium_subscription_count?.toLocaleString('en-US')}**`,
                       },
                     ],
                     accessory: {
@@ -137,16 +137,9 @@ createApplicationCommand({
               : ([
                   {
                     type: ComponentType.TextDisplay,
-                    content: `## ${emoji('Home')} ${invite.guild.name}\n-# ${highlight(invite.guild.id)}\n${invite.guild.description ? `*${invite.guild.description}*` : ''}`,
+                    content: `${t(l, 'commands.invite.invite_info')}\n${t(l, 'commands.invite.code')} ${highlight(invite.code, HighlightStyle.Bold)}\n${t(l, 'commands.invite.created')} **${timestamp(getTimestampFromSnowflake(invite.code), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(invite.code), TimestampStyle.RelativeTime)})**\n${t(l, 'commands.invite.expires')} **${timestamp(Temporal.Instant.from(invite.expires_at!).epochMilliseconds, TimestampStyle.LongDate)} (${timestamp(Temporal.Instant.from(invite.expires_at!).epochMilliseconds, TimestampStyle.RelativeTime)})**\n${t(l, 'commands.invite.inviter')} **@${invite.inviter?.username}**\n${t(l, 'commands.invite.guild_info')}\n${t(l, 'commands.invite.id')} ${highlight(invite.guild.id, HighlightStyle.Bold)}\n${t(l, 'commands.invite.name')} **${invite.guild.name}**\n${t(l, 'commands.invite.description')} **${invite.guild.description}**\n${t(l, 'commands.invite.members')} **${invite.approximate_member_count?.toLocaleString('en-US')}**\n${t(l, 'commands.invite.boosts')} **${invite.guild.premium_subscription_count?.toLocaleString('en-US')}**`,
                   },
                 ] satisfies APIComponentInContainer[])),
-            {
-              type: ComponentType.Separator,
-            },
-            {
-              type: ComponentType.TextDisplay,
-              content: `${t(l, 'commands.invite.created')} ${timestamp(getTimestampFromSnowflake(invite.guild.id), TimestampStyle.LongDate)} (${timestamp(getTimestampFromSnowflake(invite.guild.id), TimestampStyle.RelativeTime)})\n> ${emoji('People')} ${highlight(invite.approximate_member_count?.toLocaleString('en-US'), HighlightStyle.Bold)}   ${emoji('Boost')} ${highlight(invite.guild.premium_subscription_count?.toLocaleString('en-US'), HighlightStyle.Bold)}`,
-            },
           ],
         },
       ],
