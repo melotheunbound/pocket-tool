@@ -1,4 +1,3 @@
-/*
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
@@ -12,8 +11,8 @@ import { findClosestMatch, getAutocompleteFocusedOption } from '../../../utils/u
 import { makeRequest } from '../../../utils/request'
 import { RequestMethod, ResponseType } from '../../../types/types'
 import { emoji } from '../../../utils/markdown'
-import { DEEPLX_LANGUAGES } from '../../constants'
 import { t } from '../../../utils/localization'
+import { GOOGLE_TRANSLATOR_LANGUAGES } from '../../constants'
 
 createApplicationCommand({
   type: ApplicationCommandType.ChatInput,
@@ -81,7 +80,7 @@ createApplicationCommand({
     const focused = getAutocompleteFocusedOption(interaction.data.options)
     const value = String(focused?.value ?? '').toLowerCase()
 
-    const languages = DEEPLX_LANGUAGES.filter(language => {
+    const languages = GOOGLE_TRANSLATOR_LANGUAGES.filter(language => {
       return language.name.toLowerCase().includes(value) || language.code.toLowerCase().includes(value)
     })
 
@@ -113,7 +112,6 @@ createApplicationCommand({
             nameLocalizations: {
               'pt-BR': 'Usar Meu Locale',
               'es-ES': 'Usar Meu Locale',
-              'es-419': 'Usar Meu Locale',
             },
             value: 'auto',
           },
@@ -157,46 +155,41 @@ createApplicationCommand({
 
     const sourceCode =
       from && from !== 'auto'
-        ? findClosestMatch(
+        ? (findClosestMatch(
             from,
-            DEEPLX_LANGUAGES.map(language => language.code),
-          )
-        : undefined
+            GOOGLE_TRANSLATOR_LANGUAGES.map(language => language.code),
+          ) ?? 'auto')
+        : 'auto'
+
     const targetCode =
       to === 'auto' || !to
         ? (findClosestMatch(
             interaction.locale,
-            DEEPLX_LANGUAGES.map(language => language.code),
-          ) ?? 'en-US')
+            GOOGLE_TRANSLATOR_LANGUAGES.map(language => language.code),
+          ) ?? 'en')
         : to
 
-    const translation = await makeRequest('https://oneshot-free.www.deepl.com/v1/translate', {
-      method: RequestMethod.POST,
+    const targetLanguage = GOOGLE_TRANSLATOR_LANGUAGES.find(language => language.code === targetCode)
+
+    if (!targetLanguage) throw new Error(`Unsupported target language: ${targetCode}`)
+
+    const translation = await makeRequest('https://translate.googleapis.com/translate_a/single', {
+      method: RequestMethod.GET,
       response: ResponseType.JSON,
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: {
-        text: [text],
-        target_lang: targetCode,
-        ...(sourceCode ? { source_lang: sourceCode } : {}),
+      params: {
+        client: 'gtx',
+        sl: sourceCode,
+        tl: targetCode,
+        dt: 't',
+        q: text,
       },
     })
 
-    const actualSourceCode =
-      sourceCode ??
-      findClosestMatch(
-        translation.translations[0].detected_source_language,
-        DEEPLX_LANGUAGES.map(language => language.code),
-      )
+    const translated = translation[0].map(([translation]: [string]) => translation).join('')
 
-    const sourceLanguage = DEEPLX_LANGUAGES.find(language => language.code === actualSourceCode)
+    const sourceLanguage = GOOGLE_TRANSLATOR_LANGUAGES.find(language => language.code === translation[2])
 
-    if (!sourceLanguage) throw new Error(`Unsupported source language: ${actualSourceCode}`)
-
-    const targetLanguage = DEEPLX_LANGUAGES.find(language => language.code === targetCode)
-
-    if (!targetLanguage) throw new Error(`Unsupported target language: ${targetCode}`)
+    if (!sourceLanguage) throw new Error(`Unsupported detected source language: ${translation[2]}`)
 
     await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       components: [
@@ -205,14 +198,14 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `> ${emoji('Translate')} ${t(l, 'commands.translate.translated', { sourceFlag: sourceLanguage.flag ? sourceLanguage.flag : '', sourceLanguage: sourceLanguage.name, targetFlag: targetLanguage.flag ? targetLanguage.flag : '', targetLanguage: targetLanguage.name })}`,
+              content: `> ${emoji('Translate')} ${t(l, 'commands.translate.translated', { sourceFlag: 'flag' in sourceLanguage ? sourceLanguage.flag : '', sourceLanguage: sourceLanguage.name, targetFlag: 'flag' in targetLanguage ? targetLanguage.flag : '', targetLanguage: targetLanguage.name })}`,
             },
             {
               type: ComponentType.Separator,
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${translation.translations[0].text}${
+              content: `${translated}${
                 to === undefined || to === 'auto'
                   ? `\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.translate.auto_detected_target')}`
                   : ''
@@ -225,4 +218,3 @@ createApplicationCommand({
     })
   },
 })
-*/

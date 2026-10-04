@@ -1,4 +1,3 @@
-/*
 import {
   ApplicationCommandType,
   ApplicationIntegrationType,
@@ -10,9 +9,9 @@ import createApplicationCommand from '../../../builders/command'
 import { emoji } from '../../../utils/markdown'
 import { makeRequest } from '../../../utils/request'
 import { RequestMethod, ResponseType } from '../../../types/types'
-import { DEEPLX_LANGUAGES } from '../../constants'
 import { findClosestMatch } from '../../../utils/utils'
 import { t } from '../../../utils/localization'
+import { GOOGLE_TRANSLATOR_LANGUAGES } from '../../constants'
 
 createApplicationCommand({
   type: ApplicationCommandType.Message,
@@ -56,33 +55,38 @@ createApplicationCommand({
     const targetCode =
       findClosestMatch(
         interaction.locale,
-        DEEPLX_LANGUAGES.map(language => language.code),
-      ) ?? 'en-US'
+        GOOGLE_TRANSLATOR_LANGUAGES.map(language => language.code),
+      ) ?? 'en'
 
-    const translation = await makeRequest('https://oneshot-free.www.deepl.com/v1/translate', {
-      method: RequestMethod.POST,
+    const targetLanguage = GOOGLE_TRANSLATOR_LANGUAGES.find(language => language.code === targetCode)
+
+    if (!targetLanguage) {
+      throw new Error(`Unsupported target language: ${targetCode}`)
+    }
+
+    const translation = await makeRequest('https://translate.googleapis.com/translate_a/single', {
+      method: RequestMethod.GET,
       response: ResponseType.JSON,
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: {
-        text: [text],
-        target_lang: targetCode,
+      params: {
+        client: 'gtx',
+        sl: 'auto',
+        tl: targetCode,
+        dt: 't',
+        q: text,
       },
     })
 
-    const sourceCode = findClosestMatch(
-      translation.translations[0].detected_source_language,
-      DEEPLX_LANGUAGES.map(language => language.code),
-    )
+    const translated = translation[0].map(([translation]: [string]) => translation).join('')
 
-    const sourceLanguage = DEEPLX_LANGUAGES.find(language => language.code === sourceCode)
+    const sourceCode =
+      findClosestMatch(
+        translation[2],
+        GOOGLE_TRANSLATOR_LANGUAGES.map(language => language.code),
+      ) ?? translation[2]
 
-    if (!sourceLanguage) throw new Error(`Unsupported source language: ${sourceCode}`)
+    const sourceLanguage = GOOGLE_TRANSLATOR_LANGUAGES.find(language => language.code === sourceCode)
 
-    const targetLanguage = DEEPLX_LANGUAGES.find(language => language.code === targetCode)
-
-    if (!targetLanguage) throw new Error(`Unsupported target language: ${targetCode}`)
+    if (!sourceLanguage) throw new Error(`Unsupported detected source language: ${translation[2]}`)
 
     await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
       components: [
@@ -91,14 +95,14 @@ createApplicationCommand({
           components: [
             {
               type: ComponentType.TextDisplay,
-              content: `> ${emoji('Translate')} ${t(l, 'commands.translate.translated', { sourceFlag: sourceLanguage.flag ? sourceLanguage.flag : '', sourceLanguage: sourceLanguage.name, targetFlag: targetLanguage.flag ? targetLanguage.flag : '', targetLanguage: targetLanguage.name })}`,
+              content: `> ${emoji('Translate')} ${t(l, 'commands.translate.translated', { sourceFlag: 'flag' in sourceLanguage ? sourceLanguage.flag : '', sourceLanguage: sourceLanguage.name, targetFlag: 'flag' in targetLanguage ? targetLanguage.flag : '', targetLanguage: targetLanguage.name })}`,
             },
             {
               type: ComponentType.Separator,
             },
             {
               type: ComponentType.TextDisplay,
-              content: `${translation.translations[0].text}\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.translate.auto_detected_target')}`,
+              content: `${translated}\n\n-# ${emoji('Exclamation')} ${t(l, 'commands.translate.auto_detected_target')}`,
             },
           ],
         },
@@ -107,4 +111,3 @@ createApplicationCommand({
     })
   },
 })
-*/

@@ -84,11 +84,13 @@
       "invite_info": "-# **Invite Information:**",
       "code": "> Code:",
       "expires": "> Expires At:",
+      "no_expiration": "Never.",
       "inviter": "> Inviter:",
       "guild_info": "-# **Server Information:**",
       "id": "> ID:",
       "name": "> Name:",
       "description": "> Description:",
+      "no_description": "No description available.",
       "created": "> Created At:",
       "members": "> Members:",
       "boosts": "> Boosts:"
