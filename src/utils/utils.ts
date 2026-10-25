@@ -463,16 +463,26 @@ export function formatRolePermissions(bitfield: string): string[] {
 export const supportedTimezones = new Set(Intl.supportedValuesOf('timeZone'))
 
 export function parseDate(time: string, timezone: string): number | null {
-  const tz = supportedTimezones.has(timezone) ? timezone : Temporal.Now.timeZoneId()
+  const tz = supportedTimezones.has(timezone) ? timezone : 'UTC'
 
-  const reference = Temporal.Now.instant()
+  const now = Temporal.Now.zonedDateTimeISO(tz)
+  const reference = new Date(now.toPlainDateTime().toZonedDateTime('UTC').epochMilliseconds)
 
-  const parsed = parse(time, {
-    instant: new Date(reference.epochMilliseconds),
-    timezone: tz,
-  })[0]
+  const parsed = parse(time, { instant: reference, timezone: 0 })[0]
 
-  return parsed ? parsed.date().getTime() : null
+  if (!parsed) return null
+
+  const zoned = Temporal.ZonedDateTime.from({
+    timeZone: tz,
+    year: parsed.start.get('year')!,
+    month: parsed.start.get('month')!,
+    day: parsed.start.get('day')!,
+    hour: parsed.start.get('hour') ?? 0,
+    minute: parsed.start.get('minute') ?? 0,
+    second: parsed.start.get('second') ?? 0,
+  })
+
+  return zoned.epochMilliseconds
 }
 
 export function extractTweetId(input: string): string | undefined {
@@ -483,6 +493,7 @@ export function extractTweetId(input: string): string | undefined {
   try {
     const tweetUrl = new URL(trimmed)
     const id = tweetUrl.pathname.split('/').pop()
+
     return id && /^\d+$/.test(id) ? id : undefined
   } catch {
     return undefined

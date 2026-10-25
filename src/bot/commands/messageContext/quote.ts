@@ -1864,12 +1864,6 @@ createApplicationCommand({
               ],
             },
           ],
-          files: [
-            {
-              name: `quote.${session.effects.includes('gif') ? 'gif' : 'png'}`,
-              data: card,
-            },
-          ],
           flags: MessageFlags.IsComponentsV2,
         })
         .catch(() => null)
