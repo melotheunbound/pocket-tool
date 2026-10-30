@@ -26,7 +26,7 @@ import { commands } from '../builders/command'
 import createCollector from '../builders/collector'
 import { getShardMemory, handleShardMemoryResponse } from '../utils/shard'
 import { join } from 'path'
-import { emoji } from '../utils/markdown'
+import { emoji, hyperlink } from '../utils/markdown'
 import { MESSAGE_BLOCK_REASONS } from './constants'
 
 process.on('uncaughtException', console.error)
@@ -198,27 +198,29 @@ try {
   console.error('An error occurred while connecting to the gateway:', error)
 }
 
-function votePrompt<T extends { content?: string; components?: any[]; flags?: number }>(body: T): T {
-  if (!(Math.random() < 0.33)) return body
+function votePrompt<T extends { components?: any[] }>(body: T): T {
+  if (Math.random() >= 0.33) return body
 
-  const isComponentsV2 = !!((body.flags ?? 0) & MessageFlags.IsComponentsV2)
-
-  if (isComponentsV2) {
-    const textDisplay = {
+  body.components = [
+    {
       type: ComponentType.TextDisplay,
       content: `-# ${emoji('Topgg')} Consider voting for us on **[Top.gg!](<https://top.gg/bot/1489362526880796903>)**`,
-    }
-
-    body.components = [textDisplay, ...(body.components ?? [])]
-  } else if (body.content) {
-    body.content = `-# ${emoji('Topgg')} Consider voting for us on **[Top.gg!](<https://top.gg/bot/1489362526880796903>)**\n${body.content}`
-  }
+    },
+    ...(body.components ?? []),
+  ]
 
   return body
 }
 
 client.api.interactions.respond = (async (applicationId, interactionId, interactionToken, body, messageId, options) => {
   body.allowed_mentions ??= { parse: [] }
+
+  if (body.content && !((body.flags ?? 0) & MessageFlags.IsComponentsV2)) {
+    body.components = [{ type: ComponentType.TextDisplay, content: body.content }, ...(body.components ?? [])]
+
+    body.content = undefined
+    body.flags = (body.flags ?? 0) | MessageFlags.IsComponentsV2
+  }
 
   votePrompt(body)
 
@@ -237,6 +239,12 @@ client.api.interactions.respond = (async (applicationId, interactionId, interact
     await client.api.interactions.deleteReply(applicationId, interactionToken).catch(() => null)
 
     body.flags = (body.flags ?? 0) | MessageFlags.Ephemeral
+    body.components ??= []
+
+    body.components.unshift({
+      type: ComponentType.TextDisplay,
+      content: `-# ${emoji('Exclamation')} Your command response has been made ephemeral due to ${hyperlink(blocked.article, blocked.reason)}.`,
+    })
 
     return await client.api.interactions.followUp(applicationId, interactionToken, body, options)
   }
