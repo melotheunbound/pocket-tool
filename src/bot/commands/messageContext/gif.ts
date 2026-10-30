@@ -22,13 +22,17 @@ createApplicationCommand({
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   cooldown: 3,
-  acknowledge: true,
+  defer: true,
   async run(interaction, client) {
     const l = interaction.locale
 
     const message = interaction.data.resolved.messages[interaction.data.target_id]
 
-    if (!message || (!message.attachments?.length && !message.message_snapshots?.[0]?.message?.attachments?.length)) {
+    const attachments = (
+      message?.attachments?.length ? message.attachments : (message?.message_snapshots?.[0]?.message?.attachments ?? [])
+    ).slice(0, 10)
+
+    if (!attachments.length) {
       await client.api.interactions.respond(interaction.application_id, interaction.id, interaction.token, {
         components: [
           {
@@ -36,7 +40,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.no_image')}`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.missing_image')}`,
               },
             ],
           },
@@ -46,10 +50,6 @@ createApplicationCommand({
 
       return
     }
-
-    const attachments = (
-      message.attachments?.length ? message.attachments : (message.message_snapshots?.[0]?.message?.attachments ?? [])
-    ).slice(0, 10)
 
     const files = await Promise.all(
       attachments.map(async (attachment, index) => {
@@ -81,7 +81,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.no_images')}`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.image.gif.missing_images')}`,
               },
             ],
           },

@@ -22,7 +22,7 @@ createApplicationCommand({
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
   cooldown: 5,
-  acknowledge: true,
+  defer: true,
   async run(interaction, client) {
     const l = interaction.locale
 
@@ -63,7 +63,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} ${t(l, 'commands.ocr.no_image')}`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.ocr.missing_image')}`,
               },
             ],
           },

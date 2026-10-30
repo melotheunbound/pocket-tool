@@ -28,7 +28,7 @@ createApplicationCommand({
     },
   ],
   cooldown: 5,
-  acknowledge: true,
+  defer: true,
   async run(interaction, options, client) {
     const l = interaction.locale
 
@@ -78,7 +78,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Wrong')} ${t(l, 'commands.lastfm.no_track')}`,
+                content: `${emoji('Wrong')} ${t(l, 'commands.lastfm.missing_track')}`,
               },
             ],
           },

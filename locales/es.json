@@ -1,14 +1,14 @@
 {
   "commands": {
     "avatar": {
-      "no_avatar": "<@{userId}> no tiene un avatar.",
+      "missing_avatar": "<@{userId}> no tiene un avatar.",
       "buttons": {
         "global": "Descargar Avatar",
         "server": "Descargar Avatar de Servidor"
       }
     },
     "banner": {
-      "no_banner": "<@{userId}> no tiene un banner.",
+      "missing_banner": "<@{userId}> no tiene un banner.",
       "buttons": {
         "global": "Descargar Banner",
         "server": "Descargar Banner de Servidor"
@@ -74,8 +74,8 @@
     },
     "image": {
       "gif": {
-        "no_image": "Por favor, proporciona una imagen válida para convertirla a GIF.",
-        "no_images": "Por favor, proporciona al menos una imagen para convertirla a GIF.",
+        "missing_image": "Por favor, proporciona una imagen válida para convertirla a GIF.",
+        "missing_images": "Por favor, proporciona al menos una imagen para convertirla a GIF.",
         "tip": "¡Pasa el cursor sobre el GIF para añadirlo a tus favoritos!"
       }
     },
@@ -84,20 +84,20 @@
       "invite_info": "-# Información de la Invitación:",
       "code": "> Código:",
       "expires": "> Expira El:",
-      "no_expiration": "Nunca.",
+      "missing_expiration": "Nunca.",
       "inviter": "> Creado Por:",
       "guild_info": "-# Información del Servidor:",
       "id": "> ID:",
       "name": "> Nombre:",
       "description": "> Descripción:",
-      "no_description": "No hay ninguna descripción disponible.",
+      "missing_description": "No hay ninguna descripción disponible.",
       "created": "> Creado El:",
       "members": "> Miembros:",
       "boosts": "> Mejoras:"
     },
     "lastfm": {
       "missing_api_key": "La clave de API de Last.fm no está configurada.",
-      "no_track": "Ninguna cancion está siendo reproducida ahora mismo.",
+      "missing_track": "Ninguna cancion está siendo reproducida ahora mismo.",
       "spotify": {
         "missing_credentials": "Las credenciales de Spotify no están configuradas.",
         "track_not_found": "No pude encontrar la cancion que estas escuchando."
@@ -127,14 +127,14 @@
       "invalid_timezone": "Por favor, proporciona una zona horaria válida para ver."
     },
     "translate": {
-      "no_text": "Por favor, proporciona el texto para traducir.",
+      "missing_text": "Por favor, proporciona el texto para traducir.",
       "translated": "Traducido de **{sourceFlag} {sourceLanguage}** a **{targetFlag} {targetLanguage}**",
       "auto_detected_target": "El idioma de destino fue seleccionado según el idioma de tu Discord"
     },
     "tts": {
       "missing_api_key": "La clave de API de ElevenLabs no está configurada.",
       "limit": "Has alcanzado el límite diario de {limit} mensajes TTS. Inténtalo de nuevo en {timestamp}.",
-      "no_text": "Por favor, proporciona un texto para convertirlo a voz."
+      "missing_text": "Por favor, proporciona un texto para convertirlo a voz."
     },
     "twitter": {
       "missing_api_key": "La clave de la API de Twitter de Tolgchu no está configurada.",
@@ -161,7 +161,7 @@
       }
     },
     "user": {
-      "no_user": "Selecciona un usuario válido para ver la información.",
+      "missing_user": "Selecciona un usuario válido para ver la información.",
       "user_info": "-# **Información del Usuario:**",
       "id": "> ID:",
       "username": "> Nombre de Usuario:",
@@ -180,11 +180,11 @@
     },
     "ocr": {
       "missing_api_key": "La clave de API de OCR no está configurada.",
-      "no_image": "Por favor, selecciona una imagen para extraer el texto."
+      "missing_image": "Por favor, selecciona una imagen para extraer el texto."
     },
     "quote": {
       "forwarded": "Los mensajes reenviados no están soportados actualmente.",
-      "no_text_or_sticker": "Selecciona un mensaje que contenga texto o un sticker para citarlo.",
+      "missing_text_or_sticker": "Selecciona un mensaje que contenga texto o un sticker para citarlo.",
       "original": "Ir al mensaje original!",
       "editor": "Editor de Citas\n-# Usa los menús siguientes para personalizar tu cita o generar una tarjeta aleatoria",
       "filter": "No puedes interactuar con los componentes del comando de otro usuario.",
@@ -226,11 +226,16 @@
         }
       }
     },
+    "snowflake": {
+      "missing_text": "Por favor, proporciona un snowflake para visualizar.",
+      "invalid": "Por favor, proporciona un snowflake válido para visualizar.",
+      "not_found": "No he podido encontrar un snowflake con ese ID."
+    },
     "stt": {
       "missing_api_key": "La clave de API de ElevenLabs no está configurada.",
       "forwarded": "Los mensajes reenviados no están soportados actualmente.",
       "limit": "Has alcanzado el límite diario de {limit} mensajes de voz. Inténtalo de nuevo en {timestamp}.",
-      "no_voice_message": "Por favor, proporciona un mensaje de voz para transcribirlo.",
+      "missing_voice_message": "Por favor, proporciona un mensaje de voz para transcribirlo.",
       "voice_message_length": "El mensaje de voz tiene que ser mas córto que {max} minutos."
     }
   },

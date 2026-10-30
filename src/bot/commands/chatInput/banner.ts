@@ -32,33 +32,31 @@ createApplicationCommand({
     {
       type: ApplicationCommandOptionType.User,
       name: {
-        global: 'target',
-        'pt-BR': 'alvo',
-        'es-ES': 'objetivo',
+        global: 'mention',
+        'pt-BR': 'menção',
+        'es-ES': 'mención',
       },
       description: {
-        global: 'The user to view the banner of',
-        'pt-BR': 'O usuário para ver o banner',
-        'es-ES': 'El usuario para ver el banner',
+        global: 'The mention or ID of the user to view the banner of',
+        'pt-BR': 'A menção ou ID do usuário para ver o banner',
+        'es-ES': 'La mención o ID del usuario para ver el banner',
       },
       required: false,
     },
   ],
   cooldown: 3,
-  acknowledge: true,
+  defer: true,
   async run(interaction, options, client) {
     const l = interaction.locale
 
-    let { target } = options
+    let { mention } = options
 
-    if (!target) {
-      target = {
-        user: (interaction.user ?? interaction.member?.user)!,
-        member: interaction.member as APIInteractionDataResolvedGuildMember,
-      }
+    mention ??= {
+      user: interaction.user ?? interaction.member?.user!,
+      member: interaction.member as APIInteractionDataResolvedGuildMember,
     }
 
-    const { user: rawUser, member: rawMember } = target
+    const { user: rawUser, member: rawMember } = mention
 
     const user = await client.api.users.get(rawUser.id)
     const member =
@@ -74,7 +72,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} ${t(l, 'commands.banner.no_banner', { userId: user.id })}`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.banner.missing_banner', { userId: user.id })}`,
               },
             ],
           },

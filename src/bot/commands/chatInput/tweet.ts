@@ -55,7 +55,7 @@ createApplicationCommand({
     },
   ],
   cooldown: 5,
-  acknowledge: true,
+  defer: true,
   async run(interaction, options, client) {
     const l = interaction.locale
 

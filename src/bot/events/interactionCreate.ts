@@ -80,7 +80,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
           ) as APIApplicationCommandInteractionDataBooleanOption
         )?.value ?? false
 
-      if (chatInput.acknowledge === true) {
+      if (chatInput.defer === true) {
         await client.api.interactions.defer(interaction.id, interaction.token, {
           flags: chatInput.ephemeral || ephemeral ? MessageFlags.Ephemeral : undefined,
         })
@@ -145,7 +145,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
 
       if (messageContext.dev && !devIds.includes(interaction.user?.id ?? interaction.member?.user.id)) return
 
-      if (messageContext.acknowledge) {
+      if (messageContext.defer) {
         await client.api.interactions.defer(interaction.id, interaction.token, {
           flags: messageContext.ephemeral ? MessageFlags.Ephemeral : undefined,
         })
@@ -206,7 +206,7 @@ async function handleApplicationCommand(interaction: APIApplicationCommandIntera
 
       if (userContext.dev && !devIds.includes(interaction.user?.id ?? interaction.member?.user.id)) return
 
-      if (userContext.acknowledge) {
+      if (userContext.defer) {
         await client.api.interactions.defer(interaction.id, interaction.token, {
           flags: userContext.ephemeral ? MessageFlags.Ephemeral : undefined,
         })

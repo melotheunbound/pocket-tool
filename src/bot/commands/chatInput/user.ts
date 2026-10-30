@@ -46,17 +46,15 @@ createApplicationCommand({
     },
   ],
   cooldown: 3,
-  acknowledge: true,
+  defer: true,
   async run(interaction, options, client) {
     const l = interaction.locale
 
     let { mention } = options
 
-    if (!mention) {
-      mention = {
-        user: (interaction.user ?? interaction.member?.user)!,
-        member: interaction.member as APIInteractionDataResolvedGuildMember,
-      }
+    mention ??= {
+      user: interaction.user ?? interaction.member?.user!,
+      member: interaction.member as APIInteractionDataResolvedGuildMember,
     }
 
     const { user, member } = mention

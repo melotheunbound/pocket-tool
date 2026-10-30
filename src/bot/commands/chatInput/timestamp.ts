@@ -146,7 +146,7 @@ createApplicationCommand({
     },
   ],
   cooldown: 3,
-  acknowledge: true,
+  defer: true,
   async autocomplete(interaction, client) {
     const focused = getAutocompleteFocusedOption(interaction.data.options)
     const value = String(focused?.value ?? '').toLowerCase()

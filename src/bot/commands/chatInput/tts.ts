@@ -101,7 +101,7 @@ createApplicationCommand({
     },
   ],
   cooldown: 5,
-  acknowledge: true,
+  defer: true,
   async autocomplete(interaction, client) {
     const focused = getAutocompleteFocusedOption(interaction.data.options)
     const value = String(focused?.value ?? '').toLowerCase()
@@ -192,7 +192,7 @@ createApplicationCommand({
             components: [
               {
                 type: ComponentType.TextDisplay,
-                content: `${emoji('Exclamation')} ${t(l, 'commands.tts.no_text')}`,
+                content: `${emoji('Exclamation')} ${t(l, 'commands.tts.missing_text')}`,
               },
             ],
           },

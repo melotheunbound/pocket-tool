@@ -35,7 +35,7 @@ export interface BaseNonPrimaryEntryPointCommand<Type extends ApplicationCommand
   cooldown?: number
   guilds?: Snowflake[]
   dev?: boolean
-  acknowledge?: boolean
+  defer?: boolean
   ephemeral?: boolean
   nsfw?: boolean
 }

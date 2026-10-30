@@ -206,12 +206,12 @@ function votePrompt<T extends { content?: string; components?: any[]; flags?: nu
   if (isComponentsV2) {
     const textDisplay = {
       type: ComponentType.TextDisplay,
-      content: `-# ${emoji('Topgg')} Consider voting for us on [Top.gg!](<https://top.gg/bot/1489362526880796903>)`,
+      content: `-# ${emoji('Topgg')} Consider voting for us on **[Top.gg!](<https://top.gg/bot/1489362526880796903>)**`,
     }
 
     body.components = [textDisplay, ...(body.components ?? [])]
   } else if (body.content) {
-    body.content = `-# ${emoji('Topgg')} Consider voting for us on [Top.gg!](<https://top.gg/bot/1489362526880796903>)\n${body.content}`
+    body.content = `-# ${emoji('Topgg')} Consider voting for us on **[Top.gg!](<https://top.gg/bot/1489362526880796903>)**\n${body.content}`
   }
 
   return body

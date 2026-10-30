@@ -17,7 +17,7 @@ createApplicationCommand({
   },
   integrationTypes: [ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall],
   contexts: [InteractionContextType.BotDM, InteractionContextType.Guild, InteractionContextType.PrivateChannel],
-  acknowledge: true,
+  defer: true,
   async run(interaction, options, client) {
     // gateway
     const shardId = interaction.guild_id ? getShardIdForGuildId(interaction.guild_id, client.gateway.shards.size) : 0

@@ -1,14 +1,14 @@
 {
   "commands": {
     "avatar": {
-      "no_avatar": "<@{userId}> doesn't have an avatar.",
+      "missing_avatar": "<@{userId}> doesn't have an avatar.",
       "buttons": {
         "global": "Download Avatar",
         "server": "Download Server Avatar"
       }
     },
     "banner": {
-      "no_banner": "<@{userId}> doesn't have a banner.",
+      "missing_banner": "<@{userId}> doesn't have a banner.",
       "buttons": {
         "global": "Download Banner",
         "server": "Download Server Banner"
@@ -74,8 +74,8 @@
     },
     "image": {
       "gif": {
-        "no_image": "Please provide a valid image to turn into a GIF.",
-        "no_images": "Please select at least one image to turn into a GIF.",
+        "missing_image": "Please provide a valid image to turn into a GIF.",
+        "missing_images": "Please select at least one image to turn into a GIF.",
         "tip": "Hover over the GIF to add it to your favorites!"
       }
     },
@@ -84,20 +84,20 @@
       "invite_info": "-# **Invite Information:**",
       "code": "> Code:",
       "expires": "> Expires At:",
-      "no_expiration": "Never.",
+      "missing_expiration": "Never.",
       "inviter": "> Inviter:",
       "guild_info": "-# **Server Information:**",
       "id": "> ID:",
       "name": "> Name:",
       "description": "> Description:",
-      "no_description": "No description available.",
+      "missing_description": "No description available.",
       "created": "> Created At:",
       "members": "> Members:",
       "boosts": "> Boosts:"
     },
     "lastfm": {
       "missing_api_key": "The Last.fm API key is not set.",
-      "no_track": "No track is currently being played.",
+      "missing_track": "No track is currently being played.",
       "spotify": {
         "missing_credentials": "The Spotify credentials are not set.",
         "track_not_found": "I couldn't find the track you're listening to."
@@ -127,14 +127,14 @@
       "invalid_timezone": "Please provide a valid timezone to view."
     },
     "translate": {
-      "no_text": "Please provide some text to translate.",
+      "missing_text": "Please provide some text to translate.",
       "translated": "Translated from **{sourceFlag} {sourceLanguage}** to **{targetFlag} {targetLanguage}**",
       "auto_detected_target": "The target language was selected based on your Discord locale"
     },
     "tts": {
       "missing_api_key": "The ElevenLabs API key is not set.",
       "limit": "You have reached your daily TTS limit of {limit} messages. Try again {timestamp}.",
-      "no_text": "Please provide some text to convert to speech."
+      "missing_text": "Please provide some text to convert to speech."
     },
     "twitter": {
       "missing_api_key": "The Tolgchu Twitter API key is not set.",
@@ -161,7 +161,7 @@
       }
     },
     "user": {
-      "no_user": "Please select a valid user to view information for.",
+      "missing_user": "Please select a valid user to view information for.",
       "user_info": "-# **User Information:**",
       "id": "> ID:",
       "mention": "> Mention:",
@@ -180,11 +180,11 @@
     },
     "ocr": {
       "missing_api_key": "OCR API key is not set.",
-      "no_image": "Please select an image to extract text from."
+      "missing_image": "Please select an image to extract text from."
     },
     "quote": {
       "forwarded": "Forwarded messages are currently unsupported.",
-      "no_text_or_sticker": "Please select a message containing text or stickers to quote.",
+      "missing_text_or_sticker": "Please select a message containing text or stickers to quote.",
       "original": "Jump to original message!",
       "editor": "Quote Editor\n-# Use the menus below to customize your quote or generate a random card",
       "filter": "You cannot interact with components from another user's command.",
@@ -226,10 +226,15 @@
         }
       }
     },
+    "snowflake": {
+      "missing_text": "Please provide a snowflake to view.",
+      "invalid": "Please provide a valid snowflake to view.",
+      "not_found": "I couldn't find a snowflake with that ID."
+    },
     "stt": {
       "missing_api_key": "The ElevenLabs API key is not set.",
       "limit": "You have reached your daily STT limit of {limit} voice messages. Try again {timestamp}.",
-      "no_voice_message": "Please select a voice message to transcribe.",
+      "missing_voice_message": "Please select a voice message to transcribe.",
       "voice_message_length": "The voice message must be shorter than {max} minutes."
     }
   },

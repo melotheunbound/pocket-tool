@@ -26,7 +26,7 @@ createApplicationCommand({
   ],
   guilds: ['1533439024637939792'],
   dev: true,
-  acknowledge: true,
+  defer: true,
   async run(interaction, options, client) {
     const { code } = options
 
