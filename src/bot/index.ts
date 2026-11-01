@@ -215,11 +215,33 @@ function votePrompt<T extends { components?: any[] }>(body: T): T {
 client.api.interactions.respond = (async (applicationId, interactionId, interactionToken, body, messageId, options) => {
   body.allowed_mentions ??= { parse: [] }
 
-  if (body.content && !((body.flags ?? 0) & MessageFlags.IsComponentsV2)) {
-    body.components = [{ type: ComponentType.TextDisplay, content: body.content }, ...(body.components ?? [])]
+  if (!((body.flags ?? 0) & MessageFlags.IsComponentsV2)) {
+    if (body.content) {
+      body.components = [
+        {
+          type: ComponentType.TextDisplay,
+          content: body.content,
+        },
+        ...(body.components ?? []),
+      ]
 
-    body.content = undefined
+      body.content = undefined
+    }
+
     body.flags = (body.flags ?? 0) | MessageFlags.IsComponentsV2
+  }
+
+  if (body.attachments?.length) {
+    body.components ??= []
+
+    body.components.push({
+      type: ComponentType.MediaGallery,
+      items: body.attachments.map(attachment => ({
+        media: {
+          url: `attachment://${attachment.filename}`,
+        },
+      })),
+    })
   }
 
   votePrompt(body)
