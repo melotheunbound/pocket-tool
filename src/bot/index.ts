@@ -11,6 +11,7 @@ import {
   MessageFlags,
   PresenceUpdateStatus,
   Routes,
+  type APIMessageTopLevelComponent,
   type GatewayDispatchPayload,
   type RESTPutAPIApplicationCommandsJSONBody,
   type RESTPutAPIApplicationGuildCommandsJSONBody,
@@ -215,33 +216,51 @@ function votePrompt<T extends { components?: any[] }>(body: T): T {
 client.api.interactions.respond = (async (applicationId, interactionId, interactionToken, body, messageId, options) => {
   body.allowed_mentions ??= { parse: [] }
 
-  if (!((body.flags ?? 0) & MessageFlags.IsComponentsV2)) {
-    if (body.content) {
-      body.components = [
-        {
-          type: ComponentType.TextDisplay,
-          content: body.content,
-        },
-        ...(body.components ?? []),
-      ]
+  const isVoiceMessage = ((body.flags ?? 0) & MessageFlags.IsVoiceMessage) !== 0
 
-      body.content = undefined
+  if (!isVoiceMessage && body.files?.length) {
+    const attachmentOffset = body.attachments?.length ?? 0
+
+    body.attachments = [
+      ...(body.attachments ?? []),
+      ...body.files.map((file, index) => ({
+        id: attachmentOffset + index,
+        filename: file.name,
+      })),
+    ]
+
+    const media = body.files
+      .filter(file => /\.(png|jpe?g|gif|webp|avif|bmp|svg|mp4|webm|mov|mkv)$/i.test(file.name))
+      .slice(0, 10)
+
+    if (media.length) {
+      body.components ??= []
+      body.components.push({
+        type: ComponentType.MediaGallery,
+        items: media.map(file => ({
+          media: {
+            url: `attachment://${file.name}`,
+          },
+        })),
+      })
     }
-
-    body.flags = (body.flags ?? 0) | MessageFlags.IsComponentsV2
   }
 
-  if (body.attachments?.length) {
-    body.components ??= []
+  if (!isVoiceMessage && !((body.flags ?? 0) & MessageFlags.IsComponentsV2)) {
+    body.components = [
+      ...(body.content
+        ? ([
+            {
+              type: ComponentType.TextDisplay,
+              content: body.content,
+            },
+          ] satisfies APIMessageTopLevelComponent[])
+        : []),
+      ...(body.components ?? []),
+    ]
 
-    body.components.push({
-      type: ComponentType.MediaGallery,
-      items: body.attachments.map(attachment => ({
-        media: {
-          url: `attachment://${attachment.filename}`,
-        },
-      })),
-    })
+    body.content = undefined
+    body.flags = (body.flags ?? 0) | MessageFlags.IsComponentsV2
   }
 
   votePrompt(body)
@@ -249,11 +268,13 @@ client.api.interactions.respond = (async (applicationId, interactionId, interact
   const original = await client.api.interactions.getOriginalReply(applicationId, interactionToken).catch(() => null)
 
   try {
-    return original
-      ? await client.api.interactions.editReply(applicationId, interactionToken, body, messageId, options)
-      : (await client.api.interactions.reply(interactionId, interactionToken, body, options))!.resource!.message
+    if (original) return client.api.interactions.editReply(applicationId, interactionToken, body, messageId, options)
+
+    const response = await client.api.interactions.reply(interactionId, interactionToken, body, options)
+
+    return response?.resource?.message
   } catch (error) {
-    const code = (error as any)?.code
+    const code = typeof error === 'object' && error && 'code' in error ? error.code : undefined
     const blocked = MESSAGE_BLOCK_REASONS[code as keyof typeof MESSAGE_BLOCK_REASONS]
 
     if (!blocked) throw error
@@ -264,10 +285,15 @@ client.api.interactions.respond = (async (applicationId, interactionId, interact
     body.components ??= []
 
     body.components.unshift({
-      type: ComponentType.TextDisplay,
-      content: `-# ${emoji('Exclamation')} Your command response has been made ephemeral due to ${hyperlink(blocked.article, blocked.reason)}.`,
+      type: ComponentType.Container,
+      components: [
+        {
+          type: ComponentType.TextDisplay,
+          content: `-# ${emoji('Exclamation')} Your command response has been made ephemeral due to ${hyperlink(blocked.article, blocked.reason)}.`,
+        },
+      ],
     })
 
-    return await client.api.interactions.followUp(applicationId, interactionToken, body, options)
+    return client.api.interactions.followUp(applicationId, interactionToken, body, options)
   }
 }) as typeof client.api.interactions.respond
